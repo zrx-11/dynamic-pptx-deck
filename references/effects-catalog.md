@@ -127,6 +127,17 @@ ECMA 基础转场（2019 通用）：`fade`、`push_l`、`push_r`、`cover_l`、
 - 遮罩式转场与版面遮罩是两层：转场只发生在切页瞬间；内容嵌在圆内、圆外压暗的常驻圆环
   属于版面元素（见 layout-recipes 第 7b/9 节），二者不要混为一谈。
 
+按观感分组（先定观感，再定方向）：
+
+- 方向推移：`push_l/r`、`cover_l/r`、`pull`、`conveyor`(L1)——整页被推过去或盖过去。
+- 擦除：`wipe_l/r/u/d`——边界扫过，适合流程、时间线与清单。
+- 分割与条状：`split_h`、`blinds_v/h`、`comb`、`randombar_v`、`checker`。
+- 几何遮罩：`wheel`/`wheel4`/`wheel8`、`wedge`、`circle`——辐条、扇形或圆形张开。
+- 缩放与淡化：`zoom_t`、`fade`、`random`。
+
+选型纪律：方向跟全稿主轴保持一致，类型按页型轮换；既不要把清单里的转场全堆进一份稿，
+也不要全篇单一转场。页型分工表见 layout-recipes 第 7b 节。
+
 p14 预设转场（L1，2010+；不认则回退无转场，不伤内容）：`doors`、`gallery`、`flip`、
 `switch`、`prism`、`conveyor`、`window`、`honeycomb`、`reveal`、`ripple`、`vortex`、
 `glitter`、`ferris`。结构取自样稿核对，未在目标机 F5 复测。
@@ -255,7 +266,7 @@ PowerPoint 2019 / 365 与 WPS 演示之间互通稳定；高级预设、p14 现�
 | `bounce_up`（37 弹跳）/ `drop_in`（47 下降） | 动画 | 版本差异，可能回退直接出现 | 主入场用 L0，弹跳/下落只做同组点缀 |
 | `grow_once`（emph 6，animScale 无 autoRev） | 动画 | 旧版 WPS 识别不稳 | 强调场景用；需要回弹优先 `grow` |
 | `zoom_out`（exit 23/32，w/h→0 缩小退出） | 动画 | 不认则退回 disappear | 局部换内容页点缀；整页换内容交给转场 |
-| p14 转场（doors/gallery/flip/switch/prism/conveyor/window/honeycomb/reveal/ripple/vortex/glitter/ferris） | 转场 | 不认则整段回退无转场 | 可全稿使用；相邻页转场方向保持动线一致 |
+| p14 转场（doors/gallery/flip/switch/prism/conveyor/window/honeycomb/reveal/ripple/vortex/glitter/ferris） | 转场 | 不认则整段回退无转场 | 可全稿使用；方向跟全稿主轴，类型按页型轮换，避免相邻页同类型堆叠 |
 | `morph`（p159:morph，mc:Choice/Fallback 包裹） | 转场 | 2019 剥离 Choice，走 Fallback fade | 前后两页对应对象必须同名、同类型、数量一致；不依赖它做首现 |
 
 ### 10.3 L2 排除层（任何交付都不写）

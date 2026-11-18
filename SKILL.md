@@ -23,8 +23,10 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 2. 读 `references/layout-recipes.md`：选定配色基线（A 浅色商务 / B 深色科技 / C 红金 /
    D 紫夜 / E 深绿青碧，或 11 套学术配色），按内容选版式骨架（封面、目录、章节过渡、卡片、双栏、
    时间线、表格、Q&A、数字带、轮播、模糊大字页、结尾）。
-3. 生成脚本 `build.py` 接入 `scripts/dynamic_deck.py`：用封装函数画形状与文本，
-   用 `animate` 编排动画批次，用 `transition` 写转场。
+3. 先按页型排出转场分工表：主轴方向全稿统一，转场类型按页型轮换、相邻页不堆叠同一预设
+   （分工表见 `references/layout-recipes.md` 第 7b 节）；再生成脚本 `build.py` 接入
+   `scripts/dynamic_deck.py`：用封装函数画形状与文本，用 `animate` 编排动画批次，
+   用 `transition` 写转场。
 4. 动画纪律、方向位标记、轴心锁定、节奏规则见 `references/effects-catalog.md`；
    新页面动效先查效果目录，白名单外的预设不要加。
 5. 生成后跑 `dynamic_deck.py check` 做结构体检；用 LibreOffice 导出 PDF/截图核对
@@ -44,7 +46,8 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
   - 放大回弹：`(name, "grow", delay, dur)`；单次放大：`(name, "grow_once", delay, dur)`
   - 闪烁：`(name, "blink", delay, dur)`；路径漂移：`(name, "path", delay, dur, dx, dy)`
 
-转场：`transition(slide, kind)`；可用清单见 `references/effects-catalog.md` 第 5 节。
+转场：`transition(slide, kind)`；可用清单、观感分组与选型纪律见 `references/effects-catalog.md` 第 5 节，
+页型分工表见 `references/layout-recipes.md` 第 7b 节。
 体检：`validate(path)`；CLI：`python3 dynamic_deck.py check <deck.pptx>` / `demo <out.pptx>`。
 
 ## 效果分级原则
