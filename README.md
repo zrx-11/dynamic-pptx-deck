@@ -15,7 +15,7 @@ python-pptx、PptxGenJS 这类库都不封装对象动画与页面转场；动�
 - 一套形状与文本封装函数，配合动画批次、转场、轴心锁定组合体；
 - 一份效果白名单与弃用清单，只写带真实行为节点的预设；
 - 一套三层渐进适配模型：安全层双端通用，高版本增强不认则静默回退，排除层不进稿；
-- 五套配色基线与通用页型骨架（封面、目录、卡片、双栏、时间线、表格、Q&A、数字带、结尾）。
+- 五套主配色基线 + 11 套学术配色，通用页型骨架与配方级版式（封面、目录、卡片、双栏、时间线、表格、Q&A、数字带、轮播、模糊大字页、结尾）；
 
 ## 不做什么
 
@@ -37,7 +37,7 @@ dynamic-pptx-deck/
 │   └── openai.yaml            同构配置
 ├── references/
 │   ├── effects-catalog.md    效果目录、行为节点、转场清单、timing 排错、轴心锁定、节奏规则、双端分级
-│   ├── layout-recipes.md      五套配色基线、通用页型骨架与母题、环境动效、跨页连贯编排、许可边界
+│   ├── layout-recipes.md      配色基线（含 11 套学术配色）、页型骨架与母题、配方级版式、工程坑位、许可边界
 │   └── source-inventory.md    开源项目台账、历史样稿反查结论、路线选型与素材许可纪律
 └── scripts/
     └── dynamic_deck.py       形状/文本/组合体封装、animate、transition、validate、CLI check/demo
@@ -94,7 +94,7 @@ python3 scripts/dynamic_deck.py check /tmp/demo.pptx
 动画：`animate(slide, groups, auto=0)`，`groups` 是点击批次列表，同组元素同时开始，
 先后靠 `delay` 错开；`auto=N` 前 N 批进页即自动播。
 
-- 入场/退出：`(name, kind, delay_ms, dur_ms)`
+- 入场/退出：`(name, kind, delay_ms, dur_ms)`；退出含 `disappear`、`zoom_out`、`wipe_out_l/r/u/d`
 - 自转：`(name, "spin", delay, dur[, by])`
 - 放大回弹 / 单次放大：`(name, "grow" | "grow_once", delay, dur)`
 - 闪烁 / 路径漂移：`(name, "blink" | "path", delay, dur[, ...])`

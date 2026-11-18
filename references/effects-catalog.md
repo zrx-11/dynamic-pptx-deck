@@ -83,6 +83,7 @@
 | kind | presetID | subtype | 表现 |
 |---|---|---|---|
 | `disappear` | 1 | 0 | 直接隐藏（set hidden） |
+| `zoom_out` | 23 | 32 | 缩小到 0 退出（w/h 原值→0 + set hidden，真实行为节点） |
 | `wipe_out_l/r/u/d` | 22 | 8/2/1/4 | 对应方向擦除退出，animEffect transition=out |
 
 > 移植效果在目标机离线时无法 F5 复核；正式交付前若条件允许，优先用第 2 节实测效果打底，
@@ -104,6 +105,10 @@
 - 翻书页 / 页面卷曲转场：2019 不支持（模板里的 `p15:prstTrans prst="pageCurlDouble"` 同属此类，不搬）。
 - RHINE 模板内嵌的 AVI/MP4 与 mediacall：不搬入新稿。
 - 本地 deck 里缺 animMotion 的 entr 42 是假阳性；只有带 animMotion 的 42 路径可信。
+- 二次反查（ppt-effects 配方库，48 份参考片 865 页）补充判死：
+  `emph 3/2`（无任何行为节点）、`emph 19/0`（仅 set 可见性）、`entr 18/12`（仅 set + animEffect 空壳）、
+  `exit 16/37`（animEffect + set 空壳）；`exit 38/0` 为字符级 iterate 旋转退出，结构复杂、依赖
+  `p:iterate` 与逐字 rotation，暂不收录，需要时手工从参考片反查。
 
 ## 5. 转场目录
 
@@ -237,6 +242,7 @@ PowerPoint 2019 / 365 与 WPS 演示之间互通稳定；高级预设、p14 现�
 | `zoom_rot`（31，含 rotation 90→0） | 动画 | 可能映射不稳，退回出现/zoom | 不承担对象首现唯一手段 |
 | `bounce_up`（37 弹跳）/ `drop_in`（47 下降） | 动画 | 版本差异，可能回退直接出现 | 主入场用 L0，弹跳/下落只做同组点缀 |
 | `grow_once`（emph 6，animScale 无 autoRev） | 动画 | 旧版 WPS 识别不稳 | 强调场景用；需要回弹优先 `grow` |
+| `zoom_out`（exit 23/32，w/h→0 缩小退出） | 动画 | 不认则退回 disappear | 局部换内容页点缀；整页换内容交给转场 |
 | p14 转场（doors/gallery/flip/switch/prism/conveyor/window/honeycomb/reveal/ripple/vortex/glitter/ferris） | 转场 | 不认则整段回退无转场 | 可全稿使用；相邻页转场方向保持动线一致 |
 | `morph`（p159:morph，mc:Choice/Fallback 包裹） | 转场 | 2019 剥离 Choice，走 Fallback fade | 前后两页对应对象必须同名、同类型、数量一致；不依赖它做首现 |
 
@@ -256,3 +262,39 @@ PowerPoint 2019 / 365 与 WPS 演示之间互通稳定；高级预设、p14 现�
 6. 字体按 `a:latin`/`a:ea` 族名记录；两端缺字体会回退系统字体，正式放映机预装字体或换同档黑体。
 7. WPS 与 PPT 的动画窗格、计时入口位置不同，但 click/with/after 语义一致；自动批次与点击批次的
    分层写法在两端通用。
+
+## 11. ppt-effects 配方库反查结论（2026-11-19）
+
+来源：GitHub `HY-hue113/ppt-effects`（MIT，v1.2.0，17 个配方 + 工具区；48 份参考 pptx、865 页）。
+批量统计 preset / 转场 / 行为节点后，可吸收与需排除项如下。
+
+### 11.1 节点统计
+
+- 转场：morph 388 次、fade 391 次，其余 wipe/gallery/prstTrans 各 1；该库主线是 Morph 序列 + 淡入兜底。
+- 行为节点：set 251、anim 186、animEffect 149、animMotion 45、animRot 12、animScale 8；无 animColor。
+- 路径族：`path 42/35/63/64` 同为 `animMotion` 相对路径（直线或折线，`pathEditMode="relative"`）；
+  模块只封装 42，需要折线/弧线段落时按 `_path` 结构改 `path` 字符串即可，不必新增 kind。
+- 旧版 zoom `entr 23/16` 带真实 w/h 缩放节点，等价模块 `zoom`（53/16）；`exit 23/32` 即本节
+  新增的 `zoom_out`。
+
+### 11.2 Morph 配对帧配方（L1，配对成立才写）
+
+该库 17 个配方中绝大多数丝滑感来自 Morph，而非页内对象动画。可复用的帧序列模式：
+
+1. **三帧起手**：隐藏态页（文字/面板在画布外负坐标）→ 落位帧（对象到目标位置）→ 停留帧
+   （与落位帧完全相同）。停留帧必不可少，否则 Morph 一闪而过。
+2. **越界准备帧**：下一段要推入的装饰/面板先放在画布外（负坐标或 y=-50cm），目标帧再推入；
+   画布外元素是 Morph 推拉用的，**不能删**，只能改填充指向。
+3. **配对纪律**：前后两页对应对象同名、同类型、数量一致；Morph 位移的对象不要再叠加页内动画，
+   否则两套时间轴打架。
+4. **时长与节奏**：配方常用 1.5–2 秒（spd=slow，p14:dur 1500–2000）；需要自动翻页时在页面
+   换片时间上设置，不要靠动画时长硬凑。
+5. **重影坑**：同一段文字若有大小两份文本框，副本必须移出画布（y=-40cm）隐藏，否则成稿出现
+   「标题2 / 标题2」重影。
+6. **媒体分组**：模糊遮罩类页面清晰层/模糊层/切片层是三组不同媒体，换图要按页分组替换，
+   只换一张会串旧图。
+
+### 11.3 参考片里出现但不收录的预设
+
+见第 4 节补充清单：emph 3/2、emph 19/0、entr 18/12、exit 16/37 为空壳；exit 38/0 字符级
+iterate 旋转退出结构复杂，暂不模块封装。

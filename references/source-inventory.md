@@ -18,6 +18,7 @@
 | wzpan/BeamerStyleSlides | MIT | 可用 | 学术排版与版式复刻思路 |
 | addsumtech/slides_maker | MIT | 可用 | 生成流程组织 |
 | atomiechen/THU-PPT-Theme | CC BY-NC-SA 4.0 | **非商业** | 配色与版式思路参照，不搬资产 |
+| HY-hue113/ppt-effects | MIT | 可用 | 17 个动效配方骨架、Morph 配对帧序列、11 套学术配色、工程坑位；参考件照片不打包 |
 
 另检索过未深入采用：reveal.js、Slidev、ts-pptx、Achuan-2/SlideSCI、
 Binaryify/open-kimi-ppt-skill。
@@ -47,6 +48,20 @@ Binaryify/open-kimi-ppt-skill。
   - 紫色：紫夜全屏底 + 圆环十字准星；仅 fly_up；转场同为 p159:morph。
   - 深绿山林：深青碧 `#437477/#549195` 配色；wipe 主导，path 35/63/64 带 animMotion；
     emph 6/0 即 grow_once；entr 23/272 空壳不移植；转场同为 p159:morph。
+
+## 2b. ppt-effects 配方库反查（2026-11-19）
+
+- 仓库 `HY-hue113/ppt-effects`（MIT，v1.2.0）：17 个动效配方 + palette/image/text/template/layout 工具区；
+  48 份参考 pptx、865 页。
+- 节点统计：转场 morph 388 / fade 391；行为节点 set 251、anim 186、animEffect 149、animMotion 45、
+  animRot 12、animScale 8；无 animColor。
+- 可吸收：Morph 三帧配对序列（隐藏态→落位→停留帧）、越界准备帧、双份文本隐藏、媒体分组替换；
+  11 套学术配色；轮播 A/B/C/D 图位规则；工程坑位（见 layout-recipes 第 9、10 节）。
+- 判死/不收录：emph 3/2、emph 19/0、entr 18/12、exit 16/37 空壳；exit 38/0 字符级 iterate 旋转退出
+  暂不封装；参考件照片与占位文字不沿用。
+- 「感觉鹿PPT」（B站 mid 290937690 / 抖音 25623673682，八年视觉设计师）：云主机仅可取公开标题与标签，
+  视频本体受风控无法逐帧拆解；可辨识主题为丝滑切换（平滑/路径替代）、创意文字过渡、镂空金边开场、
+  渐变过渡、破格立体、目录几何构图。手法归类到现有形状 + 动画能力，未新增预设。
 
 ## 3. 路线选型记录
 

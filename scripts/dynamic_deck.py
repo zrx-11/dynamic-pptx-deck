@@ -46,6 +46,7 @@ KINDS_LAYER = {
     "appear": "L0", "zoom": "L0",
     "spin": "L0", "grow": "L0", "blink": "L0", "path": "L0",
     "zoom_rot": "L1", "bounce_up": "L1", "drop_in": "L1", "grow_once": "L1",
+    "zoom_out": "L1",
     "disappear": "L0", "wipe_out_l": "L0", "wipe_out_r": "L0",
     "wipe_out_u": "L0", "wipe_out_d": "L0",
 }
@@ -77,6 +78,7 @@ KINDS = {
     "blink":   ("emph", 35, 0, "blink", "移植"),
     # —— 退出【移植】 ——
     "disappear": ("exit", 1, 0, "appear", "移植"),
+    "zoom_out": ("exit", 23, 32, "fade", "移植"),
     "wipe_out_l": ("exit", 22, 8, "wipe(left)", "移植"),
     "wipe_out_r": ("exit", 22, 2, "wipe(right)", "移植"),
     "wipe_out_u": ("exit", 22, 1, "wipe(up)", "移植"),
@@ -376,6 +378,22 @@ class Timing:
             '<p:tav tm="100000"><p:val><p:strVal val="#ppt_h"/></p:val></p:tav></p:tavLst></p:anim>'
         ) % (aw, dur, spid, ah, dur, spid)
 
+    def _zoom_out_anim(self, spid, dur):
+        aw = self.nid()
+        ah = self.nid()
+        return (
+            '<p:anim calcmode="lin" valueType="num"><p:cBhvr>'
+            '<p:cTn id="%d" dur="%d" fill="hold"/><p:tgtEl><p:spTgt spid="%d"/></p:tgtEl>'
+            '<p:attrNameLst><p:attrName>ppt_w</p:attrName></p:attrNameLst></p:cBhvr>'
+            '<p:tavLst><p:tav tm="0"><p:val><p:strVal val="#ppt_w"/></p:val></p:tav>'
+            '<p:tav tm="100000"><p:val><p:fltVal val="0"/></p:val></p:tav></p:tavLst></p:anim>'
+            '<p:anim calcmode="lin" valueType="num"><p:cBhvr>'
+            '<p:cTn id="%d" dur="%d" fill="hold"/><p:tgtEl><p:spTgt spid="%d"/></p:tgtEl>'
+            '<p:attrNameLst><p:attrName>ppt_h</p:attrName></p:attrNameLst></p:cBhvr>'
+            '<p:tavLst><p:tav tm="0"><p:val><p:strVal val="#ppt_h"/></p:val></p:tav>'
+            '<p:tav tm="100000"><p:val><p:fltVal val="0"/></p:val></p:tav></p:tavLst></p:anim>'
+        ) % (aw, dur, spid, ah, dur, spid)
+
     def _zoomrot_anim(self, spid, dur):
         rot = self.nid()
         return self._zoom_anim(spid, dur) + (
@@ -438,6 +456,8 @@ class Timing:
                 + self._anim_effect(spid, filt, dur)
         elif kind.startswith("wipe_out"):
             body = self._set(spid, "hidden") + self._anim_effect(spid, filt, dur, "out")
+        elif kind == "zoom_out":
+            body = self._zoom_out_anim(spid, dur) + self._set(spid, "hidden")
         elif kind == "disappear":
             body = self._set(spid, "hidden")
         else:
