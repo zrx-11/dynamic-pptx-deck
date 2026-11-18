@@ -1,0 +1,7 @@
+interface:
+  display_name: "高级动态PPT"
+  short_description: "原生可编辑 pptx 的对象动画、转场与版式技巧库"
+  default_prompt: "使用 $dynamic-pptx-deck 帮我完成……"
+
+policy:
+  allow_implicit_invocation: true
