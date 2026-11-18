@@ -10,7 +10,7 @@ python-pptx、PptxGenJS 这类库都不封装对象动画与页面转场；动�
 `ppt/slides/slideN.xml` 的 `<p:timing>`，转场写进 `<p:transition>`。节点写错时 PowerPoint
 会静默丢弃整页动画，而且不同版本（2019 / 365 / WPS）对高级预设的支持程度不一样。
 
-这个仓库把已经反查验证过的结论固定下来：
+这个仓库把经过结构核对与分层验证的结论固定下来：
 
 - 一套形状与文本封装函数，配合动画批次、转场、轴心锁定组合体；
 - 一份效果白名单与弃用清单，只写带真实行为节点的预设；
@@ -37,8 +37,8 @@ dynamic-pptx-deck/
 │   └── openai.yaml            同构配置
 ├── references/
 │   ├── effects-catalog.md    效果目录、行为节点、转场清单、timing 排错、轴心锁定、节奏规则、双端分级
-│   ├── layout-recipes.md      配色基线（含 11 套学术配色）、页型骨架与母题、配方级版式、工程坑位、许可边界
-│   └── source-inventory.md    开源项目台账、历史样稿反查结论、路线选型与素材许可纪律
+│   ├── layout-recipes.md      配色基线（含 11 套学术配色）、页型构成与字号阶梯、页型骨架与母题、配方级版式、工程注意事项、许可边界
+│   └── source-inventory.md    素材许可分级、样稿预设统计归档、路线选型与验证边界
 └── scripts/
     └── dynamic_deck.py       形状/文本/组合体封装、animate、transition、validate、CLI check/demo
 ```
@@ -120,5 +120,5 @@ python3 scripts/dynamic_deck.py check /tmp/demo.pptx
 
 ## License
 
-MIT，见 [LICENSE](LICENSE)。`references/source-inventory.md` 记录了调研过的外部开源项目
-及其协议；本仓库不打包第三方样稿素材。
+MIT，见 [LICENSE](LICENSE)。`references/source-inventory.md` 记录素材许可分级与使用纪律；
+本仓库不打包第三方样稿素材。

@@ -2,7 +2,7 @@
 """
 dynamic_deck.py — 原生可编辑 .pptx 的对象动画 / 转场 / 形状封装模块。
 
-路线约束（来自 PowerPoint ProPlus2019 实机实测 + 原生片反查，详见 references/effects-catalog.md）：
+路线约束（详见 references/effects-catalog.md）：
   - 动画写在每页 slide XML 的 <p:timing> 节点；python-pptx / PptxGenJS 都不封装这层。
   - 三层渐进增强：L0 安全层（2019/365/WPS 通用）、L1 高版本增强（Morph/p14 转场/移植强调，
     不认则静默回退，不丢内容）、L2 排除层（内嵌视频/mediacall、翻书页卷曲、非商业素材）。
@@ -10,8 +10,8 @@ dynamic_deck.py — 原生可编辑 .pptx 的对象动画 / 转场 / 形状封�
     2019 剥离 Choice 后自动走 Fallback。Morph 配对要求：前后两页对应对象同名、同类型。
   - p:animEffect 的 filter 字符串被 PowerPoint 忽略，渲染只由 presetID + presetSubtype 决定；
     不要用 LibreOffice 往返去验证 filter（它原样保留字符串，不做解释）。
-  - 【实测】= 已在目标机 2019 放映确认；【移植】= 结构取自原生生成片反查、带真实行为节点，
-    未在目标机复测；【弃用】= 已确认不生效，不在白名单内。
+  - 状态标签：【实测】= 目标机放映确认；【移植】= 带真实行为节点、未在目标机复测；
+    【弃用】= 已确认不生效，不在白名单内。
 
 CLI:
     python3 dynamic_deck.py check <deck.pptx>   # 结构体检
@@ -51,8 +51,8 @@ KINDS_LAYER = {
     "wipe_out_u": "L0", "wipe_out_d": "L0",
 }
 
-# kind -> (presetClass, presetID, presetSubtype, filter 字符串仅 LO 参考, 实测状态)
-# 方向位标记：1=上 2=右 4=下 8=左（取自原生片反查真值）
+# kind -> (presetClass, presetID, presetSubtype, filter 字符串仅 LO 参考, 状态标签)
+# 方向位标记：1=上 2=右 4=下 8=左（方向位定义）
 KINDS = {
     # —— 入场【实测】 ——
     "fade":    ("entr", 10, 0, "fade", "实测"),

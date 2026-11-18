@@ -1,79 +1,57 @@
-# 开源项目台账与样稿拆解记录
+# 素材许可与选型纪律
 
-> 本文件是历史调研与反查结论的存档；技能交付不依赖本机会话路径。公开使用时只引用
-> 结论、协议状态与许可纪律，不打包样稿素材。
+> 本文件规定素材使用边界、路线选型与验证边界。样稿中的示例文字、占位图与品牌资产一律不沿用；
+> 只抽取结构、配色、字体层级与装饰手法，重画为原生形状。
 
-## 1. 开源项目台账（调研快照，2026-11）
+## 1. 许可分级规则
 
-| 项目 | 协议 | 状态 | 可吸收内容 |
-|---|---|---|---|
-| hugohe3/ppt-master | MIT | 可用 | 生命周期分类（静态/入场/强调/退出）、节奏编排规范 |
-| op7418/guizang-ppt-skill | AGPL-3.0 | 注意传染 | 结构思路可参考，产物需隔离协议 |
-| zarazhangrui/frontend-slides | MIT | 可用 | Web 版式思路（本路线不交付 Web） |
-| Anionex/banana-slides | AGPL-3.0 | 注意传染 | 同上 |
-| presenton | Apache-2.0 | 可用 | 内容→版式映射思路 |
-| arcsin1/Oh My PPT | Apache-2.0 | 可用 | 章节骨架 |
-| NestMold/notrat-ppt-studio-skill | MIT（star 低） | 自担风险 | 本地脚本组织方式 |
-| GordenSun/GordenPPTSkill | 素材仅限个人研究 | **不可用于公开演示** | 只看技法，不搬素材 |
-| wzpan/BeamerStyleSlides | MIT | 可用 | 学术排版与版式复刻思路 |
-| addsumtech/slides_maker | MIT | 可用 | 生成流程组织 |
-| atomiechen/THU-PPT-Theme | CC BY-NC-SA 4.0 | **非商业** | 配色与版式思路参照，不搬资产 |
-| HY-hue113/ppt-effects | MIT | 可用 | 17 个动效配方骨架、Morph 配对帧序列、11 套学术配色、工程坑位；参考件照片不打包 |
+| 许可类别 | 处理方式 |
+|---|---|
+| MIT / Apache-2.0 | 结构思路、配色与版式骨架可参照；产物不传染 |
+| AGPL-3.0 | 思路可参考；若直接复用代码或资产，产物需隔离协议，默认不打包其代码 |
+| CC BY-NC-SA 4.0 等非商业 / 署名-相同方式共享 | 公开演示稿不搬入其版式资产、照片与主题文件，只参照思路 |
+| 仅限个人研究 / 无明确授权的素材 | 不进入公开交付稿；只看技法，不搬素材 |
 
-另检索过未深入采用：reveal.js、Slidev、ts-pptx、Achuan-2/SlideSCI、
-Binaryify/open-kimi-ppt-skill。
+## 2. 素材使用纪律
 
-## 2. 本地样稿拆解结论（历史反查）
+- 竞赛、答辩、公开汇报稿：只使用可自由复用的规范思路与原生重画形状；
+  不打包第三方模板素材、照片、图标与主题文件。
+- 样稿示例文字、占位图一律不沿用；缺素材时用几何形、纯色渐变底或【】占位。
+- 不编造事实、经历、证书与统计数字；无真实数据时不做 KPI 数字带。
+- 全篇无 emoji；语义图标用几何形状或编号承担。
 
-- 批量静态样稿中真带动画的占比很低；空壳 timing 假阳性判定：只含 tmRoot 无效果节点
-  不算带动画。
-- 三套带动画 deck 预设统计：
-  - deck1（21 页）：entr 42/0×19、10/0×19、2/4×5、2/8×4、53/16×1；
-    beh set48 / animEffect39 / anim58；转场 fade×42。
-  - deck2（30 页）：22/1×36、22/8×26、42/0×21、14/10×20、10/0×18、16/37×16、
-    22/4×15、16/21×12、2/4×8、21/1×4、22/2×4、16/42×3；
-    beh set192 / animEffect184 / anim60 / animScale1。
-  - deck3（30 页）：42/0×36、22/8×34、22/4×24、22/1×19、16/21×19、22/2×14、
-    14/10×14、16/37×8、21/1×5、16/42×5、2/4×5、6/32×3；
-    beh set210 / animEffect202 / anim98。
-- 注意：14/10、16/37、16/21、16/42、21/1、6/32 等预设在本技能白名单外，
-  缺行为节点或已判空壳，不写回模块。
-- 深色技术风模板：143 个效果节点；emph 35 是隐藏-显现闪烁（discrete str anim，
-  visibility hidden→visible，grpId=1）；exit 1 是 set hidden；path 42 用 animMotion
-  相对路径；fly 2/2 结构为 set 可见 + 两条 anim(ppt_x/ppt_y)，cTn 带 decel=71429。
-- 四套追加动态样稿结论：
-  - 蓝图：全屏照片底 + 同心环/辐条叠加，中心圆盘裁切照片；无转场；内嵌 mediacall 不搬。
-  - 红盘：红金藏青配色；path 42 用量最大，fade/wipe/zoom/fly 次之；p159:morph 转场
-    归入 L1；旧版 preset 23/16 带真实 w/h 缩放节点，等价模块 `zoom`。
-  - 紫色：紫夜全屏底 + 圆环十字准星；仅 fly_up；转场同为 p159:morph。
-  - 深绿山林：深青碧 `#437477/#549195` 配色；wipe 主导，path 35/63/64 带 animMotion；
-    emph 6/0 即 grow_once；entr 23/272 空壳不移植；转场同为 p159:morph。
+## 3. 路线选型与验证边界
 
-## 2b. ppt-effects 配方库反查（2026-11-19）
+- 交付原生 `.pptx`；按 L0 / L1 / L2 三层全量写入（见 effects-catalog 第 10 节），
+  弱引擎静默回退，不丢内容。
+- Morph 归入 L1：mc:Choice/Fallback 包裹、兜底 fade，仅在 365 / 新版 WPS 上可能生效；
+  翻书页 / 卷曲为 Keynote / WPS 专属，2019 无对应 XML，列入 L2。
+- 离线环境只有 LibreOffice 静态渲染能力，只能核对版式与 XML 结构，不代表放映动画；
+  移植类与 L1 效果须在目标软件 F5 复核后再标「实测」。
 
-- 仓库 `HY-hue113/ppt-effects`（MIT，v1.2.0）：17 个动效配方 + palette/image/text/template/layout 工具区；
-  48 份参考 pptx、865 页。
-- 节点统计：转场 morph 388 / fade 391；行为节点 set 251、anim 186、animEffect 149、animMotion 45、
-  animRot 12、animScale 8；无 animColor。
-- 可吸收：Morph 三帧配对序列（隐藏态→落位→停留帧）、越界准备帧、双份文本隐藏、媒体分组替换；
-  11 套学术配色；轮播 A/B/C/D 图位规则；工程坑位（见 layout-recipes 第 9、10 节）。
-- 判死/不收录：emph 3/2、emph 19/0、entr 18/12、exit 16/37 空壳；exit 38/0 字符级 iterate 旋转退出
-  暂不封装；参考件照片与占位文字不沿用。
-- 「感觉鹿PPT」（B站 mid 290937690 / 抖音 25623673682，八年视觉设计师）：云主机仅可取公开标题与标签，
-  视频本体受风控无法逐帧拆解；可辨识主题为丝滑切换（平滑/路径替代）、创意文字过渡、镂空金边开场、
-  渐变过渡、破格立体、目录几何构图。手法归类到现有形状 + 动画能力，未新增预设。
+## 4. 样稿预设统计归档
 
-## 3. 路线选型记录
+> 下列为大批量样稿 OOXML 结构统计结果，用于判断常用预设与转场的使用频率；
+> 空壳与高风险预设以 effects-catalog 第 4 节清单为准。
 
-- 交付原生 `.pptx`；不再锁定单一放映版本，按 L0/L1/L2 三层全量写入（见 effects-catalog 第 10 节），
-  弱引擎静默回退。
-- Morph 在 2019 ProPlus 另存时补间被剥离；归入 L1，mc:Choice/Fallback 包裹、兜底 fade，
-  仅在 365/新版 WPS 上可能生效；翻书页/卷曲为 Keynote/WPS 专属，2019 无对应 XML，列入 L2。
-- 验证边界：离线 Linux 环境只有 LibreOffice 静态渲染能力，只能核对版式与 XML 结构，
-  不代表 PowerPoint 放映动画；移植效果须在实机 F5 复核后再标「实测」。
+### 4.1 高频入场/强调预设（class/id/subtype，按出现次数降序）
 
-## 4. 素材许可使用纪律
+`entr 10/0` 淡入、`entr 53/16` 缩放淡入、`entr 22/8` 左擦除、`entr 42/0` 路径、
+`entr 2/4` 上滑入、`entr 22/4` 上向下擦除、`entr 2/8` 左滑入、`entr 2/2` 右滑入、
+`entr 22/1` 下向上擦除、`entr 22/2` 右向左擦除、`entr 31/0` 缩放回正、`entr 2/1` 下滑入、
+`entr 47/0` 下落入场、`emph 8/0` 陀螺旋、`emph 6/0` 单次放大、`entr 37/0` 弹入、
+`emph 26/0` 放大回弹。
 
-- 公开演示稿：只使用 MIT/Apache 规范思路与原生重画形状；
-  不直接打包 Gorden/WPS 素材、不复制 CC BY-NC-SA 主题的版式资产。
-- 样稿示例文字、占位图一律不沿用；只抽结构、配色、字体层级、装饰手法。
+`entr 12/8`、`entr 16/21`、`entr 14/10`、`entr 12/1`、`entr 12/4`、`entr 45/0`、
+`entr 41/0`、`entr 21/1`、`entr 16/42`、`entr 16/37` 等在样稿中出现频次不低，
+但缺行为节点或已判空壳，不写回模块。
+
+### 4.2 高频转场（按出现次数降序）
+
+fade、random、pull、push、gallery、wipe、prstTrans、prism、flip、switch、doors、
+comb、randomBar、cover；裸 `transition` 包装层对应 Morph / AlternateContent 结构。
+
+### 4.3 页型与图片密度
+
+卡片并列、时间线、目录、表格、纯文字内容、结尾、封面、章节过渡八类页型的占比、
+形状构成与图片密度见 layout-recipes 第 1e 节。
