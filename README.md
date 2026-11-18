@@ -16,6 +16,7 @@ python-pptx、PptxGenJS 这类库都不封装对象动画与页面转场；动�
 - 一份效果白名单与弃用清单，只写带真实行为节点的预设；
 - 一套三层渐进适配模型：安全层双端通用，高版本增强不认则静默回退，排除层不进稿；
 - 五套主配色基线 + 11 套学术配色，通用页型骨架与配方级版式（封面、目录、卡片、双栏、时间线、表格、Q&A、数字带、轮播、模糊大字页、结尾）；
+- 17 套效果配方：页数规则、素材门槛、图层结构、移植约束与跨配方通用规则。
 
 ## 不做什么
 
@@ -38,7 +39,8 @@ dynamic-pptx-deck/
 ├── references/
 │   ├── effects-catalog.md    效果目录、行为节点、转场清单、timing 排错、轴心锁定、节奏规则、双端分级
 │   ├── layout-recipes.md      配色基线（含 11 套学术配色）、页型构成与字号阶梯、页型骨架与母题、配方级版式、工程注意事项、许可边界
-│   └── source-inventory.md    素材许可分级、样稿预设统计归档、路线选型与验证边界
+│   ├── source-inventory.md    素材许可分级、样稿预设统计归档、路线选型与验证边界
+│   └── effect-recipes.md      17 套效果配方（页数规则、素材门槛、图层结构、移植约束、跨配方通用规则）
 └── scripts/
     └── dynamic_deck.py       形状/文本/组合体封装、animate、transition、validate、CLI check/demo
 ```
@@ -97,9 +99,11 @@ python3 scripts/dynamic_deck.py check /tmp/demo.pptx
 - 入场/退出：`(name, kind, delay_ms, dur_ms)`；退出含 `disappear`、`zoom_out`、`wipe_out_l/r/u/d`
 - 自转：`(name, "spin", delay, dur[, by])`
 - 放大回弹 / 单次放大：`(name, "grow" | "grow_once", delay, dur)`
-- 闪烁 / 路径漂移：`(name, "blink" | "path", delay, dur[, ...])`
+- 闪烁：`(name, "blink", delay, dur)`
+- 路径漂移：直线 `(name, "path", delay, dur, dx, dy)`；折线巡游 `(name, "path", delay, dur, 0, 0, "M 0 0 L x y …")`
 
-转场：`transition(slide, kind)`，清单见 `references/effects-catalog.md` 第 5 节。
+转场：`transition(slide, kind, adv_ms=毫秒数, on_click=False)`；`adv_ms` 为自动换片间隔，
+清单见 `references/effects-catalog.md` 第 5 节。
 
 ## 三层适配
 

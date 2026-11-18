@@ -1,6 +1,7 @@
 ---
 name: dynamic-pptx-deck
-description: "把任意已有内容（文档、报告、笔记、大纲、旧 pptx 原稿）做成带动画与转场的原生可编辑 .pptx。用于在 PowerPoint 2019/365 与 WPS 演示中编排入场/强调/退出/路径动画、页面转场与商务版式；覆盖五套主基线 + 11 套学术配色、通用页型骨架与母题、Morph 配对帧配方、三层渐进增强适配（L0 安全层 / L1 高版本增强 / L2 排除层）、timing 树结构排错与效果弃用清单。"
+display_name: "高级动态PPT"
+description: "把任意已有内容（文档、报告、笔记、大纲、旧 pptx 原稿）做成带动画与转场的原生可编辑 .pptx。用于在 PowerPoint 2019/365 与 WPS 演示中编排入场/强调/退出/路径动画、页面转场与商务版式；覆盖五套主基线 + 11 套学术配色、通用页型骨架与母题、17 套效果配方、Morph 配对帧、三层渐进增强适配（L0 安全层 / L1 高版本增强 / L2 排除层）、timing 树结构排错与效果弃用清单。"
 ---
 
 # 高级动态PPT
@@ -44,10 +45,12 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
   - 入场/退出：`(name, kind, delay_ms, dur_ms)`；退出含 `disappear`、`zoom_out`、`wipe_out_l/r/u/d`
   - 强调自转：`(name, "spin", delay, dur[, by])`；小角度钟摆回摆：`(name, "swing", delay, dur[, by])`
   - 放大回弹：`(name, "grow", delay, dur)`；单次放大：`(name, "grow_once", delay, dur)`
-  - 闪烁：`(name, "blink", delay, dur)`；路径漂移：`(name, "path", delay, dur, dx, dy)`
+  - 闪烁：`(name, "blink", delay, dur)`；路径漂移：直线 `(name, "path", delay, dur, dx, dy)`，
+    折线巡游 `(name, "path", delay, dur, 0, 0, "M 0 0 L x y …")`
+  - 自动换片：`transition(slide, kind, adv_ms=2000, on_click=False)`
 
 转场：`transition(slide, kind)`；可用清单、观感分组与选型纪律见 `references/effects-catalog.md` 第 5 节，
-页型分工表见 `references/layout-recipes.md` 第 7b 节。
+页型分工表见 `references/layout-recipes.md` 第 7b 节；17 套完整效果配方见 `references/effect-recipes.md`。
 体检：`validate(path)`；CLI：`python3 dynamic_deck.py check <deck.pptx>` / `demo <out.pptx>`。
 
 ## 效果分级原则
@@ -65,3 +68,4 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 - `references/effects-catalog.md`：效果目录、行为节点、转场清单、timing 树结构与排错顺序、方向位标记、轴心锁定、节奏规则。
 - `references/layout-recipes.md`：配色字体基线（含 11 套学术配色）、页型构成与字号阶梯、通用页型骨架与母题、配方级版式（轮播/扇形/六边形/模糊大字等）、深色技术风装饰手法、环境动效母题、跨页流畅感编排、工程注意事项与许可边界。
 - `references/source-inventory.md`：素材许可分级、样稿预设统计归档、路线选型与验证边界。
+- `references/effect-recipes.md`：17 套效果配方（页数规则、素材门槛、图层结构、移植约束、跨配方通用规则）。

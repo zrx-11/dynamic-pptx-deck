@@ -524,20 +524,21 @@ class Timing:
                 '</p:tavLst></p:anim></p:childTnLst></p:cTn></p:par>'
                 ) % (eff, nt, delay, inner, dur, spid)
 
-    def _path(self, spid, delay, dur, dx, dy, nt):
+    def _path(self, spid, delay, dur, dx, dy, nt, path=None):
         eff = self.nid()
         inner = self.nid()
+        motion_path = path if path else "M 0 0 L %.5f %.5f" % (dx, dy)
         return ('<p:par><p:cTn id="%d" presetID="42" presetClass="path" presetSubtype="0" '
                 'repeatCount="indefinite" autoRev="1" fill="hold" grpId="0" nodeType="%s">'
                 '<p:stCondLst><p:cond delay="%d"/></p:stCondLst><p:childTnLst>'
-                '<p:animMotion origin="layout" path="M 0 0 L %.5f %.5f" pathEditMode="relative" '
+                '<p:animMotion origin="layout" path="%s" pathEditMode="relative" '
                 'rAng="0" ptsTypes="AA"><p:cBhvr>'
                 '<p:cTn id="%d" dur="%d" fill="hold" repeatCount="indefinite" autoRev="1"/>'
                 '<p:tgtEl><p:spTgt spid="%d"/></p:tgtEl>'
                 '<p:attrNameLst><p:attrName>ppt_x</p:attrName><p:attrName>ppt_y</p:attrName></p:attrNameLst>'
                 '</p:cBhvr><p:rCtr x="0" y="0"/></p:animMotion>'
                 '</p:childTnLst></p:cTn></p:par>'
-                ) % (eff, nt, delay, dx, dy, inner, dur, spid)
+                ) % (eff, nt, delay, motion_path, inner, dur, spid)
 
     def build(self, groups, auto=0):
         root = self.nid()
@@ -574,7 +575,8 @@ class Timing:
                     parts.append(self._blink(spid, item[2], item[3], nt))
                     bld.append('<p:bldP spid="%d" grpId="0"/>' % spid)
                 elif kind == "path":
-                    parts.append(self._path(spid, item[2], item[3], item[4], item[5], nt))
+                    path = item[6] if len(item) > 6 else None
+                    parts.append(self._path(spid, item[2], item[3], item[4], item[5], nt, path=path))
                     bld.append('<p:bldP spid="%d" grpId="0"/>' % spid)
                 else:
                     _, k, d, du = item
@@ -667,8 +669,11 @@ _P14 = {"doors", "gallery", "flip", "switch", "prism", "conveyor", "window",
 _L1_TRANS = _P14 | {"morph"}
 
 
-def transition(slide, kind):
-    """添加换页转场。L1 预设（p14 / morph）在弱引擎不认时回退，不影响内容。"""
+def transition(slide, kind, adv_ms=None, on_click=True):
+    """添加换页转场。L1 预设（p14 / morph）在弱引擎不认时回退，不影响内容。
+
+    adv_ms: 自动换片间隔毫秒；给值后到点自动翻页。on_click=False 时禁用单击换片。
+    """
     if kind not in _TRANSITIONS and kind != "morph":
         raise ValueError("未知转场 %r，可用: %s" % (
             kind, ", ".join(sorted(_TRANSITIONS))))
@@ -687,6 +692,11 @@ def transition(slide, kind):
     else:
         xml = _TRANSITIONS[kind] % nsdecls("p")
     frag = etree.fromstring(xml)
+    for tr in frag.iter(qn("p:transition")):
+        if adv_ms is not None:
+            tr.set("advTm", str(int(adv_ms)))
+        if not on_click:
+            tr.set("advClick", "0")
     clr = slide._element.find(qn("p:clrMapOvr"))
     (clr if clr is not None else slide._element).addnext(frag)
 
