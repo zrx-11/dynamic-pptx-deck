@@ -25,8 +25,8 @@
 - **Morph 分层结论**：PowerPoint 2019 另存后 `p14:morph`/`p159:morph` 补间整段被剥离，
   只剩空 transition；365 / 新版 WPS 才可能执行。按三层模型 Morph 归入 L1：用
   `mc:AlternateContent` 包裹，`mc:Choice` 写 `p159:morph`，`mc:Fallback` 写 `fade`，
-  弱引擎自动走兜底。Morph 配对要求前后两页对应对象同名、同类型、数量一致；不要把 Morph
-  作为对象首现的唯一手段。
+  弱引擎自动走兜底。Morph 配对要求前后两页对应对象同名、同类型、数量一致；对象名以 `!!`
+  开头可强制配对（允许跨类型，如圆变方、图变图、字变字）；不要把 Morph 作为对象首现的唯一手段。
 - 2019 没有翻书页 / 页面卷曲转场（Keynote/WPS 专属）；最接近透视/三维的只有 doors 类
   p14 转场，不认时回退无转场、不伤内容。
 - `p:animEffect@filter` 字符串被 PowerPoint 完全忽略，渲染只由 `presetID + presetSubtype`
@@ -74,6 +74,10 @@
 | `grow_once` | 6 | 单次放大到 110%，不回弹 | animScale by=110000，dur=250，无 autoRev |
 | `blink` | 35 | 隐藏-显现闪烁 | discrete str anim，visibility hidden→visible，grpId=1 |
 | `path` | 42 | 相对路径往返漂移 | animMotion，origin=layout，relative，indefinite + autoRev |
+| `swing` | 8 | 小角度钟摆回摆 | animRot by 默认 36°，repeatCount=indefinite + autoRev=1；仅左右往返，不整圈自转 |
+
+> `swing` 即社区所称「钟摆」：陀螺旋强调 + 自动翻转 + 重复到页末，是**页内动画，不是转场**；
+> PowerPoint 无原生钟摆转场。整圈自转用 `spin`，小幅度呼吸摆动用 `swing`。
 
 > 路径族还存在 preset 35/63/64，均带 animMotion 真实节点，与 42 同族；
 > 模块暂只封装 42，需要时按 animMotion 结构扩展。
@@ -114,7 +118,14 @@
 
 ECMA 基础转场（2019 通用）：`fade`、`push_l`、`push_r`、`cover_l`、`cover_r`、
 `wipe_l`、`wipe_r`、`wipe_u`、`wipe_d`、`split_h`、`pull`、`blinds_v`、`blinds_h`、
-`comb`、`random`、`checker`、`wheel`、`circle`、`zoom_t`、`randombar_v`。
+`comb`、`random`、`checker`、`wheel`、`wheel4`、`wheel8`、`wedge`、`circle`、
+`zoom_t`、`randombar_v`。
+
+- `wheel` 辐条数由 `spokes` 属性决定：`wheel`=1 辐、`wheel4`=4 辐、`wheel8`=8 辐；
+  原生轮辐只出规整放射状边界，做不出不规则扇面。
+- `wedge` 楔入：单个扇形绕一圈扫过页面；`circle` 圆形：新页从画面中心涨开。
+- 遮罩式转场与版面遮罩是两层：转场只发生在切页瞬间；内容嵌在圆内、圆外压暗的常驻圆环
+  属于版面元素（见 layout-recipes 第 7b/9 节），二者不要混为一谈。
 
 p14 预设转场（L1，2010+；不认则回退无转场，不伤内容）：`doors`、`gallery`、`flip`、
 `switch`、`prism`、`conveyor`、`window`、`honeycomb`、`reveal`、`ripple`、`vortex`、
@@ -230,10 +241,11 @@ PowerPoint 2019 / 365 与 WPS 演示之间互通稳定；高级预设、p14 现�
 ### 10.1 L0 安全层（2019 / 365 / WPS 均按标准 DrawingML 解析）
 
 - 入场：`fade`、`fly_up/l/r/d`、`wipe_l/r/u/d`、`appear`、`zoom`。
-- 强调：`spin`、`grow`、`blink`、`path`。
+- 强调：`spin`、`swing`、`grow`、`blink`、`path`。
 - 退出：`disappear`、`wipe_out_l/r/u/d`。
 - 转场：ECMA 基础组——`fade`、`push_l/r`、`cover_l/r`、`wipe_l/r/u/d`、`split_h`、
-  `pull`、`blinds_v/h`、`comb`、`random`、`checker`、`wheel`、`circle`、`zoom_t`、`randombar_v`。
+  `pull`、`blinds_v/h`、`comb`、`random`、`checker`、`wheel`、`wheel4`、`wheel8`、
+  `wedge`、`circle`、`zoom_t`、`randombar_v`。
 
 ### 10.2 L1 高版本增强（写入同稿；不认则回退，不伤内容）
 
@@ -272,7 +284,8 @@ PowerPoint 2019 / 365 与 WPS 演示之间互通稳定；高级预设、p14 现�
 2. **越界准备帧**：下一段要推入的装饰/面板先放在画布外（负坐标或 y=-50cm），目标帧再推入；
    画布外元素是 Morph 推拉用的，**不能删**，只能改填充指向。
 3. **配对纪律**：前后两页对应对象同名、同类型、数量一致；Morph 位移的对象不要再叠加页内动画，
-   否则两套时间轴打架。
+   否则两套时间轴打架。需要跨类型配对（圆变方、图变图、字变字）时，配对对象名以 `!!` 开头，
+   可强制 Morph 按同名匹配，不再要求形状类型一致。
 4. **时长与节奏**：常用 1.5–2 秒（p14:dur 1500–2000）；需要自动翻页时在页面
    换片时间上设置，不要靠动画时长硬凑。
 5. **重影坑**：同一段文字若有大小两份文本框，副本必须移出画布（y=-40cm）隐藏，否则成稿出现

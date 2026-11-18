@@ -44,7 +44,7 @@ KINDS_LAYER = {
     "fly_r": "L0", "fly_l": "L0", "fly_d": "L0",
     "wipe_r": "L0", "wipe_u": "L0", "wipe_d": "L0",
     "appear": "L0", "zoom": "L0",
-    "spin": "L0", "grow": "L0", "blink": "L0", "path": "L0",
+    "spin": "L0", "grow": "L0", "blink": "L0", "path": "L0", "swing": "L0",
     "zoom_rot": "L1", "bounce_up": "L1", "drop_in": "L1", "grow_once": "L1",
     "zoom_out": "L1",
     "disappear": "L0", "wipe_out_l": "L0", "wipe_out_r": "L0",
@@ -72,6 +72,7 @@ KINDS = {
     "drop_in": ("entr", 47, 0, "fade", "移植"),
     # —— 强调【实测】 ——
     "spin":    ("emph", 8,  0, "spin", "实测"),
+    "swing":   ("emph", 8,  0, "spin", "移植"),
     # —— 强调【移植】 ——
     "grow":    ("emph", 26, 0, "grow", "移植"),
     "grow_once": ("emph", 6, 0, "grow", "移植"),
@@ -468,19 +469,20 @@ class Timing:
                 '</p:childTnLst></p:cTn></p:par>'
                 ) % (eff, preset, cls, subtype, nt, delay, body)
 
-    def _spin(self, spid, dur, delay, nt, by=21600000, auto=False):
+    def _spin(self, spid, dur, delay, nt, by=21600000, auto=False, auto_rev=False):
         eff = self.nid()
         inner = self.nid()
         rep = ' repeatCount="indefinite"' if auto else ''
+        rev = ' autoRev="1"' if auto_rev else ''
         return ('<p:par><p:cTn id="%d" presetID="8" presetClass="emph" presetSubtype="0" '
                 'fill="hold" grpId="0" nodeType="%s"%s>'
                 '<p:stCondLst><p:cond delay="%d"/></p:stCondLst><p:childTnLst>'
                 '<p:animRot by="%d"><p:cBhvr>'
-                '<p:cTn id="%d" dur="%d" fill="hold"%s/>'
+                '<p:cTn id="%d" dur="%d" fill="hold"%s%s/>'
                 '<p:tgtEl><p:spTgt spid="%d"/></p:tgtEl>'
                 '<p:attrNameLst><p:attrName>r</p:attrName></p:attrNameLst>'
                 '</p:cBhvr></p:animRot></p:childTnLst></p:cTn></p:par>'
-                ) % (eff, nt, rep, delay, by, inner, dur, rep, spid)
+                ) % (eff, nt, rep, delay, by, inner, dur, rep, rev, spid)
 
     def _grow(self, spid, delay, dur, nt):
         eff = self.nid()
@@ -557,6 +559,11 @@ class Timing:
                                             by=item[4] if len(item) > 4 else 21600000,
                                             auto=(gi < auto)))
                     bld.append('<p:bldP spid="%d" grpId="0" animBg="1"/>' % spid)
+                elif kind == "swing":
+                    parts.append(self._spin(spid, item[3], item[2], nt,
+                                            by=item[4] if len(item) > 4 else 3600000,
+                                            auto=True, auto_rev=True))
+                    bld.append('<p:bldP spid="%d" grpId="0" animBg="1"/>' % spid)
                 elif kind == "grow":
                     parts.append(self._grow(spid, item[2], item[3], nt))
                     bld.append('<p:bldP spid="%d" grpId="0"/>' % spid)
@@ -619,6 +626,9 @@ _TRANSITIONS = {
     "random":  '<p:transition %s spd="med"><p:random/></p:transition>',
     "checker": '<p:transition %s spd="med"><p:checker/></p:transition>',
     "wheel":   '<p:transition %s spd="med"><p:wheel spokes="1"/></p:transition>',
+    "wheel4":  '<p:transition %s spd="med"><p:wheel spokes="4"/></p:transition>',
+    "wheel8":  '<p:transition %s spd="med"><p:wheel spokes="8"/></p:transition>',
+    "wedge":   '<p:transition %s spd="med"><p:wedge/></p:transition>',
     "circle":  '<p:transition %s spd="med"><p:circle/></p:transition>',
     "zoom_t":  '<p:transition %s spd="med"><p:zoom/></p:transition>',
     "randombar_v": '<p:transition %s spd="med"><p:randomBar dir="vert"/></p:transition>',
