@@ -24,10 +24,13 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 2. 读 `references/layout-recipes.md`：选定配色基线（A 浅色商务 / B 深色科技 / C 红金 /
    D 紫夜 / E 深绿青碧，或 11 套学术配色），按内容选版式骨架（封面、目录、章节过渡、卡片、双栏、
    时间线、表格、Q&A、数字带、轮播、模糊大字页、结尾）。
-3. 路线选型：参考件中已有满足需求的高冲击效果页、且几何层级时序从零重建会失真时，
-   优先用 `scripts/slide_importer.py` 整页导入，复用其 timing/transition，导入后只做
-   文字替换与页序编排；几何简单的页面走 `scripts/dynamic_deck.py` 原生构建。两条路线
-   可同稿混用，选型判断、前置检查与分工边界见 `references/import-guide.md` 第 1、7 节。
+3. 路线选型：素材进入目标稿前先过适配检查，按目标基调、配色族、槽位与背景类型判定
+   路线（整页导入 / 抽结构原生重建 / 阻断，判据见 `references/import-guide.md` 第 1 节）。
+   参考件中已有满足需求的高冲击效果页、几何层级时序从零重建会失真、且冲突有确定性
+   消解路径时，优先用 `scripts/slide_importer.py` 整页导入，复用其 timing/transition，
+   导入后只做文字替换与页序编排；`useBgFill` 依赖重、烘焙像素主导或形状必须大改的页面
+   走 `scripts/dynamic_deck.py` 原生构建。两条路线可同稿混用，适配检查、分工边界与
+   阻断口径见 `references/import-guide.md` 第 1、3、9 节。
 4. 先按页型排出转场分工表：主轴方向全稿统一，转场类型按页型轮换、相邻页不堆叠同一预设
    （分工表见 `references/layout-recipes.md` 第 7b 节）；再生成脚本 `build.py` 接入
    `scripts/dynamic_deck.py`：用封装函数画形状与文本，用 `animate` 编排动画批次，
@@ -62,13 +65,17 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 仅用标准库做文件级 zip 手术，不依赖 python-pptx；整页复制参考件的 slide part、rels 与媒体，
 导入后只做文字替换与页序编排。完整口径见 `references/import-guide.md`。
 
+- `TargetProfile(tone: str, bg_color: str, palette: dict, fonts: dict | None = None, baked_declarations: list | None = None, strict: bool = False)`：目标对象画像；`tone` 取 dark/light，`palette` 角色为 bg/card/ink/mut/accent1/accent2/accent3/line；`baked_declarations` 条目为 `{"media": partname 或 sha1, "baked_text": str, "action": replace|keep|block}`；`strict` 时未消解警告升级阻断；含 `to_dict` / `from_dict`。
 - `SlideImporter(dst_pptx: str)`：目标包构造器。
+  - `check_slide(src_pptx, src_index=0, target=None, target_texts=None) -> dict`：对照目标 Profile 出适配报告（槽位、基调配色、媒体背景、烘焙像素四维度），报告先行。
+  - `adapt_slide(src_pptx, src_index=0, target=None, text_map=None, recolor_map=None, media_map=None, background=None, strict=None) -> int`：按消解结果适配写入，返回新页索引；target 必传（传 None 抛错），未消解冲突时写入前阻断。
   - `import_slide(src_pptx: str, src_index: int = 0, text_map: dict | None = None, by_name: bool = False) -> int`：导入参考页，返回新页索引；可随导入一并传入文字映射。
   - `replace_text(slide_index: int, mapping: dict, by_name: bool = False) -> None`：替换指定页文本；默认有序整串匹配，`by_name=True` 按形状名替换。
   - `reorder(order: list[int]) -> None`：按索引列表重排页序。
   - `save(path: str | None = None) -> None`：落盘；不传路径回写目标包。
-- `inspect(src_pptx: str, src_index: int = 0) -> dict`：读取参考页结构快照（文本槽、媒体、主题色、关系类型）。
-- CLI：`inspect --src X.pptx [--index N]`；`import --src X.pptx --index N --dst D.pptx [--out O.pptx] [--map map.json] [--by-name]`；`replace --dst D.pptx --index N --map map.json [--by-name] [--out O.pptx]`；`reorder --dst D.pptx --order 0,3,1,2 [--out O.pptx]`。
+- `inspect(src_pptx: str, src_index: int = 0) -> dict`：读取参考页结构快照（文本槽、媒体、主题色、关系类型，及 `background` / `useBgFill` / `baked_candidates` / `colors`）。
+- 模块级工具：`recolor_srgb`（重着色并保留颜色变换）、`luminance`（亮度判定基调）、`hue_family`（色相族归并）、`estimate_slot`（槽位容量与溢出估算）、`center_crop`（居中裁切 srcRect）、`detect_background`（背景类型识别）、`find_bg_fill_shapes`（背景填充形状清单）。
+- CLI：`inspect --src X.pptx [--index N]`；`check --src X.pptx [--index N] [--profile profile.json] [--target-texts texts.json]`；`adapt --src X.pptx [--index N] --dst D.pptx --profile profile.json [--out O.pptx] [--map map.json] [--recolor recolor.json] [--media media.json] [--strict]`；`import --src X.pptx --index N --dst D.pptx [--out O.pptx] [--map map.json] [--by-name]`；`replace --dst D.pptx --index N --map map.json [--by-name] [--out O.pptx]`；`reorder --dst D.pptx --order 0,3,1,2 [--out O.pptx]`。
 
 ## 效果分级原则
 
@@ -86,4 +93,4 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 - `references/layout-recipes.md`：配色字体基线（含 11 套学术配色）、页型构成与字号阶梯、通用页型骨架与母题、配方级版式（轮播/扇形/六边形/模糊大字等）、深色技术风装饰手法、环境动效母题、跨页流畅感编排、工程注意事项与许可边界。
 - `references/source-inventory.md`：素材许可分级、样稿预设统计归档、路线选型与验证边界。
 - `references/effect-recipes.md`：17 套效果配方（页数规则、素材门槛、图层结构、移植约束、跨配方通用规则）。
-- `references/import-guide.md`：跨包幻灯片整页导入口径——选型判断、前置 inspect 检查、导入处理范围、主题色解析、文字替换两种模式、组装与路线混用边界、导入后验证清单与接口/CLI 参考。
+- `references/import-guide.md`：跨包幻灯片导入口径——适配前置总原则与三路线判定（整页导入 / 原生重建 / 阻断）、inspect 结构快照、check_slide 四维度适配检查、adapt_slide 适配动作、导入处理范围、主题色解析与重着色、文字替换两种模式、组装与路线混用边界、验证纪律与接口/CLI 参考。
