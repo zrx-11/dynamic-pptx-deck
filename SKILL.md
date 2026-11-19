@@ -1,7 +1,7 @@
 ---
 name: dynamic-pptx-deck
 display_name: "高级动态PPT"
-description: "把任意已有内容（文档、报告、笔记、大纲、旧 pptx 原稿）做成带动画与转场的原生可编辑 .pptx。用于在 PowerPoint 2019/365 与 WPS 演示中编排入场/强调/退出/路径动画、页面转场与商务版式；覆盖五套主基线 + 11 套学术配色、通用页型骨架与母题、17 套效果配方、Morph 配对帧、三层渐进增强适配（L0 安全层 / L1 高版本增强 / L2 排除层）、timing 树结构排错与效果弃用清单；支持跨包幻灯片整页导入，复用参考件现成效果页的动画与转场，导入后仅做文字替换与页序编排。"
+description: "把任意已有内容（文档、报告、笔记、大纲、旧 pptx 原稿）做成带动画与转场的原生可编辑 .pptx。用于在 PowerPoint 2019/365 与 WPS 演示中编排入场/强调/退出/路径动画、页面转场与商务版式；覆盖五套主基线 + 11 套学术配色、通用页型骨架与母题、17 套效果配方、Morph 配对帧、三层渐进增强适配（L0 安全层 / L1 高版本增强 / L2 排除层）、timing 树结构排错、容器—文字配对时序核对与效果弃用清单；支持跨包幻灯片整页导入，复用参考件现成效果页的动画与转场，导入后仅做文字替换与页序编排。"
 ---
 
 # 高级动态PPT
@@ -37,8 +37,13 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
    用 `transition` 写转场。
 5. 动画纪律、方向位标记、轴心锁定、节奏规则见 `references/effects-catalog.md`；
    新页面动效先查效果目录，白名单外的预设不要加。
-6. 生成后跑 `dynamic_deck.py check` 做结构体检；用 LibreOffice 导出 PDF/截图核对
-   静态版式。LO 不解释动画，移植类与导入页效果必须在目标机 F5 复核，结果记入验证记录。
+5b. 动画编排按三段走：① 常驻环境动效基线（环自转 / 光点往返，indefinite）；
+   ② 分批入场（3—6 批，批内 delay 错开，换批用旧退出 + 新入场）；
+   ③ 容器—文字配对（同批、文字 fade 晚 150—450ms、退出文字先容器后）。
+   配对矩阵、判定条件与反例形态见 `references/animation-orchestration.md`。
+6. 生成后跑 `dynamic_deck.py check` 做结构体检，再跑 `pairing_check.py` 核对
+   容器—文字配对；用 LibreOffice 导出 PDF/截图核对静态版式。LO 不解释动画，
+   移植类与导入页效果必须在目标机 F5 复核，结果记入验证记录。
 
 ## 脚本接口（scripts/dynamic_deck.py）
 
@@ -59,6 +64,32 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 转场：`transition(slide, kind)`；可用清单、观感分组与选型纪律见 `references/effects-catalog.md` 第 5 节，
 页型分工表见 `references/layout-recipes.md` 第 7b 节；17 套完整效果配方见 `references/effect-recipes.md`。
 体检：`validate(path)`；CLI：`python3 dynamic_deck.py check <deck.pptx>` / `demo <out.pptx>`。
+
+## 配对检查接口（scripts/pairing_check.py）
+
+仅用标准库（zipfile + xml.etree），逐页核对容器—文字配对：同批绑定、延迟差
+150—450ms、文字只挂 fade、退出文字先容器后 100—150ms，统计孤儿文字、cTn 预算、
+转场与悬空 spTgt。
+
+- CLI：`python3 pairing_check.py <deck.pptx> [--min-gap 150] [--max-gap 450] [--max-ctn 60] [--json OUT] [--md OUT]`；
+  `--json` 出机器可读报告，`--md` 出人读表格。
+- 退出码：0=全部 PASS；1=存在 FAIL；2=输入错误或包不可读。
+- `python3 pairing_check.py --selftest`：内联最小 fixture 断言六类判定，含必然 FAIL
+  的反例；口径见 `references/animation-orchestration.md` 第 3、5 节。
+
+## 效果路由接口（scripts/effect_router.py）
+
+仅用标准库（zipfile + xml.etree + json），解析每页形状 / 文本 / 数字 / 层级 / 时间词，
+或接收 JSON 页描述；输出 EffectPlan：页型、信息特征、批次拆法、预设族、常驻环境动效、
+强调对象、转场建议与路线建议（原生重建 / 整页导入 / 阻断），每个推荐项带命中的规则编号
+（basis）；信号重叠或稀疏时给 `confidence: low` 与保守档，不猜。
+
+- CLI：`python3 effect_router.py <deck.pptx|page.json> [--page N] [--json OUT] [--md OUT]`；
+  `--json` 出机器可读计划，`--md` 出人读表格。
+- 退出码：0=正常出计划；2=输入不可读。
+- 路由为原生重建时，批次结构（角色 + 数量 + 预设族 + 延迟区间）直接喂给 build 脚本；
+  整页导入时给出 `check_slide` 参数与背景 / 重着色要点；阻断时写明缺什么（烘焙像素声明、
+  字号档、授权素材、基调 recolor 路径等）。规则矩阵见 `references/effect-routing.md`。
 
 ## 跨包导入接口（scripts/slide_importer.py）
 
@@ -89,7 +120,9 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 
 ## 参考文档
 
-- `references/effects-catalog.md`：效果目录、行为节点、转场清单、timing 树结构与排错顺序、方向位标记、轴心锁定、节奏规则。
+- `references/effects-catalog.md`：效果目录、行为节点、转场清单、timing 树结构与排错顺序、方向位标记、轴心锁定、节奏规则、容器—文字配对时序纪律与页面活着基线。
+- `references/animation-orchestration.md`：编排三段、容器—文字配对矩阵、判定条件与反例形态、配对检查器口径。
+- `references/effect-routing.md`：内容识别与效果路由矩阵——页型命中条件、推荐效果、禁用项与反例形态、基调与规模约束、保守档口径。
 - `references/layout-recipes.md`：配色字体基线（含 11 套学术配色）、页型构成与字号阶梯、通用页型骨架与母题、配方级版式（轮播/扇形/六边形/模糊大字等）、深色技术风装饰手法、环境动效母题、跨页流畅感编排、工程注意事项与许可边界。
 - `references/source-inventory.md`：素材许可分级、样稿预设统计归档、路线选型与验证边界。
 - `references/effect-recipes.md`：17 套效果配方（页数规则、素材门槛、图层结构、移植约束、跨配方通用规则）。

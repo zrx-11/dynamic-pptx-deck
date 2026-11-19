@@ -39,12 +39,16 @@ dynamic-pptx-deck/
 │   └── openai.yaml            同构配置
 ├── references/
 │   ├── effects-catalog.md    效果目录、行为节点、转场清单、timing 排错、轴心锁定、节奏规则、双端分级
+│   ├── animation-orchestration.md  编排三段、容器—文字配对矩阵、判定条件与反例形态、配对检查器口径
+│   ├── effect-routing.md     内容识别与效果路由矩阵：页型命中条件、推荐效果、禁用项与反例形态、基调与规模约束
 │   ├── layout-recipes.md      配色基线（含 11 套学术配色）、页型构成与字号阶梯、页型骨架与母题、配方级版式、工程注意事项、许可边界
 │   ├── source-inventory.md    素材许可分级、样稿预设统计归档、路线选型与验证边界
 │   ├── effect-recipes.md      17 套效果配方（页数规则、素材门槛、图层结构、移植约束、跨配方通用规则）
 │   └── import-guide.md        跨包整页导入口径：选型、前置检查、处理范围、主题色解析、文字替换、验证清单
 └── scripts/
     ├── dynamic_deck.py       形状/文本/组合体封装、animate、transition、validate、CLI check/demo
+    ├── pairing_check.py     容器—文字配对时序核对（零标准库依赖）：同批、延迟差、fade-only、退出顺序、孤儿计数、目标与预算
+    ├── effect_router.py      内容识别与效果路由（零标准库依赖）：页型/特征/批次/预设/路线计划，逐项带规则编号
     └── slide_importer.py     跨包导入：文件级 zip 手术、媒体哈希去重、主题色解析、文字替换、页序重排
 ```
 
@@ -107,6 +111,15 @@ python3 scripts/dynamic_deck.py check /tmp/demo.pptx
 
 转场：`transition(slide, kind, adv_ms=毫秒数, on_click=False)`；`adv_ms` 为自动换片间隔，
 清单见 `references/effects-catalog.md` 第 5 节。
+
+容器—文字配对核对：`scripts/pairing_check.py` 仅用标准库，CLI
+`python3 pairing_check.py <deck.pptx> [--min-gap 150] [--max-gap 450] [--max-ctn 60] [--json OUT] [--md OUT]`，
+`--selftest` 跑内联 fixture 自检；退出码 0=全 PASS、1=有 FAIL、2=输入错误。
+
+内容识别与效果路由：`scripts/effect_router.py` 仅用标准库，CLI
+`python3 effect_router.py <deck.pptx|page.json> [--page N] [--json OUT] [--md OUT]`；
+识别页型与信息特征，输出批次拆法、预设族、强调对象、转场与路线建议，逐项带规则编号；
+退出码 0=正常出计划、2=输入不可读。规则矩阵见 `references/effect-routing.md`。
 
 跨包导入：`scripts/slide_importer.py` 仅用标准库做文件级 zip 手术；`SlideImporter(dst_pptx)`
 提供 `import_slide` / `replace_text` / `reorder` / `save`，模块级 `inspect` 读取参考页结构快照，
