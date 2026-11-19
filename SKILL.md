@@ -1,7 +1,7 @@
 ---
 name: dynamic-pptx-deck
 display_name: "高级动态PPT"
-description: "把任意已有内容（文档、报告、笔记、大纲、旧 pptx 原稿）做成带动画与转场的原生可编辑 .pptx。用于在 PowerPoint 2019/365 与 WPS 演示中编排入场/强调/退出/路径动画、页面转场与商务版式；覆盖五套主基线 + 11 套学术配色、通用页型骨架与母题、17 套效果配方、Morph 配对帧、三层渐进增强适配（L0 安全层 / L1 高版本增强 / L2 排除层）、timing 树结构排错与效果弃用清单。"
+description: "把任意已有内容（文档、报告、笔记、大纲、旧 pptx 原稿）做成带动画与转场的原生可编辑 .pptx。用于在 PowerPoint 2019/365 与 WPS 演示中编排入场/强调/退出/路径动画、页面转场与商务版式；覆盖五套主基线 + 11 套学术配色、通用页型骨架与母题、17 套效果配方、Morph 配对帧、三层渐进增强适配（L0 安全层 / L1 高版本增强 / L2 排除层）、timing 树结构排错与效果弃用清单；支持跨包幻灯片整页导入，复用参考件现成效果页的动画与转场，导入后仅做文字替换与页序编排。"
 ---
 
 # 高级动态PPT
@@ -24,14 +24,18 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 2. 读 `references/layout-recipes.md`：选定配色基线（A 浅色商务 / B 深色科技 / C 红金 /
    D 紫夜 / E 深绿青碧，或 11 套学术配色），按内容选版式骨架（封面、目录、章节过渡、卡片、双栏、
    时间线、表格、Q&A、数字带、轮播、模糊大字页、结尾）。
-3. 先按页型排出转场分工表：主轴方向全稿统一，转场类型按页型轮换、相邻页不堆叠同一预设
+3. 路线选型：参考件中已有满足需求的高冲击效果页、且几何层级时序从零重建会失真时，
+   优先用 `scripts/slide_importer.py` 整页导入，复用其 timing/transition，导入后只做
+   文字替换与页序编排；几何简单的页面走 `scripts/dynamic_deck.py` 原生构建。两条路线
+   可同稿混用，选型判断、前置检查与分工边界见 `references/import-guide.md` 第 1、7 节。
+4. 先按页型排出转场分工表：主轴方向全稿统一，转场类型按页型轮换、相邻页不堆叠同一预设
    （分工表见 `references/layout-recipes.md` 第 7b 节）；再生成脚本 `build.py` 接入
    `scripts/dynamic_deck.py`：用封装函数画形状与文本，用 `animate` 编排动画批次，
    用 `transition` 写转场。
-4. 动画纪律、方向位标记、轴心锁定、节奏规则见 `references/effects-catalog.md`；
+5. 动画纪律、方向位标记、轴心锁定、节奏规则见 `references/effects-catalog.md`；
    新页面动效先查效果目录，白名单外的预设不要加。
-5. 生成后跑 `dynamic_deck.py check` 做结构体检；用 LibreOffice 导出 PDF/截图核对
-   静态版式。LO 不解释动画，移植类效果必须在目标机 F5 复核，结果记入验证记录。
+6. 生成后跑 `dynamic_deck.py check` 做结构体检；用 LibreOffice 导出 PDF/截图核对
+   静态版式。LO 不解释动画，移植类与导入页效果必须在目标机 F5 复核，结果记入验证记录。
 
 ## 脚本接口（scripts/dynamic_deck.py）
 
@@ -53,6 +57,19 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 页型分工表见 `references/layout-recipes.md` 第 7b 节；17 套完整效果配方见 `references/effect-recipes.md`。
 体检：`validate(path)`；CLI：`python3 dynamic_deck.py check <deck.pptx>` / `demo <out.pptx>`。
 
+## 跨包导入接口（scripts/slide_importer.py）
+
+仅用标准库做文件级 zip 手术，不依赖 python-pptx；整页复制参考件的 slide part、rels 与媒体，
+导入后只做文字替换与页序编排。完整口径见 `references/import-guide.md`。
+
+- `SlideImporter(dst_pptx: str)`：目标包构造器。
+  - `import_slide(src_pptx: str, src_index: int = 0, text_map: dict | None = None, by_name: bool = False) -> int`：导入参考页，返回新页索引；可随导入一并传入文字映射。
+  - `replace_text(slide_index: int, mapping: dict, by_name: bool = False) -> None`：替换指定页文本；默认有序整串匹配，`by_name=True` 按形状名替换。
+  - `reorder(order: list[int]) -> None`：按索引列表重排页序。
+  - `save(path: str | None = None) -> None`：落盘；不传路径回写目标包。
+- `inspect(src_pptx: str, src_index: int = 0) -> dict`：读取参考页结构快照（文本槽、媒体、主题色、关系类型）。
+- CLI：`inspect --src X.pptx [--index N]`；`import --src X.pptx --index N --dst D.pptx [--out O.pptx] [--map map.json] [--by-name]`；`replace --dst D.pptx --index N --map map.json [--by-name] [--out O.pptx]`；`reorder --dst D.pptx --order 0,3,1,2 [--out O.pptx]`。
+
 ## 效果分级原则
 
 - 实测可用（安全打底）：`fade`、`fly_up`、`wipe_l`、`spin`。
@@ -69,3 +86,4 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 - `references/layout-recipes.md`：配色字体基线（含 11 套学术配色）、页型构成与字号阶梯、通用页型骨架与母题、配方级版式（轮播/扇形/六边形/模糊大字等）、深色技术风装饰手法、环境动效母题、跨页流畅感编排、工程注意事项与许可边界。
 - `references/source-inventory.md`：素材许可分级、样稿预设统计归档、路线选型与验证边界。
 - `references/effect-recipes.md`：17 套效果配方（页数规则、素材门槛、图层结构、移植约束、跨配方通用规则）。
+- `references/import-guide.md`：跨包幻灯片整页导入口径——选型判断、前置 inspect 检查、导入处理范围、主题色解析、文字替换两种模式、组装与路线混用边界、导入后验证清单与接口/CLI 参考。

@@ -16,7 +16,8 @@ python-pptx、PptxGenJS 这类库都不封装对象动画与页面转场；动�
 - 一份效果白名单与弃用清单，只写带真实行为节点的预设；
 - 一套三层渐进适配模型：安全层双端通用，高版本增强不认则静默回退，排除层不进稿；
 - 五套主配色基线 + 11 套学术配色，通用页型骨架与配方级版式（封面、目录、卡片、双栏、时间线、表格、Q&A、数字带、轮播、模糊大字页、结尾）；
-- 17 套效果配方：页数规则、素材门槛、图层结构、移植约束与跨配方通用规则。
+- 17 套效果配方：页数规则、素材门槛、图层结构、移植约束与跨配方通用规则；
+- 跨包幻灯片整页导入：复用参考件现成效果页的 timing/transition，导入后仅做文字替换与页序编排，主题色解析为显式色值避免漂移。
 
 ## 不做什么
 
@@ -40,9 +41,11 @@ dynamic-pptx-deck/
 │   ├── effects-catalog.md    效果目录、行为节点、转场清单、timing 排错、轴心锁定、节奏规则、双端分级
 │   ├── layout-recipes.md      配色基线（含 11 套学术配色）、页型构成与字号阶梯、页型骨架与母题、配方级版式、工程注意事项、许可边界
 │   ├── source-inventory.md    素材许可分级、样稿预设统计归档、路线选型与验证边界
-│   └── effect-recipes.md      17 套效果配方（页数规则、素材门槛、图层结构、移植约束、跨配方通用规则）
+│   ├── effect-recipes.md      17 套效果配方（页数规则、素材门槛、图层结构、移植约束、跨配方通用规则）
+│   └── import-guide.md        跨包整页导入口径：选型、前置检查、处理范围、主题色解析、文字替换、验证清单
 └── scripts/
-    └── dynamic_deck.py       形状/文本/组合体封装、animate、transition、validate、CLI check/demo
+    ├── dynamic_deck.py       形状/文本/组合体封装、animate、transition、validate、CLI check/demo
+    └── slide_importer.py     跨包导入：文件级 zip 手术、媒体哈希去重、主题色解析、文字替换、页序重排
 ```
 
 ## 安装
@@ -104,6 +107,10 @@ python3 scripts/dynamic_deck.py check /tmp/demo.pptx
 
 转场：`transition(slide, kind, adv_ms=毫秒数, on_click=False)`；`adv_ms` 为自动换片间隔，
 清单见 `references/effects-catalog.md` 第 5 节。
+
+跨包导入：`scripts/slide_importer.py` 仅用标准库做文件级 zip 手术；`SlideImporter(dst_pptx)`
+提供 `import_slide` / `replace_text` / `reorder` / `save`，模块级 `inspect` 读取参考页结构快照，
+支持有序整串与按形状名两种文字替换模式。完整口径见 `references/import-guide.md`。
 
 ## 三层适配
 

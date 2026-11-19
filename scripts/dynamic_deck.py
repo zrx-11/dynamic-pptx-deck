@@ -88,6 +88,21 @@ KINDS = {
     "path":    ("path", 42, 0, "path", "移植"),
 }
 
+# 导入保留预设（跨包导入真实 PowerPoint 导出页时出现）：
+# 这些 presetClass/presetID/presetSubtype 属标准 ECMA 预设，随导入页 timing 整体保留，
+# 不回写为本模块可 authored 的 kind；校验仅做 schema 放行，不代表建议在新稿中手写。
+# 标签：imported-path 运动路径预设（带真实 animMotion）；imported-fade-exit 淡出退出；
+#       imported-shell 效果目录第 4 节已判空壳/弱行为，仅为导入包校验放行。
+IMPORTED_PRESETS = {
+    ("exit", 10, 0): "imported-fade-exit",
+    ("path", 0, 0): "imported-custom-path",
+    ("path", 35, 0): "imported-path-35",
+    ("path", 63, 0): "imported-path-63",
+    ("path", 64, 0): "imported-path-64",
+    ("emph", 19, 0): "imported-shell-19",
+    ("exit", 16, 37): "imported-shell-16",
+}
+
 # 已确认弃用，不要加回：
 #   box(4) / 旧版 zoom / stretch —— 缺行为节点，放映等同瞬间出现；
 #   preset 6/14/16/18/21、entr 23/272 —— animEffect 空壳，filter 被忽略，放映等同出现；
@@ -527,18 +542,25 @@ class Timing:
     def _path(self, spid, delay, dur, dx, dy, nt, path=None):
         eff = self.nid()
         inner = self.nid()
-        motion_path = path if path else "M 0 0 L %.5f %.5f" % (dx, dy)
+        if path:
+            motion_path = path.strip() + " "
+            # 点数 = 坐标对数量：M 起点 1 个，每个 L 再增加 1 个
+            n_points = 1 + motion_path.count(" L ")
+        else:
+            motion_path = "M 0 0 L %.5f %.5f " % (dx, dy)
+            n_points = 2
+        pts_types = "A" * n_points
         return ('<p:par><p:cTn id="%d" presetID="42" presetClass="path" presetSubtype="0" '
                 'repeatCount="indefinite" autoRev="1" fill="hold" grpId="0" nodeType="%s">'
                 '<p:stCondLst><p:cond delay="%d"/></p:stCondLst><p:childTnLst>'
                 '<p:animMotion origin="layout" path="%s" pathEditMode="relative" '
-                'rAng="0" ptsTypes="AA"><p:cBhvr>'
+                'rAng="0" ptsTypes="%s"><p:cBhvr>'
                 '<p:cTn id="%d" dur="%d" fill="hold" repeatCount="indefinite" autoRev="1"/>'
                 '<p:tgtEl><p:spTgt spid="%d"/></p:tgtEl>'
                 '<p:attrNameLst><p:attrName>ppt_x</p:attrName><p:attrName>ppt_y</p:attrName></p:attrNameLst>'
                 '</p:cBhvr><p:rCtr x="0" y="0"/></p:animMotion>'
                 '</p:childTnLst></p:cTn></p:par>'
-                ) % (eff, nt, delay, motion_path, inner, dur, spid)
+                ) % (eff, nt, delay, motion_path, pts_types, inner, dur, spid)
 
     def build(self, groups, auto=0):
         root = self.nid()
@@ -635,8 +657,8 @@ _TRANSITIONS = {
     "zoom_t":  '<p:transition %s spd="med"><p:zoom/></p:transition>',
     "randombar_v": '<p:transition %s spd="med"><p:randomBar dir="vert"/></p:transition>',
     # p14（2010+ 预设；2019 不认则回退无转场，不伤内容）
-    "doors":   ('<p:transition %s p14:dur="1200" xmlns:p14="%s">'
-                '<p14:prstTrans prst="doors"/></p:transition>'),
+    "doors":   ('<p:transition %s p14:dur="1400" xmlns:p14="%s">'
+                '<p14:doors dir="horz"/></p:transition>'),
     "gallery": ('<p:transition %s p14:dur="1400" xmlns:p14="%s">'
                 '<p14:gallery dir="l"/></p:transition>'),
     "flip":    ('<p:transition %s p14:dur="1200" xmlns:p14="%s">'
@@ -705,6 +727,7 @@ def transition(slide, kind, adv_ms=None, on_click=True):
 # 体检
 # ----------------------------------------------------------------------
 KNOWN = {(v[0], v[1], v[2]): k for k, v in KINDS.items()}
+KNOWN.update(IMPORTED_PRESETS)
 
 
 def validate(path, verbose=True):

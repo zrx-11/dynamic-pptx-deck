@@ -24,6 +24,8 @@
 
 - 交付原生 `.pptx`；按 L0 / L1 / L2 三层全量写入（见 effects-catalog 第 10 节），
   弱引擎静默回退，不丢内容。
+- 持有合规参考件时，整页导入路线的选型判断、处理范围与验证清单见 `import-guide.md`；
+  导入页不承担事实性数字与结论，替换后的事实内容仍需回素材核对。
 - Morph 归入 L1：mc:Choice/Fallback 包裹、兜底 fade，仅在 365 / 新版 WPS 上可能生效；
   翻书页 / 卷曲为 Keynote / WPS 专属，2019 无对应 XML，列入 L2。
 - 离线环境只有 LibreOffice 静态渲染能力，只能核对版式与 XML 结构，不代表放映动画；
