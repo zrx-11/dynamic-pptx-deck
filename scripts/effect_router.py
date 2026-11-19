@@ -197,6 +197,18 @@ def extract_features(part: str, xml: bytes) -> dict:
     short_labels = sum(1 for s in body if len(s["text"]) <= 8)
     header_cells = [w for w in HEADER_WORDS
                     if any(w in s["text"] and len(s["text"]) <= 8 for s in body)]
+
+    # 时间轴通栏细长矩形；小圆 / 椭圆节点；编号圆牌
+    oval_prst = {"ellipse", "oval", "donut"}
+    axis_shapes = [
+        s for s in shapes if s["prst"] in CONTAINER_PRST and s["box"]
+        and s["box"][2] >= 8_000_000 and s["box"][3] <= 350_000
+    ]
+    node_shapes = [
+        s for s in shapes if s["prst"] in oval_prst and s["box"]
+        and s["box"][2] <= 2_000_000 and s["box"][3] <= 2_000_000
+    ]
+    row_count = max(len(texts) - 2, 1)
     return {
         "part": part,
         "shape_count": len(shapes),
@@ -221,6 +233,9 @@ def extract_features(part: str, xml: bytes) -> dict:
         "arrow_count": arrows,
         "card_count": len(containers),
         "short_labels": short_labels,
+        "axis_count": len(axis_shapes),
+        "node_count": len(node_shapes),
+        "row_count": row_count,
         "two_column": two_column,
         "background": bg,
         "texts": [s["text"] for s in texts],
@@ -277,14 +292,35 @@ def classify(feat: dict) -> dict:
     matched = {code_map[c]: c for c, _, _ in rules}
     page_type = next((t for t in priority if t in matched), "card_grid")
 
-    # 置信度：主规则命中且无第二个竞争页型为 high；重叠或特征稀疏为 low
-    competing = [c for c in matched if c != page_type]
-    sparse = feat.get("body_shapes", feat["text_shapes"]) < 3
-    confidence = "low" if competing or sparse else "high"
+    # 强特征：命中即可独立支撑该页型，不依赖密度 / 弱命中凑数
+    strong = {
+        "closing": bool(feat["closing_words"]),
+        "cover": feat["max_font_size"] >= 3000 and feat["card_count"] < 3,
+        "section_transition": feat["section_marks"] and body_n <= 4,
+        "quote": feat["has_quote"] and feat["char_count"] >= 30 and body_n <= 3,
+        "kpi": feat["big_number_shapes"] >= 2,
+        "table_list": feat["has_table"],
+        "timeline": bool(feat["time_words"]) and
+        (feat["step_count"] >= 2 or feat.get("axis_count", 0) >= 1
+         or feat.get("node_count", 0) >= 2),
+        "process": feat["step_count"] >= 3 or feat["arrow_count"] >= 2,
+        "two_column_compare": feat["two_column"] and bool(feat["compare_words"]),
+        "card_grid": feat["card_count"] >= 4 and feat["big_number_shapes"] < 2
+        and not feat["header_cells"] and feat.get("node_count", 0) < 2
+        and not feat["time_words"],
+    }
+
+    # 只有同为强特征的页型才算竞争；弱命中（密度凑数、默认卡片兜底）只进 basis，不压低置信
+    competing = [c for c in matched if c != page_type and strong.get(c, False)]
+    weak = [c for c in matched if c != page_type and not strong.get(c, False)]
+    sparse = body_n < 3
+    # 仅当主规则为强特征、无强竞争页型、特征不稀疏时判 high；其余给 low 保守档
+    primary_strong = strong.get(page_type, False)
+    confidence = "high" if primary_strong and not competing and not sparse else "low"
     basis = ([matched[page_type]] if page_type in matched else ["CARD-1"]) + \
-            [matched[c] for c in competing]
+            [matched[c] for c in competing + weak]
     return {"page_type": page_type, "confidence": confidence,
-            "basis": basis, "competing": competing}
+            "basis": basis, "competing": competing, "strong": primary_strong}
 
 
 # ----------------------------------------------------------------------
@@ -311,32 +347,89 @@ TYPE_LABEL = {
 }
 
 
+def _b(role: str, count: int, presets: list[str], delay: list[int],
+       note: str = "") -> dict:
+    return {"role": role, "count": max(count, 1), "preset_family": presets,
+            "delay_range": delay, "note": note}
+
+
 def _batches(page_type: str, feat: dict) -> list[dict]:
+    """按页型角色矩阵生成批次；数量尽量从形状特征推导，推不出时取该页型默认保守档。"""
     cards = max(feat["card_count"], 1)
-    batches = [
-        {"role": "ambient", "count": 2, "preset_family": ["spin", "path"],
-         "delay_range": [0, 0], "note": "环自转 / 光点往返，indefinite 常驻"},
-        {"role": "header", "count": min(feat["text_shapes"], 3),
-         "preset_family": ["fade", "wipe_l"], "delay_range": [0, 120]},
+    values = max(feat["big_number_shapes"], 1)
+    nodes = max(feat.get("node_count", 0), 2)
+    rows = feat.get("row_count", max(feat["text_shapes"] - 2, 1))
+    steps = max(feat["step_count"], feat["arrow_count"], 3)
+    ambient = _b("ambient", 2, ["spin", "path"], [0, 0],
+                 "环自转 / 光点往返，indefinite 常驻")
+
+    if page_type == "cover":
+        return [
+            ambient,
+            _b("title", 1, ["fade", "wipe_l"], [0, 120]),
+            _b("subtitle", 1, ["fade"], [150, 300]),
+        ]
+    if page_type == "section_transition":
+        return [
+            _b("hero", 1, ["spin", "path"], [0, 0], "高冲击母题；稀疏页可整页导入复用"),
+            _b("kicker", 1, ["fade"], [120, 250]),
+            _b("chapter_title", 1, ["fade", "wipe_l"], [200, 400]),
+        ]
+    if page_type == "kpi":
+        return [
+            ambient,
+            _b("kpi_value", values, ["zoom", "zoom_rot"], [0, 200],
+               "数字载体 zoom 入场，随后 grow 回弹一次；不用 fade 平铺数字"),
+            _b("label", values, ["fade"], [150, 450], "标签文字晚于数字 150—450ms"),
+            _b("action", 1, ["fade"], [300, 500]),
+        ]
+    if page_type == "table_list":
+        return [
+            _b("header", 1, ["fade"], [0, 120], "表头一次 fade，不参与逐条滚动"),
+            _b("rows", rows, ["wipe_u"], [120, 300], "按行逐条入场，不整表同帧"),
+        ]
+    if page_type == "timeline":
+        return [
+            ambient,
+            _b("axis", 1, ["wipe_l"], [0, 150], "主轴生长"),
+            _b("nodes", nodes, ["fly_l", "fly_up"], [150, 300], "节点错开 150—300ms"),
+            _b("connectors", nodes - 1, ["path"], [150, 300], "连线跟随节点"),
+            _b("text", nodes, ["fade"], [200, 400]),
+        ]
+    if page_type == "process":
+        return [
+            ambient,
+            _b("steps", steps, ["fly_up", "wipe_l"], [150, 300], "步骤沿箭头成链依次入场"),
+            _b("connectors", steps - 1, ["path"], [150, 300]),
+        ]
+    if page_type == "two_column_compare":
+        return [
+            _b("left", 1, ["fly_l"], [0, 200], "左栏先入"),
+            _b("right", 1, ["fly_r"], [200, 350], "右栏晚入；左右不同向、不同速"),
+        ]
+    if page_type == "card_grid":
+        return [
+            ambient,
+            _b("cards", cards, ["fly_up", "wipe_l"], [150, 300], "卡片分批入场"),
+            _b("badge", cards, ["zoom"], [0, 150], "编号圆牌 zoom"),
+            _b("card_text", cards, ["fade"], [150, 450], "卡内文字晚于卡片 150—450ms"),
+        ]
+    if page_type == "quote":
+        return [
+            _b("quote_line", 1, ["fade"], [0, 200], "逐句 fade，不挂弹跳类"),
+            _b("attribution", 1, ["fade"], [150, 300], "署名晚 150—300ms"),
+        ]
+    if page_type == "closing":
+        return [
+            _b("summary", max(feat["text_shapes"] - 1, 1), ["fade"], [120, 300],
+               "结论分批 fade"),
+            _b("closing", 1, ["fade"], [300, 450], "收束语最后入场，不堆强调"),
+        ]
+    # 保守默认档
+    return [
+        ambient,
+        _b("body", max(feat["text_shapes"] - 2, 1), ["fade"], [150, 400]),
     ]
-    if page_type in ("card_grid", "kpi", "two_column_compare", "process", "timeline"):
-        batches.append({
-            "role": "content", "count": cards,
-            "preset_family": ["wipe_l", "fly_up", "fade"],
-            "delay_range": [150, 450],
-            "note": "按批拆组；容器先入场，文字同批 fade 晚 150—450ms",
-        })
-    elif page_type in ("table_list",):
-        batches.append({
-            "role": "rows", "count": max(feat["text_shapes"] - 2, 1),
-            "preset_family": ["fade", "wipe_u"], "delay_range": [120, 300],
-        })
-    else:
-        batches.append({
-            "role": "body", "count": max(feat["text_shapes"] - 2, 1),
-            "preset_family": ["fade"], "delay_range": [150, 400],
-        })
-    return batches
 
 
 def _route(page_type: str, feat: dict) -> dict:
@@ -536,6 +629,9 @@ def _normalize_page(raw: dict, index: int) -> dict:
         "arrow_count": len(ARROW_RE.findall(all_text)),
         "card_count": raw.get("card_count", 0),
         "short_labels": raw.get("short_labels", sum(1 for t in texts if len(t) <= 8)),
+        "axis_count": raw.get("axis_count", 0),
+        "node_count": raw.get("node_count", 0),
+        "row_count": raw.get("row_count", max(len(texts) - 2, 1)),
         "two_column": bool(raw.get("two_column")),
         "background": raw.get("background", {"type": "none", "dark": None, "media": False}),
         "texts": texts,
@@ -545,6 +641,12 @@ def _normalize_page(raw: dict, index: int) -> dict:
 # ----------------------------------------------------------------------
 # 输出
 # ----------------------------------------------------------------------
+def _batch_summary(batches: list[dict]) -> str:
+    return " → ".join(
+        "%s:%s×%d" % (b["role"], "/".join(b["preset_family"]), b["count"])
+        for b in batches)
+
+
 def _md(plans: list[dict]) -> str:
     lines = ["# 效果路由计划", ""]
     lines.append("| 页 | 页型 | 置信度 | 批次角色 | 转场 | 路线 | 依据 |")
@@ -595,6 +697,7 @@ def main(argv: list[str] | None = None) -> int:
 
     report = {"plans": plans,
               "totals": {"pages": len(plans),
+                         "high_confidence": sum(1 for p in plans if p["confidence"] == "high"),
                          "low_confidence": sum(1 for p in plans if p["confidence"] == "low"),
                          "routes": {r: sum(1 for p in plans if p["route"]["decision"] == r)
                                     for r in ("native_rebuild", "import", "block")}}}
@@ -607,13 +710,13 @@ def main(argv: list[str] | None = None) -> int:
             f.write(_md(plans))
 
     for p in plans:
-        print("第 %s 页 [%s/%s] %s → %s；转场 %s；依据 %s" % (
+        print("第 %s 页 [%s/%s] %s | 转场 %s | 批次 %s | 依据 %s" % (
             p["page"], p["page_type_label"], p["confidence"], p["route"]["decision"],
-            p["route"]["reason"][:40], p["transition"]["suggested"],
+            p["transition"]["suggested"], _batch_summary(p["batches"]),
             ", ".join(p["basis"])))
-    print("合计 %d 页，低置信 %d，路线分布 %s" % (
-        report["totals"]["pages"], report["totals"]["low_confidence"],
-        report["totals"]["routes"]))
+    print("合计 %d 页，高置信 %d，低置信 %d，路线分布 %s" % (
+        report["totals"]["pages"], report["totals"]["high_confidence"],
+        report["totals"]["low_confidence"], report["totals"]["routes"]))
     return 0
 
 

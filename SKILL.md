@@ -87,9 +87,11 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 - CLI：`python3 effect_router.py <deck.pptx|page.json> [--page N] [--json OUT] [--md OUT]`；
   `--json` 出机器可读计划，`--md` 出人读表格。
 - 退出码：0=正常出计划；2=输入不可读。
-- 路由为原生重建时，批次结构（角色 + 数量 + 预设族 + 延迟区间）直接喂给 build 脚本；
-  整页导入时给出 `check_slide` 参数与背景 / 重着色要点；阻断时写明缺什么（烘焙像素声明、
-  字号档、授权素材、基调 recolor 路径等）。规则矩阵见 `references/effect-routing.md`。
+- 批次按页型角色矩阵生成（KPI / 时间线 / 表格 / 卡片 / 双栏 / 引语 / 过渡 / 结尾各有独立
+  角色、数量、预设族与延迟区间）；路由为原生重建时，批次结构（角色 + 数量 + 预设族 + 延迟
+  区间）直接喂给 build 脚本；整页导入时给出 `check_slide` 参数与背景 / 重着色要点；阻断时
+  写明缺什么（烘焙像素声明、字号档、授权素材、基调 recolor 路径等）。规则矩阵见
+  `references/effect-routing.md`。命令行默认输出带批次角色 + 预设族摘要。
 
 ## 跨包导入接口（scripts/slide_importer.py）
 
