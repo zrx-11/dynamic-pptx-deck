@@ -49,6 +49,20 @@ ARROW_RE = re.compile(r"→|➜|->|▶")
 # 规模上限（保守档）：超过即提示拆分或阻断核对
 MAX_CHARS_PER_SHAPE = 60
 MAX_SHAPES_PER_PAGE = 40
+# 单页节点预算：效果节点 ≤12，cTn ≤60（沿用技能既有配额）
+MAX_EFFECTS = 12
+MAX_CTN = 60
+CTN_PER_EFFECT = 3.8
+# 各批量角色每点击批的元素配额
+PER_BATCH = {"cards": 3, "rows": 4, "nodes": 3, "kpi_value": 3, "steps": 3, "summary": 4}
+# 每个元素占用的效果节点数（badge 随卡片 zoom，不单独占节点）
+EFFECTS_PER = {
+    "ambient": 1, "title": 1, "subtitle": 1, "hero": 1, "kicker": 1,
+    "chapter_title": 1, "kpi_value": 1, "label": 1, "action": 1, "header": 1,
+    "rows": 1, "axis": 1, "nodes": 1, "connectors": 1, "text": 1, "steps": 1,
+    "left": 1, "right": 1, "cards": 1, "card_text": 1, "quote_line": 1,
+    "attribution": 1, "summary": 1, "closing": 1, "body": 1,
+}
 
 
 class RouterError(RuntimeError):
@@ -101,10 +115,12 @@ def _collect(root: ET.Element) -> list[dict]:
             text = "" if child.tag == P + "grpSp" else \
                 "".join(t.text or "" for t in child.iter(A + "t")).strip()
             sizes = _font_sizes(child)
+            trs = child.findall(f".//{A}tr")
             shapes.append({
                 "id": sid, "name": name, "prst": prst, "box": box,
                 "text": text, "sizes": sizes,
                 "is_table": child.tag == P + "graphicFrame" or prst == "tbl",
+                "table_rows": len(trs),
             })
             if child.tag == P + "grpSp":
                 walk(child)
@@ -112,6 +128,25 @@ def _collect(root: ET.Element) -> list[dict]:
     if sp_tree is not None:
         walk(sp_tree)
     return shapes
+
+
+def _row_clusters(shapes: list[dict], tol: int = 150_000) -> int:
+    """按 y 坐标聚行：同一 y 带（容差内）的多段文本归为一行，不按单元格计数。
+
+    通栏标题 / 页脚备注（cx ≥ 9_000_000）不参与行计数；行内左右两栏 y 略有
+    偏移时落在同一 y 带内。
+    """
+    ys = sorted(
+        s["box"][1] for s in shapes if s["box"] and s["box"][2] < 9_000_000)
+    if not ys:
+        return 0
+    clusters = 1
+    anchor = ys[0]
+    for y in ys[1:]:
+        if abs(y - anchor) > tol:
+            clusters += 1
+            anchor = y
+    return clusters
 
 
 def _bg_info(root: ET.Element) -> dict:
@@ -208,7 +243,14 @@ def extract_features(part: str, xml: bytes) -> dict:
         s for s in shapes if s["prst"] in oval_prst and s["box"]
         and s["box"][2] <= 2_000_000 and s["box"][3] <= 2_000_000
     ]
-    row_count = max(len(texts) - 2, 1)
+    table_tr = sum(s.get("table_rows", 0) for s in shapes)
+    if table_tr > 0:
+        row_count = table_tr
+    else:
+        row_count = _row_clusters(body)
+        if header_cells:
+            row_count -= 1  # 表头单独成行，不进 rows 逐条批次
+    row_count = max(row_count, 1)
     return {
         "part": part,
         "shape_count": len(shapes),
@@ -349,8 +391,18 @@ TYPE_LABEL = {
 
 def _b(role: str, count: int, presets: list[str], delay: list[int],
        note: str = "") -> dict:
-    return {"role": role, "count": max(count, 1), "preset_family": presets,
-            "delay_range": delay, "note": note}
+    count = max(count, 1)
+    per_batch = PER_BATCH.get(role)
+    batch_count = (count + per_batch - 1) // per_batch if per_batch else 1
+    entry = {
+        "role": role, "count": count, "preset_family": presets,
+        "delay_range": delay, "note": note,
+        "effects": count * EFFECTS_PER.get(role, 1),
+    }
+    if per_batch:
+        entry["per_batch"] = per_batch
+        entry["batch_count"] = batch_count
+    return entry
 
 
 def _batches(page_type: str, feat: dict) -> list[dict]:
@@ -386,7 +438,8 @@ def _batches(page_type: str, feat: dict) -> list[dict]:
     if page_type == "table_list":
         return [
             _b("header", 1, ["fade"], [0, 120], "表头一次 fade，不参与逐条滚动"),
-            _b("rows", rows, ["wipe_u"], [120, 300], "按行逐条入场，不整表同帧"),
+            _b("rows", rows, ["wipe_u"], [120, 300],
+               "按行入场；每批 4 行，批间错开 120—300ms，不整表同帧"),
         ]
     if page_type == "timeline":
         return [
@@ -410,9 +463,10 @@ def _batches(page_type: str, feat: dict) -> list[dict]:
     if page_type == "card_grid":
         return [
             ambient,
-            _b("cards", cards, ["fly_up", "wipe_l"], [150, 300], "卡片分批入场"),
-            _b("badge", cards, ["zoom"], [0, 150], "编号圆牌 zoom"),
-            _b("card_text", cards, ["fade"], [150, 450], "卡内文字晚于卡片 150—450ms"),
+            _b("cards", cards, ["fly_up", "wipe_l"], [150, 300],
+               "第 i 张卡与其文字同批成对；编号圆牌随卡片 zoom，不另占效果节点；每批 ≤3 张"),
+            _b("card_text", cards, ["fade"], [150, 450],
+               "卡内文字与同序号卡片同批，晚 150—450ms"),
         ]
     if page_type == "quote":
         return [
@@ -432,7 +486,27 @@ def _batches(page_type: str, feat: dict) -> list[dict]:
     ]
 
 
-def _route(page_type: str, feat: dict) -> dict:
+def _budget(batches: list[dict]) -> dict:
+    """按批次估算效果节点与 cTn，超预算给出同角色拆批方案。"""
+    effects = sum(b["effects"] for b in batches)
+    ctn = round(effects * CTN_PER_EFFECT)
+    fits = effects <= MAX_EFFECTS and ctn <= MAX_CTN
+    split_plan = [
+        {"role": b["role"], "total": b["count"],
+         "per_batch": b["per_batch"], "batch_count": b["batch_count"]}
+        for b in batches if b.get("batch_count", 1) > 1
+    ]
+    return {
+        "estimated_effects": effects,
+        "estimated_ctn": ctn,
+        "max_effects": MAX_EFFECTS,
+        "max_ctn": MAX_CTN,
+        "fits": fits,
+        "split_plan": split_plan,
+    }
+
+
+def _route(page_type: str, feat: dict, batches: list[dict] | None = None) -> dict:
     cautions: list[str] = []
     missing: list[str] = []
 
@@ -475,7 +549,7 @@ def _route(page_type: str, feat: dict) -> dict:
         "reason": "内容结构可由封装函数原生构建；批次结构直接喂给 build 脚本。",
         "basis": ["BUILD-1"],
         "build": {
-            "batches": _batches(page_type, feat),
+            "batches": batches or _batches(page_type, feat),
             "preset_tier": "L0 安全层打底，L1 仅作同组点缀",
         },
         "cautions": cautions,
@@ -498,7 +572,9 @@ def plan_page(feat: dict) -> dict:
     else:
         emphasis = ["当前章节环 / 核心结论：单次强调，不长闪"]
 
-    route = _route(page_type, feat)
+    batches = _batches(page_type, feat)
+    route = _route(page_type, feat, batches)
+    budget = _budget(batches)
     ambient = page_type not in ("table_list",)
 
     return {
@@ -522,7 +598,8 @@ def plan_page(feat: dict) -> dict:
             "background": feat["background"],
             "competing": cls["competing"],
         },
-        "batches": _batches(page_type, feat),
+        "batches": batches,
+        "budget": budget,
         "presets": {
             "entrance": ["fade", "wipe_l", "fly_up"],
             "emphasis": ["grow", "blink", "spin", "path"],
@@ -642,9 +719,23 @@ def _normalize_page(raw: dict, index: int) -> dict:
 # 输出
 # ----------------------------------------------------------------------
 def _batch_summary(batches: list[dict]) -> str:
-    return " → ".join(
-        "%s:%s×%d" % (b["role"], "/".join(b["preset_family"]), b["count"])
-        for b in batches)
+    parts = []
+    for b in batches:
+        seg = "%s:%s×%d" % (b["role"], "/".join(b["preset_family"]), b["count"])
+        if b.get("batch_count", 1) > 1:
+            seg += "（%d 批·每批 %d）" % (b["batch_count"], b["per_batch"])
+        parts.append(seg)
+    return " → ".join(parts)
+
+
+def _budget_summary(budget: dict) -> str:
+    head = "预算 效果 %d/%d · cTn %d/%d" % (
+        budget["estimated_effects"], budget["max_effects"],
+        budget["estimated_ctn"], budget["max_ctn"])
+    if budget["fits"]:
+        return head + " ✓"
+    k = max((s["batch_count"] for s in budget["split_plan"]), default=2)
+    return head + " 超限→拆 %d 批" % k
 
 
 def _md(plans: list[dict]) -> str:
@@ -669,9 +760,16 @@ def _md(plans: list[dict]) -> str:
         if p["route"].get("missing"):
             lines.append("- 待补：%s" % "、".join(p["route"]["missing"]))
         for b in p["batches"]:
-            lines.append("- 批次 %s：%d 个，预设 %s，延迟 %sms" % (
+            seg = "- 批次 %s：%d 个，预设 %s，延迟 %sms" % (
                 b["role"], b["count"], "/".join(b["preset_family"]),
-                "%d—%d" % tuple(b["delay_range"])))
+                "%d—%d" % tuple(b["delay_range"]))
+            if b.get("batch_count", 1) > 1:
+                seg += "；每批 %d 个，拆 %d 批" % (b["per_batch"], b["batch_count"])
+            lines.append(seg)
+        lines.append("- 预算：效果 %d/%d，cTn %d/%d，fits=%s" % (
+            p["budget"]["estimated_effects"], p["budget"]["max_effects"],
+            p["budget"]["estimated_ctn"], p["budget"]["max_ctn"],
+            p["budget"]["fits"]))
         if p["cautions"]:
             lines.append("- 注意：%s" % "；".join(p["cautions"]))
         lines.append("")
@@ -710,10 +808,10 @@ def main(argv: list[str] | None = None) -> int:
             f.write(_md(plans))
 
     for p in plans:
-        print("第 %s 页 [%s/%s] %s | 转场 %s | 批次 %s | 依据 %s" % (
+        print("第 %s 页 [%s/%s] %s | 转场 %s | 批次 %s | %s | 依据 %s" % (
             p["page"], p["page_type_label"], p["confidence"], p["route"]["decision"],
             p["transition"]["suggested"], _batch_summary(p["batches"]),
-            ", ".join(p["basis"])))
+            _budget_summary(p["budget"]), ", ".join(p["basis"])))
     print("合计 %d 页，高置信 %d，低置信 %d，路线分布 %s" % (
         report["totals"]["pages"], report["totals"]["high_confidence"],
         report["totals"]["low_confidence"], report["totals"]["routes"]))

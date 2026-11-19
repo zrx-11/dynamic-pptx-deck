@@ -92,6 +92,9 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
   区间）直接喂给 build 脚本；整页导入时给出 `check_slide` 参数与背景 / 重着色要点；阻断时
   写明缺什么（烘焙像素声明、字号档、授权素材、基调 recolor 路径等）。规则矩阵见
   `references/effect-routing.md`。命令行默认输出带批次角色 + 预设族摘要。
+- 预算收敛：每页估算 `estimated_effects`（≤12）与 `estimated_ctn`（≤60），写入
+  `budget.fits`；超预算时按角色给 `split_plan`（每批配额 `per_batch`、批数 `batch_count`），
+  卡片容器与文字同批成对，编号圆牌随卡片 zoom 不另占节点；表格按行聚类、表头不进滚动批次。
 
 ## 跨包导入接口（scripts/slide_importer.py）
 
