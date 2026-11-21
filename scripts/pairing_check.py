@@ -12,7 +12,9 @@ pairing_check.py — 容器—文字配对检查器（仅标准库：zipfile + x
     3. 文字入场只挂 fade，出现位移类行为节点判 FAIL；
     4. 两侧都有退出时，容器退出晚于文字 100—150ms；
     5. 容器有动画而内部文字零节点，计入孤儿文字；
-    6. 逐页汇总效果数、cTn 数、转场预设、advTm，并核对每个 spTgt 命中真实形状 id。
+    6. 逐页汇总效果数、cTn 数、转场预设、advTm，并核对每个 spTgt 命中真实形状 id；
+    7. 跨页同名同类型对象判为 Morph 配对对象，不得在本页挂页内位置动画；
+       挂位移类效果判 FAIL，仅 fade / opacity 记为 info 放行。
 
 CLI：
     python3 pairing_check.py <deck.pptx> [--min-gap 150] [--max-gap 450]
@@ -35,6 +37,8 @@ P_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
 A_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 R_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 REL_NS = "http://schemas.openxmlformats.org/package/2006/relationships"
+MC_NS = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+P159_NS = "http://schemas.microsoft.com/office/powerpoint/2015/12/main"
 
 P = "{%s}" % P_NS
 A = "{%s}" % A_NS
@@ -49,6 +53,10 @@ CONTAINER_PRST = {
 # 退出顺序：容器退出 − 文字退出的允许区间（ms）
 EXIT_LEAD_MIN = 100
 EXIT_LEAD_MAX = 150
+
+# 位置类预设族：2=fly 飞入滑出、22=wipe 擦除、42=路径（animMotion）。
+# 与行为节点位移判定互补：预设属位置族即按位置动画计入配对互斥。
+POSITION_PRESETS = {"2", "22", "42"}
 
 XML_DECL = b'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n'
 
@@ -229,13 +237,16 @@ def parse_timing(root: ET.Element) -> dict:
             "kind": child.tag.split("}")[1] if child is not None else "fade",
             "advTm": int(adv) if adv and adv.isdigit() else adv,
         }
+    morph = root.find(f".//{{{P159_NS}}}morph") is not None
 
     if timing is None:
-        return {"effects": effects, "ctn": ctn_count, "transition": transition}
+        return {"effects": effects, "ctn": ctn_count, "transition": transition,
+                "morph": morph}
 
     main_seq = timing.find(f".//{P}cTn[@nodeType='mainSeq']")
     if main_seq is None:
-        return {"effects": effects, "ctn": ctn_count, "transition": transition}
+        return {"effects": effects, "ctn": ctn_count, "transition": transition,
+                "morph": morph}
 
     batch_lst = main_seq.find(f"{P}childTnLst")
     if batch_lst is None:
@@ -258,8 +269,10 @@ def parse_timing(root: ET.Element) -> dict:
                 "spid": tgt.get("spid") if tgt is not None else None,
                 "delay": _cond_delay(ctn),
                 "displacement": _is_displacement(ctn),
+                "position_preset": (ctn.get("presetID") or "") in POSITION_PRESETS,
             })
-    return {"effects": effects, "ctn": ctn_count, "transition": transition}
+    return {"effects": effects, "ctn": ctn_count, "transition": transition,
+            "morph": morph}
 
 
 # ----------------------------------------------------------------------
@@ -445,10 +458,16 @@ def analyze_slide(part: str, xml: bytes, opts: dict) -> dict:
     return {
         "part": part,
         "shapes": len(shapes),
+        "shape_index": [
+            {"id": s["id"], "name": s["name"], "tag": s["tag"], "prst": s["prst"]}
+            for s in shapes.values()
+        ],
         "effects": len(effects),
+        "effect_index": effects,
         "ctn": timing["ctn"],
         "ctn_budget": opts["max_ctn"],
         "transition": timing["transition"],
+        "morph": timing["morph"],
         "dangling_targets": dangling,
         "pairs": pairs,
         "orphan_containers": orphans,
@@ -462,17 +481,96 @@ def analyze_slide(part: str, xml: bytes, opts: dict) -> dict:
 # ----------------------------------------------------------------------
 # 报告输出
 # ----------------------------------------------------------------------
+def _eff_brief(e: dict) -> dict:
+    return {"cls": e["cls"], "presetID": e["presetID"], "subtype": e["subtype"],
+            "batch": e["batch"], "delay": e["delay"], "displacement": e["displacement"]}
+
+
 def build_report(slides: list[tuple[str, bytes]], opts: dict) -> dict:
     page_reports = [analyze_slide(part, xml, opts) for part, xml in slides]
+
+    # 跨页配对对象：同名 + 同类型（tag / prst）出现在 ≥2 页，判为 Morph 配对对象。
+    pair_map: dict[tuple, dict] = {}
+    for idx, page in enumerate(page_reports, start=1):
+        for s in page["shape_index"]:
+            if not s["name"]:
+                continue
+            key = (s["name"], s["tag"], s["prst"])
+            meta = pair_map.setdefault(key, {
+                "name": s["name"],
+                "type": "%s/%s" % (s["tag"], s["prst"]),
+                "pages": [], "spids": {},
+            })
+            if idx not in meta["pages"]:
+                meta["pages"].append(idx)
+            meta["spids"][idx] = s["id"]
+    paired = [m for m in pair_map.values() if len(m["pages"]) >= 2]
+    # 互斥规则只在包内实际使用 Morph 转场时成立：无 Morph 时跨页同名对象是
+    # 各页独立的重复 chrome，页内入场动画不与跨页补间叠加，不判冲突。
+    uses_morph = any(p["morph"] for p in page_reports)
+
+    conflicts = 0
+    for idx, page in enumerate(page_reports, start=1):
+        by_spid: dict[str, list[dict]] = {}
+        for e in page["effect_index"]:
+            by_spid.setdefault(e["spid"], []).append(e)
+        page_paired: list[dict] = []
+        page_conflict = False
+        for meta in paired:
+            spid = meta["spids"].get(idx)
+            if spid is None:
+                continue
+            effs = by_spid.get(spid, [])
+            if not effs:
+                page_paired.append({"name": meta["name"], "id": spid,
+                                    "status": "ok", "issues": [], "effects": []})
+                continue
+            pos = [e for e in effs if e["displacement"] or e["position_preset"]]
+            if not uses_morph:
+                page_paired.append({
+                    "name": meta["name"], "id": spid, "status": "info",
+                    "issues": ["本包无 Morph 转场，跨页同名对象按独立元素处理，不判互斥"],
+                    "effects": [_eff_brief(e) for e in effs],
+                })
+            elif pos:
+                page_conflict = True
+                issues = [
+                    "配对对象叠加页内位置动画，两套时间轴会打架"
+                    "（预设 %s/%s，批 %s）" % (e["presetID"], e["subtype"], e["batch"])
+                    for e in pos
+                ]
+                page_paired.append({
+                    "name": meta["name"], "id": spid, "status": "fail",
+                    "issues": issues, "effects": [_eff_brief(e) for e in effs],
+                })
+            else:
+                page_paired.append({
+                    "name": meta["name"], "id": spid, "status": "info",
+                    "issues": ["仅 fade / opacity，不影响位置，放行"],
+                    "effects": [_eff_brief(e) for e in effs],
+                })
+        page["paired_objects"] = page_paired
+        page["paired_conflicts"] = sum(1 for p in page_paired if p["status"] == "fail")
+        conflicts += page["paired_conflicts"]
+        if page_conflict:
+            page["verdict"] = "FAIL"
+            page["issues"] = page["issues"] + [
+                issue for p in page_paired if p["status"] == "fail"
+                for issue in p["issues"]
+            ]
+
     totals = {
         "pairs": sum(len(p["pairs"]) for p in page_reports),
         "orphans": sum(p["orphan_count"] for p in page_reports),
         "fail_pages": sum(1 for p in page_reports if p["verdict"] == "FAIL"),
         "effects": sum(p["effects"] for p in page_reports),
         "ctn": sum(p["ctn"] for p in page_reports),
+        "paired": len(paired),
+        "paired_conflicts": conflicts,
     }
     verdict = "PASS" if totals["fail_pages"] == 0 else "FAIL"
     return {"options": opts, "slides": page_reports, "totals": totals,
+            "paired_objects": paired, "uses_morph": uses_morph,
             "verdict": verdict}
 
 
@@ -480,9 +578,19 @@ def _md_table(report: dict) -> str:
     lines = ["# 容器—文字配对检查报告", ""]
     lines.append("- 总体判定：**%s**" % report["verdict"])
     t = report["totals"]
-    lines.append("- 配对 %d 对；孤儿容器 %d；FAIL 页 %d；效果节点 %d；cTn %d"
-                 % (t["pairs"], t["orphans"], t["fail_pages"], t["effects"], t["ctn"]))
+    lines.append("- 配对 %d 对；孤儿容器 %d；FAIL 页 %d；效果节点 %d；cTn %d；跨页配对 %d（冲突 %d）"
+                 % (t["pairs"], t["orphans"], t["fail_pages"], t["effects"], t["ctn"],
+                    t["paired"], t["paired_conflicts"]))
     lines.append("")
+    if report.get("paired_objects"):
+        lines.append("### 跨页配对对象清单")
+        lines.append("")
+        lines.append("| 名称 | 类型 | 出现页 |")
+        lines.append("|---|---|---|")
+        for meta in report["paired_objects"]:
+            lines.append("| %s | %s | %s |" % (
+                meta["name"], meta["type"], ", ".join(str(p) for p in meta["pages"])))
+        lines.append("")
     for page in report["slides"]:
         lines.append("## 第 %d 页（%s）" % (report["slides"].index(page) + 1, page["part"]))
         tr = page["transition"]
@@ -507,6 +615,10 @@ def _md_table(report: dict) -> str:
         if page["orphan_containers"]:
             lines.append("- 孤儿容器：%s" % ", ".join(
                 o["container"] for o in page["orphan_containers"]))
+        for po in page.get("paired_objects", []):
+            mark = {"fail": "FAIL", "info": "INFO", "ok": "—"}[po["status"]]
+            lines.append("- 跨页配对 %s [%s]：%s" % (
+                po["name"], mark, "；".join(po["issues"]) or "本页无动画"))
         lines.append("")
     return "\n".join(lines)
 
@@ -515,33 +627,47 @@ def print_console(report: dict) -> None:
     for i, page in enumerate(report["slides"], start=1):
         tr = page["transition"]
         tr_desc = "-" if tr is None else tr["kind"]
-        print("第 %2d 页 [%s] 形状 %d 效果 %d cTn %d 转场 %s 配对 %d 孤儿 %d"
+        print("第 %2d 页 [%s] 形状 %d 效果 %d cTn %d 转场 %s 配对 %d 孤儿 %d 跨页配对 %d"
               % (i, page["verdict"], page["shapes"], page["effects"], page["ctn"],
-                 tr_desc, len(page["pairs"]), page["orphan_count"]))
+                 tr_desc, len(page["pairs"]), page["orphan_count"],
+                 len(page.get("paired_objects", []))))
         for pair in page["pairs"]:
             if pair["verdict"] == "FAIL":
                 print("  FAIL %s ↔ %s：%s" % (
                     pair["container"], pair["text"], "；".join(pair["issues"])))
+        for po in page.get("paired_objects", []):
+            if po["status"] == "fail":
+                print("  FAIL 跨页配对 %s：%s" % (po["name"], "；".join(po["issues"])))
         for issue in page["issues"]:
             print("  问题：%s" % issue)
     t = report["totals"]
-    print("合计：配对 %d，孤儿 %d，FAIL 页 %d，效果 %d，cTn %d —— %s"
+    print("合计：配对 %d，孤儿 %d，FAIL 页 %d，效果 %d，cTn %d，跨页配对 %d（冲突 %d）—— %s"
           % (t["pairs"], t["orphans"], t["fail_pages"], t["effects"], t["ctn"],
-             report["verdict"]))
+             t["paired"], t["paired_conflicts"], report["verdict"]))
 
 
 # ----------------------------------------------------------------------
 # 自检 fixture（内联最小包，不依赖外部 pptx）
 # ----------------------------------------------------------------------
-def _fixture_slide(shape_xml: str, timing_xml: str) -> bytes:
+def _fixture_slide(shape_xml: str, timing_xml: str,
+                   transition_xml: str = "") -> bytes:
     return XML_DECL + (
         '<p:sld xmlns:a="%s" xmlns:r="%s" xmlns:p="%s">'
         '<p:cSld><p:spTree>'
         '<p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/></p:nvGrpSpPr>'
         '<p:grpSpPr><a:xfrm/></p:grpSpPr>%s'
-        '</p:spTree></p:cSld>%s</p:sld>'
-        % (A_NS, R_NS, P_NS, shape_xml, timing_xml)
+        '</p:spTree></p:cSld>%s%s</p:sld>'
+        % (A_NS, R_NS, P_NS, shape_xml, transition_xml, timing_xml)
     ).encode("utf-8")
+
+
+MORPH_TRANSITION = (
+    '<p:transition xmlns:mc="%s" xmlns:p159="%s" spd="med">'
+    '<mc:AlternateContent><mc:Choice Requires="p159">'
+    '<p159:morph option="byObject"/></mc:Choice>'
+    '<mc:Fallback><p:fade/></mc:Fallback></mc:AlternateContent></p:transition>'
+    % (MC_NS, P159_NS)
+)
 
 
 def _shape_xml(sid: str, name: str, prst: str, box: tuple[int, int, int, int],
@@ -655,6 +781,67 @@ def _run_fixture(shape_xml: str, batches: list[list[dict]],
     return build_report(slides, opts or {"min_gap": 150, "max_gap": 450, "max_ctn": 60})
 
 
+def _fixture_zip_multi(slide_xmls: list[bytes]) -> io.BytesIO:
+    """多页内联 fixture：按顺序生成 slide1..slideN.xml 与对应 rels / Content_Types。"""
+    buf = io.BytesIO()
+    n = len(slide_xmls)
+    overrides = [
+        '<Override PartName="/ppt/presentation.xml" '
+        'ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>'
+    ]
+    for i in range(1, n + 1):
+        overrides.append(
+            '<Override PartName="/ppt/slides/slide%d.xml" '
+            'ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>'
+            % i)
+    ct = (
+        '<Types xmlns="%s"><Default Extension="rels" '
+        'ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+        '<Default Extension="xml" ContentType="application/xml"/>%s</Types>'
+        % (REL_NS, "".join(overrides)))
+    rels = (
+        '<Relationships xmlns="%s"><Relationship Id="rId1" '
+        'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" '
+        'Target="ppt/presentation.xml"/></Relationships>' % REL_NS)
+    sld_ids = "".join(
+        '<p:sldId id="%d" r:id="rId%d"/>' % (255 + i, i + 1)
+        for i in range(1, n + 1))
+    pres = (
+        '<p:presentation xmlns:a="%s" xmlns:r="%s" xmlns:p="%s">'
+        '<p:sldIdLst>%s</p:sldIdLst></p:presentation>'
+        % (A_NS, R_NS, P_NS, sld_ids))
+    pres_rels = "".join(
+        '<Relationship Id="rId%d" '
+        'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" '
+        'Target="slides/slide%d.xml"/>' % (i + 1, i)
+        for i in range(1, n + 1))
+    pres_rels = '<Relationships xmlns="%s">%s</Relationships>' % (REL_NS, pres_rels)
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("[Content_Types].xml", XML_DECL + ct.encode())
+        zf.writestr("_rels/.rels", XML_DECL + rels.encode())
+        zf.writestr("ppt/presentation.xml", XML_DECL + pres.encode())
+        zf.writestr("ppt/_rels/presentation.xml.rels", XML_DECL + pres_rels.encode())
+        for i, xml in enumerate(slide_xmls, start=1):
+            zf.writestr("ppt/slides/slide%d.xml" % i, xml)
+    buf.seek(0)
+    return buf
+
+
+def _run_fixture_multi(pages: list[tuple],
+                       opts: dict | None = None) -> dict:
+    slides = []
+    for page in pages:
+        shape, batches = page[0], page[1]
+        trans = page[2] if len(page) > 2 else ""
+        slides.append(_fixture_slide(shape, _timing_xml(batches), trans))
+    buf = _fixture_zip_multi(slides)
+    with zipfile.ZipFile(buf) as zf:
+        loaded = [("ppt/slides/slide%d.xml" % i,
+                   zf.read("ppt/slides/slide%d.xml" % i))
+                  for i in range(1, len(slides) + 1)]
+    return build_report(loaded, opts or {"min_gap": 150, "max_gap": 450, "max_ctn": 60})
+
+
 def _selftest() -> int:
     box_c = (1000000, 2000000, 3000000, 2000000)
     box_t = (1100000, 2100000, 2800000, 600000)
@@ -740,7 +927,44 @@ def _selftest() -> int:
     pair = report["slides"][0]["pairs"][0]
     assert pair["checks"]["exit_order"] == "PASS"
 
-    print("selftest OK：同批 / 延迟差 / fade-only / 退出顺序 / 孤儿容器 / 悬空目标 六类判定均通过")
+    # 用例 8：跨页同名同类型配对对象，本页挂 fly_l 位移 —— 互斥规则 FAIL
+    hero = _shape_xml("10", "hero", "roundRect", box_c, "")
+    report = _run_fixture_multi([
+        (hero, [[{"spid": "10", "cls": "entr", "delay": 0, "nodeType": "clickEffect",
+                  "preset": "2", "subtype": "8", "disp": True}]], MORPH_TRANSITION),
+        (hero, [], MORPH_TRANSITION),
+    ])
+    assert report["uses_morph"] is True, "fixture 应声明 Morph 转场"
+    assert report["totals"]["paired"] == 1, "应识别出 1 个跨页配对对象"
+    p1 = report["slides"][0]
+    po = [x for x in p1["paired_objects"] if x["name"] == "hero"]
+    assert len(po) == 1 and po[0]["status"] == "fail", "配对对象挂位移应判 FAIL"
+    assert any("两套时间轴会打架" in i for i in po[0]["issues"])
+    assert report["verdict"] == "FAIL", "存在配对互斥冲突应整包 FAIL"
+
+    # 用例 9：同一配对对象本页只挂 fade —— 记 info 放行，整包 PASS
+    report = _run_fixture_multi([
+        (hero, [[{"spid": "10", "cls": "entr", "delay": 0, "nodeType": "clickEffect",
+                  "preset": "10", "subtype": "0"}]], MORPH_TRANSITION),
+        (hero, [], MORPH_TRANSITION),
+    ])
+    p1 = report["slides"][0]
+    po = [x for x in p1["paired_objects"] if x["name"] == "hero"]
+    assert len(po) == 1 and po[0]["status"] == "info", "仅 fade 应记 info 放行"
+    assert report["verdict"] == "PASS", "纯 fade 配对对象不应判 FAIL"
+
+    # 用例 10：无 Morph 转场的包，跨页同名对象挂位移也只记 info，不判互斥
+    report = _run_fixture_multi([
+        (hero, [[{"spid": "10", "cls": "entr", "delay": 0, "nodeType": "clickEffect",
+                  "preset": "2", "subtype": "8", "disp": True}]]),
+        (hero, []),
+    ])
+    assert report["uses_morph"] is False
+    po = [x for x in report["slides"][0]["paired_objects"] if x["name"] == "hero"]
+    assert len(po) == 1 and po[0]["status"] == "info", "无 Morph 时位移也应放行"
+    assert report["verdict"] == "PASS", "无 Morph 包不应触发配对互斥 FAIL"
+
+    print("selftest OK：同批 / 延迟差 / fade-only / 退出顺序 / 孤儿容器 / 悬空目标 / 跨页配对互斥 七类判定均通过")
     return 0
 
 

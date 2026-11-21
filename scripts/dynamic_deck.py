@@ -4,8 +4,10 @@ dynamic_deck.py — 原生可编辑 .pptx 的对象动画 / 转场 / 形状封�
 
 路线约束（详见 references/effects-catalog.md）：
   - 动画写在每页 slide XML 的 <p:timing> 节点；python-pptx / PptxGenJS 都不封装这层。
-  - 三层渐进增强：L0 安全层（2019/365/WPS 通用）、L1 高版本增强（Morph/p14 转场/移植强调，
-    不认则静默回退，不丢内容）、L2 排除层（内嵌视频/mediacall、翻书页卷曲、非商业素材）。
+  - 双档模型（详见 references/effects-catalog.md 第 10 节）：默认效果优先档（365 / 新版 WPS，
+    放开 Morph / p14 转场 / 高版本强调预设）；兼容优先档仅在明确要求兼容 2019 / 旧 WPS 时启用，
+    只发标准 DrawingML 安全族。两档共同底线：文件合法、能打开、不弹修复、内容不丢、不崩；
+    排除层（内嵌视频/mediacall、翻书页卷曲、非商业素材）任何档位都不写。
   - Morph 用 mc:AlternateContent 包裹：mc:Choice 写 p159:morph，mc:Fallback 写 fade；
     2019 剥离 Choice 后自动走 Fallback。Morph 配对要求：前后两页对应对象同名、同类型。
   - p:animEffect 的 filter 字符串被 PowerPoint 忽略，渲染只由 presetID + presetSubtype 决定；
@@ -38,8 +40,8 @@ P159 = "http://schemas.microsoft.com/office/powerpoint/2015/12/main"
 MC = "http://schemas.openxmlformats.org/markup-compatibility/2006"
 NS = {"p": P_NS}
 
-# 效果分层：L0 双端安全；L1 高版本增强，不认则回退；L2 排除（不进模块）。
-# 分层明细与回退行为见 references/effects-catalog.md 第 10 节。
+# 内部层标记：L0 = 标准 DrawingML 安全族（2019/365/WPS 通用）；L1 = 高版本增强，不认则回退。
+# 标记键名为内部实现，不对外暴露；双档口径与回退行为见 references/effects-catalog.md 第 10 节。
 KINDS_LAYER = {
     "fade": "L0", "fly_up": "L0", "wipe_l": "L0",
     "fly_r": "L0", "fly_l": "L0", "fly_d": "L0",
@@ -112,8 +114,8 @@ IMPORTED_PRESETS = {
 # 已确认弃用，不要加回：
 #   box(4) / 旧版 zoom / stretch —— 缺行为节点，放映等同瞬间出现；
 #   preset 6/14/16/18/21、entr 23/272 —— animEffect 空壳，filter 被忽略，放映等同出现；
-#   翻书页/页面卷曲、内嵌视频/mediacall —— L2 排除层，不进模块。
-# Morph 归入 L1：见 _TRANSITIONS["morph"]，mc:Choice/Fallback 包裹，弱引擎走 fade 兜底。
+#   翻书页/页面卷曲、内嵌视频/mediacall —— 排除层，不进模块。
+# Morph 属效果优先档增强项：见 _TRANSITIONS["morph"]，mc:Choice/Fallback 包裹，弱引擎走 fade 兜底。
 
 SH: dict = {}
 
@@ -722,12 +724,12 @@ _TRANSITIONS = {
 
 _P14 = {"doors", "gallery", "flip", "switch", "prism", "conveyor", "window",
         "honeycomb", "reveal", "ripple", "vortex", "glitter", "ferris"}
-# L1 高版本增强转场：不认则回退 Fallback 或无转场，不伤内容。
+# 高版本增强转场：不认则回退 Fallback 或无转场，不伤内容。
 _L1_TRANS = _P14 | {"morph"}
 
 
 def transition(slide, kind, adv_ms=None, on_click=True):
-    """添加换页转场。L1 预设（p14 / morph）在弱引擎不认时回退，不影响内容。
+    """添加换页转场。高版本预设（p14 / morph）在弱引擎不认时回退，不影响内容。
 
     adv_ms: 自动换片间隔毫秒；给值后到点自动翻页。on_click=False 时禁用单击换片。
     """

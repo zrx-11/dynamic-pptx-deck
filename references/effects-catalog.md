@@ -6,7 +6,7 @@
 ## 目录
 
 1. 环境事实与路线边界
-2. 实测可用效果（安全打底）
+2. 实测可用效果（标准安全族）
 3. 移植效果（结构可信，未复测）
 4. 已弃用 / 不可用清单
 5. 转场目录
@@ -23,7 +23,7 @@
 - 对象动画不在 python-pptx / PptxGenJS 任何 API 里，全部写在每页 `ppt/slides/slideN.xml`
   的 `<p:timing>` 节点；节点写错 PowerPoint 会**静默丢弃整页动画**。
 - **Morph 分层结论**：PowerPoint 2019 另存后 `p14:morph`/`p159:morph` 补间整段被剥离，
-  只剩空 transition；365 / 新版 WPS 才可能执行。按三层模型 Morph 归入 L1：用
+  只剩空 transition；365 / 新版 WPS 才可能执行。按双档模型 Morph 属效果优先档增强项：用
   `mc:AlternateContent` 包裹，`mc:Choice` 写 `p159:morph`，`mc:Fallback` 写 `fade`，
   弱引擎自动走兜底。Morph 配对要求前后两页对应对象同名、同类型、数量一致；对象名以 `!!`
   开头可强制配对（允许跨类型，如圆变方、图变图、字变字）；不要把 Morph 作为对象首现的唯一手段。
@@ -32,7 +32,7 @@
 - `p:animEffect@filter` 字符串被 PowerPoint 完全忽略，渲染只由 `presetID + presetSubtype`
   决定。模块里的 filter 仅作 LibreOffice 参考，不要据此判断方向。
 
-## 2. 实测可用效果（安全打底）
+## 2. 实测可用效果（标准安全族）
 
 | kind | presetID | subtype | 实机表现 | 行为节点 |
 |---|---|---|---|---|
@@ -91,10 +91,10 @@
 | `wipe_out_l/r/u/d` | 22 | 8/2/1/4 | 对应方向擦除退出，animEffect transition=out |
 | `fly_out_r/l/u/d` | 2 | 2/8/1/4 | 对应方向滑出画外：起手作者位 → 画外终值，dur 处 `style.visibility→hidden` 闭合 |
 
-> 移植效果在目标机离线时无法 F5 复核；正式交付前若条件允许，优先用第 2 节实测效果打底，
+> 移植效果在目标机离线时无法 F5 复核；正式交付前若条件允许，优先用第 2 节实测效果，
 > 移植效果作为点缀并在验证记录里标注「未复测」。
-> 双端（PPT + WPS）交付时，`zoom_rot`/`bounce_up`/`drop_in`/`grow_once` 按第 10.2 节处理：
-> 主入场退回安全层， exotic 项只做点缀或直接替换。
+> 高版本项（`zoom_rot`/`bounce_up`/`drop_in`/`grow_once`）按第 10.2 节处理：
+> 效果优先档下发并记降级提示；兼容档主入场退回安全族，高版本项只做点缀或直接替换。
 
 ## 4. 已弃用 / 不可用清单
 
@@ -103,7 +103,7 @@
   放映等同出现；entr 23/272 周边无 anim/animScale/animRot，同判空壳。
 - entr 41/0（按字符 iterate 波浪）、45/0（sin 公式横向摆动）：结构复杂、依赖 iterate/fmla，
   移植风险高，暂不收录。
-- Morph 不在本弃用清单：归入 L1 高版本增强，写法与配对要求见第 1、10 节。
+- Morph 不在本弃用清单：属效果优先档高版本增强项，写法与配对要求见第 1、10 节。
   `p159:morph option="byObject"` 外层为 `mc:Choice` + `mc:Fallback` 结构；低版本剥离
   Choice 后走 Fallback。
 - 旧版 preset 23/16：带真实 w/h 缩放节点时等价模块 `zoom`（53/16）；不要按旧版空壳 zoom 判死。
@@ -134,7 +134,7 @@ ECMA 基础转场（2019 通用）：`fade`、`push_l`、`push_r`、`cover_l`、
 
 按观感分组（先定观感，再定方向）：
 
-- 方向推移：`push_l/r`、`cover_l/r`、`pull`、`conveyor`(L1)——整页被推过去或盖过去。
+- 方向推移：`push_l/r`、`cover_l/r`、`pull`、`conveyor`(高版本)——整页被推过去或盖过去。
 - 擦除：`wipe_l/r/u/d`——边界扫过，适合流程、时间线与清单。
 - 分割与条状：`split_h`、`blinds_v/h`、`comb`、`randombar_v`、`checker`。
 - 几何遮罩：`wheel`/`wheel4`/`wheel8`、`wedge`、`circle`——辐条、扇形或圆形张开。
@@ -143,11 +143,11 @@ ECMA 基础转场（2019 通用）：`fade`、`push_l`、`push_r`、`cover_l`、
 选型纪律：方向跟全稿主轴保持一致，类型按页型轮换；既不要把清单里的转场全堆进一份稿，
 也不要全篇单一转场。页型分工表见 layout-recipes 第 7b 节。
 
-p14 预设转场（L1，2010+；不认则回退无转场，不伤内容）：`doors`、`gallery`、`flip`、
+p14 预设转场（高版本，2010+；不认则回退无转场，不伤内容）：`doors`、`gallery`、`flip`、
 `switch`、`prism`、`conveyor`、`window`、`honeycomb`、`reveal`、`ripple`、`vortex`、
 `glitter`、`ferris`。结构取自样稿核对，未在目标机 F5 复测。
 
-Morph（L1）：`morph`，`p159:morph option="byObject"`，mc:Choice/Fallback 包裹、兜底 fade；
+Morph（高版本）：`morph`，`p159:morph option="byObject"`，mc:Choice/Fallback 包裹、兜底 fade；
 仅在前后两页同名同类型对象配对成立时才有补间效果。
 
 转场写入位置：`p:sld` 子元素顺序必须是 `cSld → clrMapOvr → transition → timing`；
@@ -270,14 +270,40 @@ subtype 位标记：`1=上 2=右 4=下 8=左`。
 
 配对矩阵、一眼识别反例形态与检查器口径，见 `animation-orchestration.md`。
 
-## 10. 三层渐进增强适配模型（全量写入，接受回退）
+## 10. 双档适配模型（效果优先默认 / 兼容优先可选）
 
 跨软件事实：基础形状、文本、常规动画与 ECMA 转场在
 PowerPoint 2019 / 365 与 WPS 演示之间互通稳定；高级预设、p14 现代转场、Morph、3D、嵌入视频在
-弱引擎上回退为「直接出现」或无转场，**内容不丢、不崩溃**，只是观感降级。交付策略不再锁定
-单一版本：同一份 pptx 全量写入 L0 + L1，弱引擎静默回退；L2 排除层任何版本都不写。
+弱引擎上回退为「直接出现」或无转场，**内容不丢、不崩溃**，只是观感降级。
+动工前先声明目标引擎档位；未声明时按效果优先档交付，并在交付说明里写清 2019 上的
+降级预期（降级但不崩）。
 
-### 10.1 L0 安全层（2019 / 365 / WPS 均按标准 DrawingML 解析）
+### 10.1 两档共同底线（任何档位都必须满足）
+
+- 文件结构合法、能打开、不弹修复、内容不丢、不崩；
+- 2019 上允许效果降级（退回出现 / fade / 无转场），但不允许因高版本写法导致文件损坏；
+- 排除层非法内容任何档位都不写（见 10.4）。
+
+### 10.2 效果优先档（默认；目标 PowerPoint 365 / 新版 WPS）
+
+放开 Morph 跨页配对补间、p14 现代转场、`zoom_rot` / `bounce_up` / `drop_in` /
+`grow_once`、p14 转场组合与艺术效果预烘焙后的高强度观感；安全族不再强制打底，
+仅作可选兜底或局部稳定项。高版本项在弱引擎上的降级行为逐条记入批次降级提示，
+不表述为「跨端一致」。
+
+| 效果 | 档位归属 | 弱引擎回退行为 | 编排约束 |
+|---|---|---|---|
+| `zoom_rot`（31，含 rotation 90→0） | 高版本增强 | 可能映射不稳，退回出现/zoom | 不承担对象首现唯一手段 |
+| `bounce_up`（37 弹跳）/ `drop_in`（47 下降） | 高版本增强 | 版本差异，可能回退直接出现 | 可作主入场；兼容档降级为安全族 fly/wipe |
+| `grow_once`（emph 6，animScale 无 autoRev） | 高版本增强 | 旧版 WPS 识别不稳 | 强调场景用；需要回弹优先 `grow` |
+| `zoom_out`（exit 23/32，w/h→0 缩小退出） | 高版本增强 | 不认则退回 disappear | 局部换内容页点缀；整页换内容交给转场 |
+| p14 转场（doors/gallery/flip/switch/prism/conveyor/window/honeycomb/reveal/ripple/vortex/glitter/ferris） | 高版本增强 | 不认则整段回退无转场 | 可全稿使用；方向跟全稿主轴，类型按页型轮换，避免相邻页同类型堆叠 |
+| `morph`（p159:morph，mc:Choice/Fallback 包裹） | 高版本增强 | 2019 剥离 Choice，走 Fallback fade | 前后两页对应对象必须同名、同类型、数量一致；配对对象不叠加页内位置动画；不依赖它做首现 |
+
+### 10.3 兼容优先档（非默认；明确要求兼容 2019 / 旧 WPS 时启用）
+
+仅当用户明确要求在 PowerPoint 2019 / 旧版 WPS 放映，或目标机版本未知且不能接受
+降级观感时启用。口径为标准 DrawingML 安全族打底，高版本项仅作同组点缀或不下发。
 
 - 入场：`fade`、`fly_up/l/r/d`、`wipe_l/r/u/d`、`appear`、`zoom`。
 - 强调：`spin`、`swing`、`grow`、`blink`、`path`。
@@ -286,35 +312,25 @@ PowerPoint 2019 / 365 与 WPS 演示之间互通稳定；高级预设、p14 现�
   `pull`、`blinds_v/h`、`comb`、`random`、`checker`、`wheel`、`wheel4`、`wheel8`、
   `wedge`、`circle`、`zoom_t`、`randombar_v`。
 
-### 10.2 L1 高版本增强（写入同稿；不认则回退，不伤内容）
-
-| 效果 | 分层 | 回退行为 | 编排约束 |
-|---|---|---|---|
-| `zoom_rot`（31，含 rotation 90→0） | 动画 | 可能映射不稳，退回出现/zoom | 不承担对象首现唯一手段 |
-| `bounce_up`（37 弹跳）/ `drop_in`（47 下降） | 动画 | 版本差异，可能回退直接出现 | 主入场用 L0，弹跳/下落只做同组点缀 |
-| `grow_once`（emph 6，animScale 无 autoRev） | 动画 | 旧版 WPS 识别不稳 | 强调场景用；需要回弹优先 `grow` |
-| `zoom_out`（exit 23/32，w/h→0 缩小退出） | 动画 | 不认则退回 disappear | 局部换内容页点缀；整页换内容交给转场 |
-| p14 转场（doors/gallery/flip/switch/prism/conveyor/window/honeycomb/reveal/ripple/vortex/glitter/ferris） | 转场 | 不认则整段回退无转场 | 可全稿使用；方向跟全稿主轴，类型按页型轮换，避免相邻页同类型堆叠 |
-| `morph`（p159:morph，mc:Choice/Fallback 包裹） | 转场 | 2019 剥离 Choice，走 Fallback fade | 前后两页对应对象必须同名、同类型、数量一致；不依赖它做首现 |
-
-### 10.3 L2 排除层（任何交付都不写）
+### 10.4 排除层（任何交付都不写）
 
 - 内嵌视频 / mediacall；翻书页 / 页面卷曲 / 3D 模型位相机动画；
 - 空壳预设（第 4 节清单）；非商业/个人学习许可的模板素材与照片资产。
 
-### 10.4 适配规则
+### 10.5 适配规则
 
-1. 同一份 pptx 全量写入 L0 + L1；不按猜测的目标软件裁剪 L1 项。
-2. 对象主入场优先 L0；L1 动画可作同组强调或点缀，避免某个对象只靠 L1 预设首现。
-3. Morph 只用于前后页可配对的对象；配对不成立时不要写 morph 转场。
+1. 动工前声明目标引擎档位；未声明按效果优先档，交付说明写明 2019 降级预期。
+2. 效果优先档可全量写入高版本项；兼容档主入场用安全族，高版本预设只作点缀或不下发。
+3. Morph 只用于前后页可配对的对象；配对不成立时不要写 morph 转场；配对对象不叠加
+   页内位置动画，两套时间轴会打架。
 4. 生成后必须过 `validate` 结构体检：spid 命中、cTn id 唯一、子元素顺序正确；结构错误导致的
    「整页动画被丢弃」不属于特性回退，必须修掉。
-5. 跨软件交付前在 PPT 2019、PPT 365、WPS 新版各 F5 一次；回退项记入验证记录（L0 / L1 标注）。
+5. 跨软件交付前在 PPT 2019、PPT 365、WPS 新版各 F5 一次；回退项记入验证记录（档位标注）。
 6. 字体按 `a:latin`/`a:ea` 族名记录；两端缺字体会回退系统字体，正式放映机预装字体或换同档黑体。
 7. WPS 与 PPT 的动画窗格、计时入口位置不同，但 click/with/after 语义一致；自动批次与点击批次的
    分层写法在两端通用。
 
-## 11. Morph 配对帧配方（L1，配对成立才写）
+## 11. Morph 配对帧配方（高版本，配对成立才写）
 
 丝滑的跨页位移主要来自 Morph 配对帧序列，而非页内对象动画。18 套完整效果配方（页数规则、
 素材门槛、图层结构、移植约束）见 `effect-recipes.md`；本节只列跨配方通用的帧序列模式：

@@ -75,7 +75,7 @@ T_NOTES = RELS_TYPE + "notesSlide"
 T_HLINK = RELS_TYPE + "hyperlink"
 T_SLIDE = RELS_TYPE + "slide"
 
-# 显式不搬运、直接抛错的关系类型（L2 / 未实现）
+# 显式不搬运、直接抛错的关系类型（排除层 / 未实现）
 UNSUPPORTED_TYPES = {
     RELS_TYPE + "audio": "音频",
     RELS_TYPE + "video": "视频",

@@ -1,7 +1,7 @@
 ---
 name: dynamic-pptx-deck
 display_name: "高级动态PPT"
-description: "把任意已有内容（文档、报告、笔记、大纲、旧 pptx 原稿）做成带动画与转场的原生可编辑 .pptx。用于在 PowerPoint 2019/365 与 WPS 演示中编排入场/强调/退出/路径动画、页面转场与商务版式；覆盖五套主基线 + 11 套学术配色、通用页型骨架与母题、18 套效果配方、Morph 配对帧、三层渐进增强适配（L0 安全层 / L1 高版本增强 / L2 排除层）、timing 树结构排错、容器—文字配对时序核对与效果弃用清单；支持跨包幻灯片整页导入，复用参考件现成效果页的动画与转场，导入后仅做文字替换与页序编排。"
+description: "把任意已有内容（文档、报告、笔记、大纲、旧 pptx 原稿）做成带动画与转场的原生可编辑 .pptx。用于在 PowerPoint 2019/365 与 WPS 演示中编排入场/强调/退出/路径动画、页面转场与商务版式；覆盖五套主基线 + 11 套学术配色、通用页型骨架与母题、18 套效果配方、Morph 配对帧、双档适配（效果优先默认 / 兼容优先可选）与排除层、timing 树结构排错、容器—文字配对时序核对与效果弃用清单；支持跨包幻灯片整页导入，复用参考件现成效果页的动画与转场，导入后仅做文字替换与页序编排。"
 ---
 
 # 高级动态PPT
@@ -21,6 +21,8 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 
 1. **整理内容大纲**：从素材中提取章节、要点、数据与结论；不编造经历、统计数字与
    事实，素材缺失的信息用【】占位；先定页数与每页承载的信息块，再谈视觉。
+   动工前先声明目标引擎档位：效果优先档（默认，365 / 新版 WPS）或兼容优先档
+   （明确要求兼容 2019 / 旧 WPS）；未声明按效果优先档交付，并写明 2019 降级预期。
 2. 读 `references/layout-recipes.md`：选定配色基线（A 浅色商务 / B 深色科技 / C 红金 /
    D 紫夜 / E 深绿青碧，或 11 套学术配色），按内容选版式骨架（封面、目录、章节过渡、卡片、双栏、
    时间线、表格、Q&A、数字带、轮播、模糊大字页、结尾）。
@@ -69,12 +71,14 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 
 仅用标准库（zipfile + xml.etree），逐页核对容器—文字配对：同批绑定、延迟差
 150—450ms、文字只挂 fade、退出文字先容器后 100—150ms，统计孤儿文字、cTn 预算、
-转场与悬空 spTgt。
+转场与悬空 spTgt；另做跨页配对互斥核对：同名同类型出现在 ≥2 页的对象判为 Morph
+配对对象，包内实际使用 Morph 时，挂页内位置动画（位移 / 路径 / fly / wipe）判 FAIL，
+纯 fade / opacity 记 info 放行；无 Morph 的包按独立重复元素处理，不判互斥。
 
 - CLI：`python3 pairing_check.py <deck.pptx> [--min-gap 150] [--max-gap 450] [--max-ctn 60] [--json OUT] [--md OUT]`；
   `--json` 出机器可读报告，`--md` 出人读表格。
 - 退出码：0=全部 PASS；1=存在 FAIL；2=输入错误或包不可读。
-- `python3 pairing_check.py --selftest`：内联最小 fixture 断言六类判定，含必然 FAIL
+- `python3 pairing_check.py --selftest`：内联最小 fixture 断言七类判定，含必然 FAIL
   的反例；口径见 `references/animation-orchestration.md` 第 3、5 节。
 
 ## 效果路由接口（scripts/effect_router.py）
@@ -82,10 +86,14 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 仅用标准库（zipfile + xml.etree + json），解析每页形状 / 文本 / 数字 / 层级 / 时间词，
 或接收 JSON 页描述；输出 EffectPlan：页型、信息特征、批次拆法、预设族、常驻环境动效、
 强调对象、转场建议与路线建议（原生重建 / 整页导入 / 阻断），每个推荐项带命中的规则编号
-（basis）；信号重叠或稀疏时给 `confidence: low` 与保守档，不猜。
+（basis）与引擎档位依据（`ENGINE:effect_first` / `ENGINE:compat`）；信号重叠或稀疏时给
+`confidence: low` 与保守档，不猜。
 
-- CLI：`python3 effect_router.py <deck.pptx|page.json> [--page N] [--json OUT] [--md OUT]`；
+- CLI：`python3 effect_router.py <deck.pptx|page.json> [--page N] [--engine effect_first|compat] [--json OUT] [--md OUT]`；
   `--json` 出机器可读计划，`--md` 出人读表格。
+- `--engine` 默认 `effect_first`（效果优先档，放开高版本预设与 Morph 建议）；传 `compat`
+  走兼容优先档，只给标准 DrawingML 安全族。报告顶层 `engine_profile` 标注档位，每条批次
+  带 `degrade` 字段注明在 2019 上的降级行为。
 - 退出码：0=正常出计划；2=输入不可读。
 - 批次按页型角色矩阵生成（KPI / 时间线 / 表格 / 卡片 / 双栏 / 引语 / 过渡 / 结尾各有独立
   角色、数量、预设族与延迟区间）；路由为原生重建时，批次结构（角色 + 数量 + 预设族 + 延迟
@@ -115,13 +123,11 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 
 ## 效果分级原则
 
-- 实测可用（安全打底）：`fade`、`fly_up`、`wipe_l`、`spin`。
-- 结构移植（带真实行为节点，未在目标机复测）：其余 fly/wipe 方向、`zoom`、
-  `zoom_rot`、`zoom_out`、`bounce_up`、`drop_in`、`appear`、`grow_once`、`blink`、`path`。
-- 双端（PPT + WPS）适配分级见 effects-catalog 第 10 节：不确定目标软件时转场只用 ECMA
-  基础组，主入场用安全层，p14 转场与高风险预设只作点缀或替换。
-- 弃用清单（已确认不生效，不要加回）：`box`、旧版 zoom、stretch、空壳预设、Morph
-  （仅 L1 配对成立时使用）、翻书页/页面卷曲、内嵌视频；详见 effects-catalog 第 4 节。
+- 实测可用（标准 DrawingML 安全族，2019 / 365 / WPS 均可解析）：`fade`、`fly_up`、`wipe_l`、`spin`。
+- 结构移植（带真实行为节点，未在目标机复测）：其余 fly/wipe 方向、`zoom`、`appear`、`blink`、`path`。
+- 高版本增强（效果优先档下发；弱引擎降级但不崩）：`zoom_rot`、`zoom_out`、`bounce_up`、`drop_in`、`grow_once`、p14 现代转场、Morph 配对补间；兼容优先档不下发或仅作点缀。
+- 双档口径见 effects-catalog 第 10 节：默认效果优先；只有明确要求兼容 2019 / 旧 WPS 时才切兼容优先档，转场只用 ECMA 基础组、主入场用安全族。
+- 弃用清单（已确认不生效，不要加回）：`box`、旧版 zoom、stretch、空壳预设、翻书页/页面卷曲、内嵌视频；Morph 仅在配对成立时使用。详见 effects-catalog 第 4 节。
 
 ## 参考文档
 

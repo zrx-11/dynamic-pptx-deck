@@ -8,9 +8,11 @@ JSON 页描述；输出 EffectPlan：页型、信息特征、批次拆法、预�
 判定条件编号（basis），识别不确定时给 confidence=low 与保守档，不猜。
 
 CLI：
-    python3 effect_router.py <deck.pptx> [--page N] [--json OUT] [--md OUT]
-    python3 effect_router.py <page-plan.json> [--json OUT] [--md OUT]
+    python3 effect_router.py <deck.pptx> [--page N] [--engine effect_first|compat] [--json OUT] [--md OUT]
+    python3 effect_router.py <page-plan.json> [--engine effect_first|compat] [--json OUT] [--md OUT]
 
+引擎档位：effect_first（默认，目标 365 / 新版 WPS，放开高版本预设与 Morph）；
+compat（明确要求兼容 2019 / 旧 WPS 时启用，只给标准 DrawingML 安全族）。
 退出码：0=正常出计划；2=输入不可读。
 """
 from __future__ import annotations
@@ -63,6 +65,42 @@ EFFECTS_PER = {
     "left": 1, "right": 1, "cards": 1, "card_text": 1, "quote_line": 1,
     "attribution": 1, "summary": 1, "closing": 1, "body": 1,
 }
+
+# 引擎档位：effect_first 为默认（365 / 新版 WPS）；compat 仅在明确要求兼容
+# 2019 / 旧 WPS 时启用。高版本预设在弱引擎上降级但不损坏文件。
+ENGINE_FIRST = "effect_first"
+ENGINE_COMPAT = "compat"
+ENGINES = (ENGINE_FIRST, ENGINE_COMPAT)
+
+# 高版本预设族：compat 档不下发；effect_first 档下发并附 2019 降级提示。
+HIGH_TIER = {"zoom_rot", "bounce_up", "drop_in", "grow_once"}
+DEGRADE_NOTE = {
+    "zoom_rot": "2019 映射不稳时退回出现 / zoom",
+    "bounce_up": "旧版本差异，可能回退直接出现",
+    "drop_in": "旧版本差异，可能回退直接出现",
+    "grow_once": "旧版 WPS 识别不稳，退回出现",
+}
+SAFE_NOTE = "标准 DrawingML 预设，2019 / 365 / WPS 均可解析，无降级"
+
+# 各角色在两档下的预设族；未列出的角色两档共用默认族。
+FAMILIES = {
+    "kpi_value": {ENGINE_FIRST: ["zoom", "zoom_rot"], ENGINE_COMPAT: ["zoom"]},
+    "cards": {ENGINE_FIRST: ["bounce_up", "fly_up", "wipe_l"],
+              ENGINE_COMPAT: ["fly_up", "wipe_l"]},
+    "closing": {ENGINE_FIRST: ["grow_once", "fade"], ENGINE_COMPAT: ["fade"]},
+}
+
+# compat 档替换掉的 p14 / 现代转场备选（主转场保持 ECMA 基础组）。
+COMPAT_ALT_TRANSITION = {"process": "pull", "quote": "fade"}
+
+
+def _families(role: str, engine: str, default: list[str]) -> list[str]:
+    return FAMILIES.get(role, {}).get(engine, default)
+
+
+def _degrade(presets: list[str]) -> str:
+    notes = [DEGRADE_NOTE[p] for p in presets if p in DEGRADE_NOTE]
+    return "；".join(notes) if notes else SAFE_NOTE
 
 
 class RouterError(RuntimeError):
@@ -397,6 +435,7 @@ def _b(role: str, count: int, presets: list[str], delay: list[int],
     entry = {
         "role": role, "count": count, "preset_family": presets,
         "delay_range": delay, "note": note,
+        "degrade": _degrade(presets),
         "effects": count * EFFECTS_PER.get(role, 1),
     }
     if per_batch:
@@ -405,7 +444,7 @@ def _b(role: str, count: int, presets: list[str], delay: list[int],
     return entry
 
 
-def _batches(page_type: str, feat: dict) -> list[dict]:
+def _batches(page_type: str, feat: dict, engine: str = ENGINE_FIRST) -> list[dict]:
     """按页型角色矩阵生成批次；数量尽量从形状特征推导，推不出时取该页型默认保守档。"""
     cards = max(feat["card_count"], 1)
     values = max(feat["big_number_shapes"], 1)
@@ -422,15 +461,18 @@ def _batches(page_type: str, feat: dict) -> list[dict]:
             _b("subtitle", 1, ["fade"], [150, 300]),
         ]
     if page_type == "section_transition":
+        hero_note = ("高冲击母题；稀疏页可整页导入复用，或按 Morph 跨页配对衔接"
+                     if engine == ENGINE_FIRST else
+                     "高冲击母题；稀疏页可整页导入复用")
         return [
-            _b("hero", 1, ["spin", "path"], [0, 0], "高冲击母题；稀疏页可整页导入复用"),
+            _b("hero", 1, ["spin", "path"], [0, 0], hero_note),
             _b("kicker", 1, ["fade"], [120, 250]),
             _b("chapter_title", 1, ["fade", "wipe_l"], [200, 400]),
         ]
     if page_type == "kpi":
         return [
             ambient,
-            _b("kpi_value", values, ["zoom", "zoom_rot"], [0, 200],
+            _b("kpi_value", values, _families("kpi_value", engine, ["zoom"]), [0, 200],
                "数字载体 zoom 入场，随后 grow 回弹一次；不用 fade 平铺数字"),
             _b("label", values, ["fade"], [150, 450], "标签文字晚于数字 150—450ms"),
             _b("action", 1, ["fade"], [300, 500]),
@@ -463,7 +505,7 @@ def _batches(page_type: str, feat: dict) -> list[dict]:
     if page_type == "card_grid":
         return [
             ambient,
-            _b("cards", cards, ["fly_up", "wipe_l"], [150, 300],
+            _b("cards", cards, _families("cards", engine, ["fly_up", "wipe_l"]), [150, 300],
                "第 i 张卡与其文字同批成对；编号圆牌随卡片 zoom，不另占效果节点；每批 ≤3 张"),
             _b("card_text", cards, ["fade"], [150, 450],
                "卡内文字与同序号卡片同批，晚 150—450ms"),
@@ -477,7 +519,8 @@ def _batches(page_type: str, feat: dict) -> list[dict]:
         return [
             _b("summary", max(feat["text_shapes"] - 1, 1), ["fade"], [120, 300],
                "结论分批 fade"),
-            _b("closing", 1, ["fade"], [300, 450], "收束语最后入场，不堆强调"),
+            _b("closing", 1, _families("closing", engine, ["fade"]), [300, 450],
+               "收束语最后入场，不堆强调"),
         ]
     # 保守默认档
     return [
@@ -506,7 +549,8 @@ def _budget(batches: list[dict]) -> dict:
     }
 
 
-def _route(page_type: str, feat: dict, batches: list[dict] | None = None) -> dict:
+def _route(page_type: str, feat: dict, batches: list[dict] | None = None,
+           engine: str = ENGINE_FIRST) -> dict:
     cautions: list[str] = []
     missing: list[str] = []
 
@@ -549,18 +593,22 @@ def _route(page_type: str, feat: dict, batches: list[dict] | None = None) -> dic
         "reason": "内容结构可由封装函数原生构建；批次结构直接喂给 build 脚本。",
         "basis": ["BUILD-1"],
         "build": {
-            "batches": batches or _batches(page_type, feat),
-            "preset_tier": "L0 安全层打底，L1 仅作同组点缀",
+            "batches": batches or _batches(page_type, feat, engine),
+            "preset_tier": ("效果优先档：高版本预设按观感选用，2019 降级但不崩"
+                            if engine == ENGINE_FIRST else
+                            "兼容优先档：标准 DrawingML 安全族打底，高版本预设不下发"),
         },
         "cautions": cautions,
         "missing": missing,
     }
 
 
-def plan_page(feat: dict) -> dict:
+def plan_page(feat: dict, engine: str = ENGINE_FIRST) -> dict:
     cls = classify(feat)
     page_type = cls["page_type"]
     trans_main, trans_alt, trans_basis = TRANSITION_BY_TYPE[page_type]
+    if engine == ENGINE_COMPAT:
+        trans_alt = COMPAT_ALT_TRANSITION.get(page_type, trans_alt)
 
     emphasis = []
     if page_type == "kpi":
@@ -572,17 +620,28 @@ def plan_page(feat: dict) -> dict:
     else:
         emphasis = ["当前章节环 / 核心结论：单次强调，不长闪"]
 
-    batches = _batches(page_type, feat)
-    route = _route(page_type, feat, batches)
+    batches = _batches(page_type, feat, engine)
+    route = _route(page_type, feat, batches, engine)
     budget = _budget(batches)
     ambient = page_type not in ("table_list",)
+
+    engine_basis = ["ENGINE:%s" % engine]
+    if engine == ENGINE_FIRST:
+        engine_note = ("默认效果优先档（目标 365 / 新版 WPS）；2019 上高版本项降级"
+                       "但不损坏文件，逐批降级提示见 batches[].degrade")
+    else:
+        engine_note = ("兼容优先档（明确要求兼容 2019 / 旧 WPS）；仅下发标准"
+                       "DrawingML 安全族，高版本预设不下发")
 
     return {
         "page": feat.get("index"),
         "page_type": page_type,
         "page_type_label": TYPE_LABEL[page_type],
         "confidence": cls["confidence"],
-        "basis": cls["basis"],
+        "engine_profile": engine,
+        "engine_basis": engine_basis,
+        "engine_note": engine_note,
+        "basis": cls["basis"] + engine_basis,
         "traits": {
             "text_shapes": feat["text_shapes"],
             "char_count": feat["char_count"],
@@ -644,7 +703,8 @@ def _slide_order(zf: zipfile.ZipFile) -> list[str]:
         key=lambda s: int(re.search(r"\d+", s).group()))
 
 
-def plan_pptx(path: str, page_only: int | None) -> list[dict]:
+def plan_pptx(path: str, page_only: int | None,
+              engine: str = ENGINE_FIRST) -> list[dict]:
     try:
         zf = zipfile.ZipFile(path)
     except (OSError, zipfile.BadZipFile) as e:
@@ -659,11 +719,12 @@ def plan_pptx(path: str, page_only: int | None) -> list[dict]:
                 continue
             feat = extract_features(part, zf.read(part))
             feat["index"] = i
-            plans.append(plan_page(feat))
+            plans.append(plan_page(feat, engine))
     return plans
 
 
-def plan_json(path: str, page_only: int | None) -> list[dict]:
+def plan_json(path: str, page_only: int | None,
+              engine: str = ENGINE_FIRST) -> list[dict]:
     try:
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
@@ -675,7 +736,7 @@ def plan_json(path: str, page_only: int | None) -> list[dict]:
         if page_only and i != page_only:
             continue
         feat = _normalize_page(raw, i)
-        plans.append(plan_page(feat))
+        plans.append(plan_page(feat, engine))
     return plans
 
 
@@ -740,6 +801,10 @@ def _budget_summary(budget: dict) -> str:
 
 def _md(plans: list[dict]) -> str:
     lines = ["# 效果路由计划", ""]
+    if plans:
+        lines.append("- 引擎档位：**%s**；%s" % (
+            plans[0].get("engine_profile", ENGINE_FIRST), plans[0].get("engine_note", "")))
+        lines.append("")
     lines.append("| 页 | 页型 | 置信度 | 批次角色 | 转场 | 路线 | 依据 |")
     lines.append("|---|---|---|---|---|---|---|")
     for p in plans:
@@ -763,6 +828,8 @@ def _md(plans: list[dict]) -> str:
             seg = "- 批次 %s：%d 个，预设 %s，延迟 %sms" % (
                 b["role"], b["count"], "/".join(b["preset_family"]),
                 "%d—%d" % tuple(b["delay_range"]))
+            if b.get("degrade"):
+                seg += "；降级提示：%s" % b["degrade"]
             if b.get("batch_count", 1) > 1:
                 seg += "；每批 %d 个，拆 %d 批" % (b["per_batch"], b["batch_count"])
             lines.append(seg)
@@ -780,20 +847,23 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="内容识别与效果路由")
     ap.add_argument("input", help=".pptx 或 JSON 页描述")
     ap.add_argument("--page", type=int, default=None, help="只分析第 N 页（1 起）")
+    ap.add_argument("--engine", choices=list(ENGINES), default=ENGINE_FIRST,
+                    help="引擎档位：effect_first（默认，365 / 新版 WPS）或 compat（兼容 2019 / 旧 WPS）")
     ap.add_argument("--json", dest="json_out", help="机器可读计划输出路径")
     ap.add_argument("--md", dest="md_out", help="人读表格输出路径")
     args = ap.parse_args(argv)
 
     try:
         if args.input.lower().endswith(".json"):
-            plans = plan_json(args.input, args.page)
+            plans = plan_json(args.input, args.page, args.engine)
         else:
-            plans = plan_pptx(args.input, args.page)
+            plans = plan_pptx(args.input, args.page, args.engine)
     except RouterError as e:
         print("错误：%s" % e)
         return 2
 
-    report = {"plans": plans,
+    report = {"engine_profile": args.engine,
+              "plans": plans,
               "totals": {"pages": len(plans),
                          "high_confidence": sum(1 for p in plans if p["confidence"] == "high"),
                          "low_confidence": sum(1 for p in plans if p["confidence"] == "low"),
@@ -812,8 +882,8 @@ def main(argv: list[str] | None = None) -> int:
             p["page"], p["page_type_label"], p["confidence"], p["route"]["decision"],
             p["transition"]["suggested"], _batch_summary(p["batches"]),
             _budget_summary(p["budget"]), ", ".join(p["basis"])))
-    print("合计 %d 页，高置信 %d，低置信 %d，路线分布 %s" % (
-        report["totals"]["pages"], report["totals"]["high_confidence"],
+    print("合计 %d 页，档位 %s，高置信 %d，低置信 %d，路线分布 %s" % (
+        report["totals"]["pages"], args.engine, report["totals"]["high_confidence"],
         report["totals"]["low_confidence"], report["totals"]["routes"]))
     return 0
 

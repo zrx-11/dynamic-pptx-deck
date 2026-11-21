@@ -14,7 +14,7 @@ python-pptx、PptxGenJS 这类库都不封装对象动画与页面转场；动�
 
 - 一套形状与文本封装函数，配合动画批次、转场、轴心锁定组合体；
 - 一份效果白名单与弃用清单，只写带真实行为节点的预设；
-- 一套三层渐进适配模型：安全层双端通用，高版本增强不认则静默回退，排除层不进稿；
+- 一套双档适配模型：效果优先档默认面向 365 / 新版 WPS，兼容优先档仅在明确要求兼容 2019 / 旧 WPS 时启用；排除层不进稿；
 - 五套主配色基线 + 11 套学术配色，通用页型骨架与配方级版式（封面、目录、卡片、双栏、时间线、表格、Q&A、数字带、轮播、模糊大字页、结尾）；
 - 18 套效果配方：页数规则、素材门槛、图层结构、移植约束与跨配方通用规则；
 - 跨包幻灯片整页导入：复用参考件现成效果页的 timing/transition，导入后仅做文字替换与页序编排，主题色解析为显式色值避免漂移。
@@ -86,7 +86,7 @@ pip install python-pptx lxml
 python3 scripts/dynamic_deck.py check <deck.pptx>
 ```
 
-5. 用 LibreOffice 导出 PDF/截图核对静态版式；移植类与 L1 效果在目标软件 F5 复核。
+5. 用 LibreOffice 导出 PDF/截图核对静态版式；移植类与高版本效果在目标软件 F5 复核。
 
 自测样例：
 
@@ -118,21 +118,23 @@ python3 scripts/dynamic_deck.py check /tmp/demo.pptx
 `--selftest` 跑内联 fixture 自检；退出码 0=全 PASS、1=有 FAIL、2=输入错误。
 
 内容识别与效果路由：`scripts/effect_router.py` 仅用标准库，CLI
-`python3 effect_router.py <deck.pptx|page.json> [--page N] [--json OUT] [--md OUT]`；
+`python3 effect_router.py <deck.pptx|page.json> [--page N] [--engine effect_first|compat] [--json OUT] [--md OUT]`；
 识别页型与信息特征，输出批次拆法、预设族、强调对象、转场与路线建议，逐项带规则编号；
+报告顶层 `engine_profile` 标注档位（默认 `effect_first`，`compat` 走兼容优先安全族），批次带 `degrade` 降级提示；
 退出码 0=正常出计划、2=输入不可读。规则矩阵见 `references/effect-routing.md`。
 
 跨包导入：`scripts/slide_importer.py` 仅用标准库做文件级 zip 手术；`SlideImporter(dst_pptx)`
 提供 `import_slide` / `replace_text` / `reorder` / `save`，模块级 `inspect` 读取参考页结构快照，
 支持有序整串与按形状名两种文字替换模式。完整口径见 `references/import-guide.md`。
 
-## 三层适配
+## 双档适配
 
-- **L0 安全层**：2019 / 365 / WPS 通用的入场、强调、退出与 ECMA 基础转场。
-- **L1 高版本增强**：p14 现代转场、Morph、移植类强调/入场；引擎不认时静默回退，不丢内容。
-- **L2 排除层**：内嵌视频/mediacall、翻书页卷曲、3D、空壳预设、非商业素材，不进模块。
+- **效果优先档（默认）**：目标 365 / 新版 WPS；放开 Morph 配对补间、p14 现代转场与高版本强调预设，安全族仅作可选兜底。
+- **兼容优先档（可选）**：明确要求兼容 2019 / 旧 WPS 时启用；只下发标准 DrawingML 安全族（入场、强调、退出与 ECMA 基础转场），高版本项不下发或仅作点缀。
+- **共同底线**：文件结构合法、能打开、不弹修复、内容不丢、不崩；弱引擎上允许降级但不允许损坏。
+- **排除层**：内嵌视频/mediacall、翻书页卷曲、3D、空壳预设、非商业素材，任何档位都不进模块。
 
-主入场永远用 L0；L1 只做同组点缀。跨软件交付前在 PowerPoint 与 WPS 各 F5 一次。
+动工前先声明目标引擎档位；未声明按效果优先档交付，并在说明里写清 2019 上的降级预期。跨软件交付前在 PowerPoint 与 WPS 各 F5 一次。
 
 ## 已知边界
 
