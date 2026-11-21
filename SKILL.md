@@ -1,7 +1,7 @@
 ---
 name: dynamic-pptx-deck
 display_name: "高级动态PPT"
-description: "把任意已有内容（文档、报告、笔记、大纲、旧 pptx 原稿）做成带动画与转场的原生可编辑 .pptx。用于在 PowerPoint 2019/365 与 WPS 演示中编排入场/强调/退出/路径动画、页面转场与商务版式；覆盖五套主基线 + 11 套学术配色、通用页型骨架与母题、17 套效果配方、Morph 配对帧、三层渐进增强适配（L0 安全层 / L1 高版本增强 / L2 排除层）、timing 树结构排错、容器—文字配对时序核对与效果弃用清单；支持跨包幻灯片整页导入，复用参考件现成效果页的动画与转场，导入后仅做文字替换与页序编排。"
+description: "把任意已有内容（文档、报告、笔记、大纲、旧 pptx 原稿）做成带动画与转场的原生可编辑 .pptx。用于在 PowerPoint 2019/365 与 WPS 演示中编排入场/强调/退出/路径动画、页面转场与商务版式；覆盖五套主基线 + 11 套学术配色、通用页型骨架与母题、18 套效果配方、Morph 配对帧、三层渐进增强适配（L0 安全层 / L1 高版本增强 / L2 排除层）、timing 树结构排错、容器—文字配对时序核对与效果弃用清单；支持跨包幻灯片整页导入，复用参考件现成效果页的动画与转场，导入后仅做文字替换与页序编排。"
 ---
 
 # 高级动态PPT
@@ -62,7 +62,7 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
   - 自动换片：`transition(slide, kind, adv_ms=2000, on_click=False)`
 
 转场：`transition(slide, kind)`；可用清单、观感分组与选型纪律见 `references/effects-catalog.md` 第 5 节，
-页型分工表见 `references/layout-recipes.md` 第 7b 节；17 套完整效果配方见 `references/effect-recipes.md`。
+页型分工表见 `references/layout-recipes.md` 第 7b 节；18 套完整效果配方见 `references/effect-recipes.md`。
 体检：`validate(path)`；CLI：`python3 dynamic_deck.py check <deck.pptx>` / `demo <out.pptx>`。
 
 ## 配对检查接口（scripts/pairing_check.py）
@@ -130,5 +130,5 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 - `references/effect-routing.md`：内容识别与效果路由矩阵——页型命中条件、推荐效果、禁用项与反例形态、基调与规模约束、保守档口径。
 - `references/layout-recipes.md`：配色字体基线（含 11 套学术配色）、页型构成与字号阶梯、通用页型骨架与母题、配方级版式（轮播/扇形/六边形/模糊大字等）、深色技术风装饰手法、环境动效母题、跨页流畅感编排、工程注意事项与许可边界。
 - `references/source-inventory.md`：素材许可分级、样稿预设统计归档、路线选型与验证边界。
-- `references/effect-recipes.md`：17 套效果配方（页数规则、素材门槛、图层结构、移植约束、跨配方通用规则）。
+- `references/effect-recipes.md`：18 套效果配方（页数规则、素材门槛、图层结构、移植约束、跨配方通用规则）。
 - `references/import-guide.md`：跨包幻灯片导入口径——适配前置总原则与三路线判定（整页导入 / 原生重建 / 阻断）、inspect 结构快照、check_slide 四维度适配检查、adapt_slide 适配动作、导入处理范围、主题色解析与重着色、文字替换两种模式、组装与路线混用边界、验证纪律与接口/CLI 参考。
