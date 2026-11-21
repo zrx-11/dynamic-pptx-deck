@@ -106,7 +106,7 @@ def _register_namespaces():
         ("p", P_NS), ("a", A_NS), ("r", R_NS),
         ("vt", VT_NS),
         ("p14", "http://schemas.microsoft.com/office/powerpoint/2010/main"),
-        ("p159", "http://schemas.microsoft.com/office/powerpoint/2015/12/main"),
+        ("p159", "http://schemas.microsoft.com/office/powerpoint/2015/09/main"),
         ("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006"),
         ("p15", "http://schemas.microsoft.com/office/powerpoint/2012/main"),
     ]:

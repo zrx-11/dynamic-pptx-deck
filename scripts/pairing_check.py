@@ -38,7 +38,11 @@ A_NS = "http://schemas.openxmlformats.org/drawingml/2006/main"
 R_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
 REL_NS = "http://schemas.openxmlformats.org/package/2006/relationships"
 MC_NS = "http://schemas.openxmlformats.org/markup-compatibility/2006"
-P159_NS = "http://schemas.microsoft.com/office/powerpoint/2015/12/main"
+# MS-PPTX 规范的 morph 命名空间（正确值）。
+P159_NS = "http://schemas.microsoft.com/office/powerpoint/2015/09/main"
+# 历史错误值：写成 2015/12/main 时 PowerPoint 不认该前缀声明，整段跳过 Choice；
+# 保留用于检出旧包，检出记 ERROR，不计入 uses_morph。
+P159_LEGACY_NS = "http://schemas.microsoft.com/office/powerpoint/2015/12/main"
 
 P = "{%s}" % P_NS
 A = "{%s}" % A_NS
@@ -222,6 +226,13 @@ def _is_displacement(ctn: ET.Element) -> bool:
     return False
 
 
+def _morph_status(root: ET.Element) -> tuple[bool, bool]:
+    """返回 (合法 morph, 无效命名空间 morph)。09 版为规范值；12 版为历史错误值。"""
+    valid = root.find(f".//{{{P159_NS}}}morph") is not None
+    legacy = root.find(f".//{{{P159_LEGACY_NS}}}morph") is not None
+    return valid, legacy
+
+
 def parse_timing(root: ET.Element) -> dict:
     """返回效果列表、cTn 计数、转场信息。"""
     effects: list[dict] = []
@@ -237,20 +248,23 @@ def parse_timing(root: ET.Element) -> dict:
             "kind": child.tag.split("}")[1] if child is not None else "fade",
             "advTm": int(adv) if adv and adv.isdigit() else adv,
         }
-    morph = root.find(f".//{{{P159_NS}}}morph") is not None
+    morph, morph_legacy = _morph_status(root)
+    morph_ns = "2015/09" if morph else ("2015/12" if morph_legacy else None)
+    morph_fields = {"morph": morph, "morph_legacy": morph_legacy, "morph_ns": morph_ns}
 
     if timing is None:
         return {"effects": effects, "ctn": ctn_count, "transition": transition,
-                "morph": morph}
+                **morph_fields}
 
     main_seq = timing.find(f".//{P}cTn[@nodeType='mainSeq']")
     if main_seq is None:
         return {"effects": effects, "ctn": ctn_count, "transition": transition,
-                "morph": morph}
+                **morph_fields}
 
     batch_lst = main_seq.find(f"{P}childTnLst")
     if batch_lst is None:
-        return {"effects": effects, "ctn": ctn_count, "transition": transition}
+        return {"effects": effects, "ctn": ctn_count, "transition": transition,
+                **morph_fields}
 
     for batch_idx, batch_par in enumerate(batch_lst.findall(P + "par"), start=1):
         # 批次与效果之间可能套 1—2 层 par/cTn 包装；直接遍历批次内所有带
@@ -272,7 +286,7 @@ def parse_timing(root: ET.Element) -> dict:
                 "position_preset": (ctn.get("presetID") or "") in POSITION_PRESETS,
             })
     return {"effects": effects, "ctn": ctn_count, "transition": transition,
-            "morph": morph}
+            **morph_fields}
 
 
 # ----------------------------------------------------------------------
@@ -468,6 +482,8 @@ def analyze_slide(part: str, xml: bytes, opts: dict) -> dict:
         "ctn_budget": opts["max_ctn"],
         "transition": timing["transition"],
         "morph": timing["morph"],
+        "morph_legacy": timing.get("morph_legacy", False),
+        "morph_ns": timing.get("morph_ns"),
         "dangling_targets": dangling,
         "pairs": pairs,
         "orphan_containers": orphans,
@@ -508,6 +524,17 @@ def build_report(slides: list[tuple[str, bytes]], opts: dict) -> dict:
     # 互斥规则只在包内实际使用 Morph 转场时成立：无 Morph 时跨页同名对象是
     # 各页独立的重复 chrome，页内入场动画不与跨页补间叠加，不判冲突。
     uses_morph = any(p["morph"] for p in page_reports)
+
+    # 无效命名空间（2015/12）的 morph 不计入 uses_morph，单页记 ERROR 并判 FAIL：
+    # PowerPoint 不认该前缀声明，Choice 整段被跳过，只走 Fallback fade。
+    morph_bad = []
+    for idx, page in enumerate(page_reports, start=1):
+        if page.get("morph_legacy"):
+            issue = ("ERROR: morph 使用了无效命名空间 2015/12/main，"
+                     "PowerPoint 会忽略该转场并整体回退到 Fallback")
+            page["issues"] = page["issues"] + [issue]
+            page["verdict"] = "FAIL"
+            morph_bad.append({"page": idx, "part": page["part"], "issue": issue})
 
     conflicts = 0
     for idx, page in enumerate(page_reports, start=1):
@@ -571,6 +598,7 @@ def build_report(slides: list[tuple[str, bytes]], opts: dict) -> dict:
     verdict = "PASS" if totals["fail_pages"] == 0 else "FAIL"
     return {"options": opts, "slides": page_reports, "totals": totals,
             "paired_objects": paired, "uses_morph": uses_morph,
+            "morph_invalid": morph_bad,
             "verdict": verdict}
 
 
@@ -581,6 +609,8 @@ def _md_table(report: dict) -> str:
     lines.append("- 配对 %d 对；孤儿容器 %d；FAIL 页 %d；效果节点 %d；cTn %d；跨页配对 %d（冲突 %d）"
                  % (t["pairs"], t["orphans"], t["fail_pages"], t["effects"], t["ctn"],
                     t["paired"], t["paired_conflicts"]))
+    for bad in report.get("morph_invalid", []):
+        lines.append("- **ERROR** 第 %d 页：%s" % (bad["page"], bad["issue"]))
     lines.append("")
     if report.get("paired_objects"):
         lines.append("### 跨页配对对象清单")
@@ -667,6 +697,15 @@ MORPH_TRANSITION = (
     '<p159:morph option="byObject"/></mc:Choice>'
     '<mc:Fallback><p:fade/></mc:Fallback></mc:AlternateContent></p:transition>'
     % (MC_NS, P159_NS)
+)
+
+# 历史错误命名空间夹具：用于检出坏包，不应被识别为合法 Morph。
+MORPH_TRANSITION_LEGACY = (
+    '<p:transition xmlns:mc="%s" xmlns:p159="%s" spd="med">'
+    '<mc:AlternateContent><mc:Choice Requires="p159">'
+    '<p159:morph option="byObject"/></mc:Choice>'
+    '<mc:Fallback><p:fade/></mc:Fallback></mc:AlternateContent></p:transition>'
+    % (MC_NS, P159_LEGACY_NS)
 )
 
 
@@ -964,7 +1003,19 @@ def _selftest() -> int:
     assert len(po) == 1 and po[0]["status"] == "info", "无 Morph 时位移也应放行"
     assert report["verdict"] == "PASS", "无 Morph 包不应触发配对互斥 FAIL"
 
-    print("selftest OK：同批 / 延迟差 / fade-only / 退出顺序 / 孤儿容器 / 悬空目标 / 跨页配对互斥 七类判定均通过")
+    # 用例 11：morph 写成历史错误命名空间 2015/12 —— 不计入 uses_morph，记 ERROR 并判 FAIL
+    report = _run_fixture_multi([
+        (hero, [], MORPH_TRANSITION_LEGACY),
+        (hero, []),
+    ])
+    assert report["uses_morph"] is False, "12 版命名空间不应识别为合法 Morph"
+    s0 = report["slides"][0]
+    assert s0["morph_legacy"] is True and s0["morph_ns"] == "2015/12"
+    assert len(report["morph_invalid"]) == 1
+    assert any("无效命名空间" in m["issue"] for m in report["morph_invalid"])
+    assert report["verdict"] == "FAIL", "无效 morph 命名空间应整包判 FAIL"
+
+    print("selftest OK：同批 / 延迟差 / fade-only / 退出顺序 / 孤儿容器 / 悬空目标 / 跨页配对互斥 / morph 命名空间检出 八类判定均通过")
     return 0
 
 

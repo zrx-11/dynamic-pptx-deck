@@ -36,7 +36,9 @@ from pptx.oxml.ns import qn, nsdecls
 
 P_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
 P14 = "http://schemas.microsoft.com/office/powerpoint/2010/main"
-P159 = "http://schemas.microsoft.com/office/powerpoint/2015/12/main"
+P159 = "http://schemas.microsoft.com/office/powerpoint/2015/09/main"
+# 历史错误值：早期版本误写为 2015/12/main，PowerPoint 不认该命名空间，会整段跳过 Choice。
+P159_LEGACY = "http://schemas.microsoft.com/office/powerpoint/2015/12/main"
 MC = "http://schemas.openxmlformats.org/markup-compatibility/2006"
 NS = {"p": P_NS}
 
@@ -806,6 +808,12 @@ def validate(path, verbose=True):
                 or root.xpath(".//p:animMotion", namespaces=NS)
                 or root.xpath(".//p:anim", namespaces=NS)):
                 problems.append("有 timing 树但没有可执行行为节点")
+            legacy_morph = root.xpath(
+                ".//p159:morph",
+                namespaces={"p159": P159_LEGACY})
+            if legacy_morph:
+                problems.append(
+                    "morph 命名空间无效（2015/12/main），PowerPoint 会忽略该转场并整体回退到 Fallback")
 
             info = {
                 "order": order_norm,
@@ -869,7 +877,22 @@ def _selftest():
           if a.xpath(".//p:attrName/text()", namespaces=NS)[0] == "ppt_x"][0]
     assert x2.xpath(".//p:tav/p:val/p:strVal/@val", namespaces=NS) == ["-#ppt_w/2", "#ppt_x"]
 
-    print("selftest OK：退出 fly_out_r 预设 / 画外终值 / dur 处 hidden 闭合 / 入场 fly_l 回归均通过")
+    # Morph 命名空间：必须为 2015/09/main；Choice 的 p159 前缀声明与元素命名空间一致，
+    # 不得出现历史错误值 2015/12/main。
+    from pptx import Presentation as _Prs
+    _prs = _Prs()
+    _mslide = _prs.slides.add_slide(_prs.slide_layouts[6])
+    transition(_mslide, "morph")
+    _mxml = etree.tostring(_mslide._element, encoding="unicode")
+    assert P159 in _mxml and P159_LEGACY not in _mxml, \
+        "morph 命名空间必须为 2015/09/main，实际 %s" % _mxml
+    _morph = _mslide._element.findall(".//{%s}morph" % P159)
+    assert len(_morph) == 1, "应生成 1 个 p159:morph 节点"
+    _decl = re.search(r'xmlns:p159="([^"]+)"', _mxml)
+    assert _decl and _decl.group(1) == P159, \
+        "p159 前缀声明与 morph 元素命名空间不一致：%s" % (_decl.group(1) if _decl else "缺失")
+
+    print("selftest OK：退出 fly_out_r 预设 / 画外终值 / dur 处 hidden 闭合 / 入场 fly_l 回归 / morph 命名空间 2015/09 均通过")
     return 0
 
 

@@ -148,7 +148,9 @@ p14 预设转场（高版本，2010+；不认则回退无转场，不伤内容�
 `glitter`、`ferris`。结构取自样稿核对，未在目标机 F5 复测。
 
 Morph（高版本）：`morph`，`p159:morph option="byObject"`，mc:Choice/Fallback 包裹、兜底 fade；
-仅在前后两页同名同类型对象配对成立时才有补间效果。
+仅在前后两页同名同类型对象配对成立时才有补间效果。命名空间硬事实：`p159` 必须绑定
+`http://schemas.microsoft.com/office/powerpoint/2015/09/main`；写成 `2015/12/main` 时
+PowerPoint 不认该前缀声明，整段跳过 Choice，只播 Fallback fade，校验器对 12 版记 ERROR。
 
 转场写入位置：`p:sld` 子元素顺序必须是 `cSld → clrMapOvr → transition → timing`；
 Morph 的 `mc:AlternateContent` 包裹层占 transition 槽位，体检脚本按槽位归一识别。
