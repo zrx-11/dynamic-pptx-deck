@@ -54,7 +54,7 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 - `groups` 是点击批次列表；每批是元素元组列表。同组同时开始，先后靠各自 delay 错开。
 - `auto=N`：前 N 批进页即自动播（delay=0），其余等点击。
 - 元素元组：
-  - 入场/退出：`(name, kind, delay_ms, dur_ms)`；退出含 `disappear`、`zoom_out`、`wipe_out_l/r/u/d`
+  - 入场/退出：`(name, kind, delay_ms, dur_ms)`；退出含 `disappear`、`zoom_out`、`wipe_out_l/r/u/d`、`fly_out_l/r/u/d`
   - 强调自转：`(name, "spin", delay, dur[, by])`；小角度钟摆回摆：`(name, "swing", delay, dur[, by])`
   - 放大回弹：`(name, "grow", delay, dur)`；单次放大：`(name, "grow_once", delay, dur)`
   - 闪烁：`(name, "blink", delay, dur)`；路径漂移：直线 `(name, "path", delay, dur, dx, dy)`，

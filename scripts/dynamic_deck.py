@@ -14,8 +14,9 @@ dynamic_deck.py — 原生可编辑 .pptx 的对象动画 / 转场 / 形状封�
     【弃用】= 已确认不生效，不在白名单内。
 
 CLI:
-    python3 dynamic_deck.py check <deck.pptx>   # 结构体检
+    python3 dynamic_deck.py check <deck.pptx>   # 结构体检；退出码 0=全过、1=有问题、2=包不可读
     python3 dynamic_deck.py demo  <out.pptx>   # 生成两页样例自测
+    python3 dynamic_deck.py selftest           # 内联构造器自检（退出 fly / 入场 fly 回归）
 """
 from __future__ import annotations
 
@@ -49,6 +50,7 @@ KINDS_LAYER = {
     "zoom_out": "L1",
     "disappear": "L0", "wipe_out_l": "L0", "wipe_out_r": "L0",
     "wipe_out_u": "L0", "wipe_out_d": "L0",
+    "fly_out_l": "L0", "fly_out_r": "L0", "fly_out_u": "L0", "fly_out_d": "L0",
 }
 
 # kind -> (presetClass, presetID, presetSubtype, filter 字符串仅 LO 参考, 状态标签)
@@ -84,6 +86,10 @@ KINDS = {
     "wipe_out_r": ("exit", 22, 2, "wipe(right)", "移植"),
     "wipe_out_u": ("exit", 22, 1, "wipe(up)", "移植"),
     "wipe_out_d": ("exit", 22, 4, "wipe(down)", "移植"),
+    "fly_out_r": ("exit", 2, 2, "slide(toRight)", "移植"),
+    "fly_out_l": ("exit", 2, 8, "slide(toLeft)", "移植"),
+    "fly_out_u": ("exit", 2, 1, "slide(toTop)", "移植"),
+    "fly_out_d": ("exit", 2, 4, "slide(toBottom)", "移植"),
     # —— 路径【移植】 ——
     "path":    ("path", 42, 0, "path", "移植"),
 }
@@ -339,14 +345,14 @@ class Timing:
         return self.n
 
     # —— 行为节点 ——
-    def _set(self, spid, vis):
+    def _set(self, spid, vis, delay=0):
         st = self.nid()
         return ('<p:set><p:cBhvr><p:cTn id="%d" dur="1" fill="hold">'
-                '<p:stCondLst><p:cond delay="0"/></p:stCondLst></p:cTn>'
+                '<p:stCondLst><p:cond delay="%d"/></p:stCondLst></p:cTn>'
                 '<p:tgtEl><p:spTgt spid="%d"/></p:tgtEl>'
                 '<p:attrNameLst><p:attrName>style.visibility</p:attrName></p:attrNameLst>'
                 '</p:cBhvr><p:to><p:strVal val="%s"/></p:to></p:set>'
-                ) % (st, spid, vis)
+                ) % (st, delay, spid, vis)
 
     def _anim_effect(self, spid, filt, dur, transition="in"):
         an = self.nid()
@@ -377,6 +383,31 @@ class Timing:
             '<p:tavLst><p:tav tm="0"><p:val><p:strVal val="%s"/></p:val></p:tav>'
             '<p:tav tm="100000"><p:val><p:strVal val="#ppt_y"/></p:val></p:tav></p:tavLst></p:anim>'
         ) % (ax, dur, spid, x0, ay, dur, spid, y0)
+
+    def _fly_out_anim(self, spid, subtype, dur):
+        """退出 fly：起点为作者位 #ppt_x/#ppt_y，终点到画外；隐藏由 _entrance 在 dur 处闭合。"""
+        ax = self.nid()
+        ay = self.nid()
+        if subtype == 2:      # 向右出画
+            x1, y1 = "1+#ppt_w/2", "#ppt_y"
+        elif subtype == 8:    # 向左出画
+            x1, y1 = "-#ppt_w/2", "#ppt_y"
+        elif subtype == 1:    # 向上出画
+            x1, y1 = "#ppt_x", "-#ppt_h/2"
+        else:                 # 4 向下出画
+            x1, y1 = "#ppt_x", "1+#ppt_h/2"
+        return (
+            '<p:anim calcmode="lin" valueType="num"><p:cBhvr additive="base">'
+            '<p:cTn id="%d" dur="%d" fill="hold"/><p:tgtEl><p:spTgt spid="%d"/></p:tgtEl>'
+            '<p:attrNameLst><p:attrName>ppt_x</p:attrName></p:attrNameLst></p:cBhvr>'
+            '<p:tavLst><p:tav tm="0"><p:val><p:strVal val="#ppt_x"/></p:val></p:tav>'
+            '<p:tav tm="100000"><p:val><p:strVal val="%s"/></p:val></p:tav></p:tavLst></p:anim>'
+            '<p:anim calcmode="lin" valueType="num"><p:cBhvr additive="base">'
+            '<p:cTn id="%d" dur="%d" fill="hold"/><p:tgtEl><p:spTgt spid="%d"/></p:tgtEl>'
+            '<p:attrNameLst><p:attrName>ppt_y</p:attrName></p:attrNameLst></p:cBhvr>'
+            '<p:tavLst><p:tav tm="0"><p:val><p:strVal val="#ppt_y"/></p:val></p:tav>'
+            '<p:tav tm="100000"><p:val><p:strVal val="%s"/></p:val></p:tav></p:tavLst></p:anim>'
+        ) % (ax, dur, spid, x1, ay, dur, spid, y1)
 
     def _zoom_anim(self, spid, dur):
         aw = self.nid()
@@ -456,6 +487,10 @@ class Timing:
         eff = self.nid()
         if kind == "appear":
             body = self._set(spid, "visible")
+        elif kind.startswith("fly_out"):
+            body = (self._set(spid, "visible")
+                    + self._fly_out_anim(spid, subtype, dur)
+                    + self._set(spid, "hidden", delay=dur))
         elif kind.startswith("fly"):
             body = self._set(spid, "visible") + self._fly_anim(spid, subtype, dur)
         elif kind == "zoom":
@@ -794,6 +829,48 @@ def validate(path, verbose=True):
 # ----------------------------------------------------------------------
 # 自测样例
 # ----------------------------------------------------------------------
+def _selftest():
+    """构造器自检：退出 fly_out_r 的预设 / 画外终值 / dur 处 hidden 闭合；入场 fly_l 回归。"""
+    tb = Timing()
+    frag = tb._entrance(7, "fly_out_r", 0, 600, "afterEffect")
+    root = etree.fromstring('<p:timing xmlns:p="%s">%s</p:timing>' % (P_NS, frag))
+    exits = root.xpath(".//p:cTn[@presetClass='exit']", namespaces=NS)
+    assert len(exits) == 1, "退出 fly 应生成 1 个 exit 预设节点"
+    node = exits[0]
+    assert node.get("presetID") == "2" and node.get("presetSubtype") == "2", \
+        "退出 fly 应为 exit 2/2，实际 %s/%s" % (node.get("presetID"), node.get("presetSubtype"))
+
+    by_name = {}
+    for a in root.xpath(".//p:anim", namespaces=NS):
+        name = a.xpath(".//p:attrName/text()", namespaces=NS)[0]
+        by_name[name] = a.xpath(".//p:tav/p:val/p:strVal/@val", namespaces=NS)
+    assert by_name["ppt_x"] == ["#ppt_x", "1+#ppt_w/2"], by_name["ppt_x"]
+    assert by_name["ppt_y"] == ["#ppt_y", "#ppt_y"], by_name["ppt_y"]
+
+    hidden = root.xpath(
+        ".//p:set[p:cBhvr/p:attrNameLst/p:attrName/text()='style.visibility']"
+        "/p:to/p:strVal[@val='hidden']", namespaces=NS)
+    assert len(hidden) == 1, "退出 fly 必须带结束 hidden 节点"
+    delay = hidden[0].xpath(
+        "ancestor::p:set/p:cBhvr/p:cTn/p:stCondLst/p:cond/@delay", namespaces=NS)
+    assert delay == ["600"], "hidden 应在 dur=600 处闭合，实际 %s" % delay
+    visible = root.xpath(".//p:set/p:to/p:strVal[@val='visible']", namespaces=NS)
+    assert len(visible) == 1, "退出起手应先置 visible"
+
+    # 回归：入场 fly_l 仍为 entr 2/8，起手画外、终值回作者位
+    tb2 = Timing()
+    frag2 = tb2._entrance(8, "fly_l", 150, 800, "withEffect")
+    r2 = etree.fromstring('<p:timing xmlns:p="%s">%s</p:timing>' % (P_NS, frag2))
+    e2 = r2.xpath(".//p:cTn[@presetClass='entr']", namespaces=NS)
+    assert len(e2) == 1 and e2[0].get("presetSubtype") == "8"
+    x2 = [a for a in r2.xpath(".//p:anim", namespaces=NS)
+          if a.xpath(".//p:attrName/text()", namespaces=NS)[0] == "ppt_x"][0]
+    assert x2.xpath(".//p:tav/p:val/p:strVal/@val", namespaces=NS) == ["-#ppt_w/2", "#ppt_x"]
+
+    print("selftest OK：退出 fly_out_r 预设 / 画外终值 / dur 处 hidden 闭合 / 入场 fly_l 回归均通过")
+    return 0
+
+
 def _demo(out):
     from pptx import Presentation
 
@@ -836,11 +913,21 @@ def _demo(out):
 
 
 def main(argv):
+    if len(argv) < 2:
+        print(__doc__)
+        return 2
+    if argv[1] == "selftest":
+        return _selftest()
     if len(argv) < 3 or argv[1] not in ("check", "demo"):
         print(__doc__)
         return 2
     if argv[1] == "check":
-        rows = validate(argv[2])
+        try:
+            rows = validate(argv[2])
+        except (OSError, zipfile.BadZipFile, etree.XMLSyntaxError,
+                KeyError, ValueError) as e:
+            print("包不可读: %s" % e)
+            return 2
         bad = [r for r in rows if r[2]]
         print("\n%s" % ("全部通过" if not bad else "存在 %d 处问题" % len(bad)))
         return 0 if not bad else 1

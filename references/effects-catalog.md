@@ -89,6 +89,7 @@
 | `disappear` | 1 | 0 | 直接隐藏（set hidden） |
 | `zoom_out` | 23 | 32 | 缩小到 0 退出（w/h 原值→0 + set hidden，真实行为节点） |
 | `wipe_out_l/r/u/d` | 22 | 8/2/1/4 | 对应方向擦除退出，animEffect transition=out |
+| `fly_out_r/l/u/d` | 2 | 2/8/1/4 | 对应方向滑出画外：起手作者位 → 画外终值，dur 处 `style.visibility→hidden` 闭合 |
 
 > 移植效果在目标机离线时无法 F5 复核；正式交付前若条件允许，优先用第 2 节实测效果打底，
 > 移植效果作为点缀并在验证记录里标注「未复测」。
@@ -109,6 +110,8 @@
 - 翻书页 / 页面卷曲转场：2019 不支持（`p15:prstTrans prst="pageCurlDouble"` 同属此类，不搬）。
 - 内嵌 AVI/MP4 与 mediacall：不搬入新稿。
 - 缺 animMotion 的 entr 42 是假阳性；只有带 animMotion 的 42 路径可信。
+- 退出 fly（exit presetID 2）必须在 dur 处挂 `style.visibility→hidden` 结束节点；
+  缺该节点对象停在画外不消失，白名单校验不会单独报错，需人工核对结束行为。
 - 补充判死：`emph 3/2`（无行为节点）、`emph 19/0`（仅 set 可见性）、
   `entr 18/12`（仅 set + animEffect 空壳）、`exit 16/37`（animEffect + set 空壳）；
   `exit 38/0` 为字符级 iterate 旋转退出，结构复杂、依赖 `p:iterate` 与逐字 rotation，
@@ -229,7 +232,7 @@ subtype 位标记：`1=上 2=右 4=下 8=左`。
 - **静态**：背景、母版装饰、页眉页脚，不进 timing。
 - **入场**：`fade` / `fly_*` / `wipe_*` / `appear` / `zoom`。
 - **强调**：`spin` / `grow` / `blink` / `path`。
-- **退出**：`disappear` / `wipe_out_*`。
+- **退出**：`disappear` / `wipe_out_*` / `fly_out_*`。
 
 启动模式：
 
@@ -278,7 +281,7 @@ PowerPoint 2019 / 365 与 WPS 演示之间互通稳定；高级预设、p14 现�
 
 - 入场：`fade`、`fly_up/l/r/d`、`wipe_l/r/u/d`、`appear`、`zoom`。
 - 强调：`spin`、`swing`、`grow`、`blink`、`path`。
-- 退出：`disappear`、`wipe_out_l/r/u/d`。
+- 退出：`disappear`、`wipe_out_l/r/u/d`、`fly_out_l/r/u/d`。
 - 转场：ECMA 基础组——`fade`、`push_l/r`、`cover_l/r`、`wipe_l/r/u/d`、`split_h`、
   `pull`、`blinds_v/h`、`comb`、`random`、`checker`、`wheel`、`wheel4`、`wheel8`、
   `wedge`、`circle`、`zoom_t`、`randombar_v`。

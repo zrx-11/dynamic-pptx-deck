@@ -102,8 +102,9 @@ python3 scripts/dynamic_deck.py check /tmp/demo.pptx
 
 动画：`animate(slide, groups, auto=0)`，`groups` 是点击批次列表，同组元素同时开始，
 先后靠 `delay` 错开；`auto=N` 前 N 批进页即自动播。
+体检 CLI `check <deck.pptx>` 退出码 0=全过、1=有问题、2=包不可读；`selftest` 跑内联构造器自检。
 
-- 入场/退出：`(name, kind, delay_ms, dur_ms)`；退出含 `disappear`、`zoom_out`、`wipe_out_l/r/u/d`
+- 入场/退出：`(name, kind, delay_ms, dur_ms)`；退出含 `disappear`、`zoom_out`、`wipe_out_l/r/u/d`、`fly_out_l/r/u/d`
 - 自转：`(name, "spin", delay, dur[, by])`
 - 放大回弹 / 单次放大：`(name, "grow" | "grow_once", delay, dur)`
 - 闪烁：`(name, "blink", delay, dur)`

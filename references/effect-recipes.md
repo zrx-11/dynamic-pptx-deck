@@ -256,7 +256,8 @@ inspect 核对媒体槽与主题色；高节点密度页（R16）只改 `a:t` �
     L1 版不写页内位置动画；L0 版不写 Morph，转场统一一个 L0 预设（本配方用 `fade`）。
   - **L0 编排参数**（单批 auto、进页即播；阴影与同角色卡片同 delay、同批）：
     - 上一张卡 + 阴影 exit `fly_out_r`（presetID 2 / subtype 2），delay 0、dur 600ms，
-      结束 `style.visibility→hidden`；
+      结束 `style.visibility→hidden`；该预设已登记在库白名单，
+      `animate(name, 'fly_out_r', delay, dur)` 可直接 authored；另有 `fly_out_l/u/d` 三向对称预设。
     - 当前卡 + 阴影 entrance `fly_l`（2/8，从左侧飞入），delay 150、dur 800ms；
     - 预览小卡 entrance `fly_r`（2/2，从右侧飞入），delay 300、dur 700ms；
     - 数字标题组 fade（10/0），delay 400、dur 400ms；
