@@ -1,0 +1,24 @@
+{
+  "pages": [
+    {"expect": "cover", "texts": ["专业三年规划汇报标题", "本级专业汇报", "姓名", "学号", "班级"], "font_sizes": [4000, 1800, 1200, 1200, 1200], "max_font_size": 4000, "card_count": 2, "row_count": 3},
+    {"expect": "section_transition", "texts": ["PART 02", "能力地图", "三条线同时推进"], "font_sizes": [1400, 3600, 1200], "max_font_size": 3600, "card_count": 1, "row_count": 2},
+    {"expect": "quote", "texts": ["“这是一句用来演示引语页的较长句子，字数不少于三十个字。”", "—— 课程组"], "font_sizes": [2800, 1200], "max_font_size": 2800, "card_count": 0, "row_count": 2},
+    {"expect": "kpi", "texts": ["毕业硬条件", "150", "学分", "120", "第二课堂分", "≥50", "体质诚信"], "font_sizes": [2400, 3800, 1200, 3800, 1200, 3800, 1200], "max_font_size": 3800, "hero_number_shapes": 3, "big_number_shapes": 3, "card_count": 3, "row_count": 3},
+    {"expect": "table_list", "texts": ["七门核心课", "课程", "学分", "学时", "食品感官分析", "4", "64", "食品仪器分析", "6", "96"], "font_sizes": [2400, 1400, 1400, 1400, 1200, 1200, 1200, 1200, 1200, 1200], "header_cells": ["课程", "学分", "学时"], "card_count": 2, "row_count": 4, "short_labels": 7},
+    {"expect": "timeline", "texts": ["学期推进", "第 1 学期", "第 2 学期", "事项甲", "事项乙", "事项丙"], "font_sizes": [2400, 1600, 1600, 1200, 1200, 1200], "card_count": 2, "axis_count": 1, "node_count": 2, "row_count": 3},
+    {"expect": "process", "texts": ["考证路线", "1、取样", "2、检验", "3、出报告", "流程说明一句"], "font_sizes": [2400, 1600, 1600, 1600, 1200], "arrow_count": 2, "card_count": 2, "row_count": 3},
+    {"expect": "two_column_compare", "texts": ["优劣对比", "优势", "优点条目一行", "劣势", "缺点条目一行"], "font_sizes": [2400, 1600, 1200, 1600, 1200], "two_column": true, "compare_words": ["对比"], "card_count": 2, "row_count": 2},
+    {"expect": "card_grid", "texts": ["三年能力地图", "检验操作", "要点一行", "数据与报告", "要点一行", "实验室管理", "要点一行"], "font_sizes": [2400, 1600, 1200, 1600, 1200, 1600, 1200], "card_count": 3, "row_count": 3},
+    {"expect": "closing", "texts": ["三年之后", "能独立出具检验报告", "取得四级证书", "手里有一份自己出得了的报告"], "font_sizes": [3200, 1600, 1600, 1400], "card_count": 2, "row_count": 2},
+    {"expect": "agenda", "texts": ["目录", "01 专业定位", "02 能力地图", "03 学期推进", "04 证书路径"], "font_sizes": [2800, 1800, 1800, 1800, 1800], "row_count": 4, "card_count": 4},
+    {"expect": "metric_band", "texts": ["学年指标", "42", "出勤率", "57", "实践占比", "18", "实训周数", "9", "考证科目"], "font_sizes": [2400, 1800, 1200, 1800, 1200, 1800, 1200, 1800, 1200], "medium_number_shapes": 4, "big_number_shapes": 0, "card_count": 4, "row_count": 2},
+    {"expect": "trend_chart", "texts": ["学时占比趋势", "同比", "系列甲", "系列乙", "数值标签"], "font_sizes": [2400, 1400, 1200, 1200, 1200], "has_chart": true, "axis_count": 1, "node_count": 2, "card_count": 1, "row_count": 2},
+    {"expect": "compare_table", "texts": ["方案对比", "方案 A", "方案 B", "成本", "低", "高", "周期", "短", "长"], "font_sizes": [2400, 1400, 1400, 1200, 1200, 1200, 1200, 1200, 1200], "side_words": ["方案 A", "方案 B"], "row_count": 3, "short_labels": 6, "card_count": 2},
+    {"expect": "org_chart", "texts": ["组织架构", "主任", "主管甲", "主管乙", "专员甲", "专员乙"], "font_sizes": [2400, 1600, 1400, 1400, 1200, 1200], "org_words": ["主任", "主管"], "node_count": 4, "card_count": 2, "row_count": 3},
+    {"expect": "risk_alert", "texts": ["风险提示", "风险项一", "核对动作一", "风险项二", "核对动作二"], "font_sizes": [2400, 1600, 1200, 1600, 1200], "risk_words": ["风险", "对策"], "row_count": 3, "short_labels": 4, "card_count": 2},
+    {"expect": "case_card", "texts": ["案例", "某企业检测流程", "背景做法与成效短段，不超过四行。"], "font_sizes": [1400, 2400, 1200], "case_words": ["案例"], "card_count": 1, "row_count": 2},
+    {"expect": "conclusion_list", "texts": ["结论", "要点一", "要点二", "要点三"], "font_sizes": [2400, 1600, 1600, 1600], "concl_words": ["结论", "要点"], "card_count": 0, "row_count": 3, "short_labels": 3},
+    {"expect": "thanks", "texts": ["谢谢观看", "课程组", "联系方式", "邮箱地址"], "font_sizes": [3200, 1400, 1200, 1200], "card_count": 1, "row_count": 2},
+    {"expect": "gallery", "texts": ["实训图集", "图注一", "图注二", "图注三"], "font_sizes": [2400, 1200, 1200, 1200], "pic_count": 3, "card_count": 1, "row_count": 2}
+  ]
+}

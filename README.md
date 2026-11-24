@@ -40,7 +40,9 @@ dynamic-pptx-deck/
 ├── references/
 │   ├── effects-catalog.md    效果目录、行为节点、转场清单、timing 排错、轴心锁定、节奏规则、双端分级
 │   ├── animation-orchestration.md  编排三段、容器—文字配对矩阵、判定条件与反例形态、配对检查器口径
-│   ├── effect-routing.md     内容识别与效果路由矩阵：页型命中条件、推荐效果、禁用项与反例形态、基调与规模约束
+│   ├── effect-routing.md     内容识别与效果路由矩阵：20 类页型识别特征、骨架、效果族、禁用项与反例形态、基调与规模约束
+│   ├── asset-index.md         双库索引（人读）：页角色 → 版式骨架 / 效果族候选清单（条件、代价、引擎、禁用场景）
+│   ├── asset-index.json       双库索引（机读）：键为页角色，供路由器生成多方案候选
 │   ├── layout-recipes.md      配色基线（含 11 套学术配色）、页型构成与字号阶梯、页型骨架与母题、配方级版式、工程注意事项、许可边界
 │   ├── source-inventory.md    素材许可分级、样稿预设统计归档、路线选型与验证边界
 │   ├── effect-recipes.md      18 套效果配方（页数规则、素材门槛、图层结构、移植约束、跨配方通用规则）
@@ -57,7 +59,7 @@ dynamic-pptx-deck/
 仓库本身就是 skill 目录，clone 到 agent 的用户级技能目录即可：
 
 ```bash
-git clone https://github.com/zrx-11/dynamic-pptx-deck.git \
+git clone <仓库地址> \
   ~/.doubao/agent_mode/workspace/.user_skills/dynamic-pptx-deck
 ```
 

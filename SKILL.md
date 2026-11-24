@@ -33,6 +33,9 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
    导入后只做文字替换与页序编排；`useBgFill` 依赖重、烘焙像素主导或形状必须大改的页面
    走 `scripts/dynamic_deck.py` 原生构建。两条路线可同稿混用，适配检查、分工边界与
    阻断口径见 `references/import-guide.md` 第 1、3、9 节。
+3b. 按页角色查双库索引（`references/asset-index.md` / `.json`）：每个页角色给 2–3 个候选
+    （锁结构模板式 + 定制方案，含适用条件、代价、引擎要求与禁用场景），比对字数槽位与
+    节点预算后再定稿；索引无对应骨架时退保守档，不硬套高复杂度配方。
 4. 先按页型排出转场分工表：主轴方向全稿统一，转场类型按页型轮换、相邻页不堆叠同一预设
    （分工表见 `references/layout-recipes.md` 第 7b 节）；再生成脚本 `build.py` 接入
    `scripts/dynamic_deck.py`：用封装函数画形状与文本，用 `animate` 编排动画批次，
@@ -103,6 +106,10 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 - 预算收敛：每页估算 `estimated_effects`（≤12）与 `estimated_ctn`（≤60），写入
   `budget.fits`；超预算时按角色给 `split_plan`（每批配额 `per_batch`、批数 `batch_count`），
   卡片容器与文字同批成对，编号圆牌随卡片 zoom 不另占节点；表格按行聚类、表头不进滚动批次。
+- 多方案输出：每页 `alternatives` 至少 2 个候选——1 个锁结构模板式（索引骨架只换文案）+
+  1 个定制方案（按页角色重排效果），索引有第三条候选时追加；每条含 `scheme_id`、`summary`、
+  `cost`（节点数估算 + 复杂度 + 字数要求）、`engine`、`tradeoff`；既有 plan 字段保留，
+  `alternatives` 只增不改。
 
 ## 跨包导入接口（scripts/slide_importer.py）
 
@@ -133,7 +140,8 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 
 - `references/effects-catalog.md`：效果目录、行为节点、转场清单、timing 树结构与排错顺序、方向位标记、轴心锁定、节奏规则、容器—文字配对时序纪律与页面活着基线。
 - `references/animation-orchestration.md`：编排三段、容器—文字配对矩阵、判定条件与反例形态、配对检查器口径。
-- `references/effect-routing.md`：内容识别与效果路由矩阵——页型命中条件、推荐效果、禁用项与反例形态、基调与规模约束、保守档口径。
+- `references/effect-routing.md`：内容识别与效果路由矩阵——20 类页型的识别特征、版式骨架、效果族、禁用项与反例形态、易混分界阈值、基调与规模约束、保守档口径。
+- `references/asset-index.md` / `references/asset-index.json`：双库索引——20 个页角色各自的版式骨架与效果族候选清单（适用条件、代价、引擎要求、禁用场景）；机读 JSON 供路由器按页角色生成多方案候选，两文件键集合一致。
 - `references/layout-recipes.md`：配色字体基线（含 11 套学术配色）、页型构成与字号阶梯、通用页型骨架与母题、配方级版式（轮播/扇形/六边形/模糊大字等）、深色技术风装饰手法、环境动效母题、跨页流畅感编排、工程注意事项与许可边界。
 - `references/source-inventory.md`：素材许可分级、样稿预设统计归档、路线选型与验证边界。
 - `references/effect-recipes.md`：18 套效果配方（页数规则、素材门槛、图层结构、移植约束、跨配方通用规则）。
