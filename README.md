@@ -1,8 +1,9 @@
 # dynamic-pptx-deck · 高级动态PPT 技能
 
-把任意已有内容（文档、报告、笔记、大纲、旧版静态 pptx）做成**带动画与转场的原生可编辑 `.pptx`**。
+把任意已有内容（文档、报告、笔记、大纲、旧版静态 pptx）做成**带动画与转场的 `.pptx`**。
 这是一个供 AI agent 调用的技能（skill）：它不生成 HTML 幻灯片，也不生成 PDF，交付物始终是
-可以在 PowerPoint / WPS 里继续编辑的 OOXML 文件。
+可以在 PowerPoint / WPS 里打开的 OOXML 文件。成品优先为默认，可编辑性按档位可选，
+可重生成性是硬要求：结构化源随稿交付，页面可凭源描述重建。
 
 ## 它解决什么问题
 
@@ -14,7 +15,7 @@ python-pptx、PptxGenJS 这类库都不封装对象动画与页面转场；动�
 
 - 一套形状与文本封装函数，配合动画批次、转场、轴心锁定组合体；
 - 一份效果白名单与弃用清单，只写带真实行为节点的预设；
-- 一套双档适配模型：效果优先档默认面向 365 / 新版 WPS，兼容优先档仅在明确要求兼容 2019 / 旧 WPS 时启用；排除层不进稿；
+- 一套三档交付取向：成品优先档默认面向直接交付成品，兼顾档保留后续改稿条件，兼容优先档仅在明确要求兼容旧版本时启用；引擎族（高版本预设 / 标准安全族）与交付取向分别声明；排除层不进稿；
 - 五套主配色基线 + 11 套学术配色，通用页型骨架与配方级版式（封面、目录、卡片、双栏、时间线、表格、Q&A、数字带、轮播、模糊大字页、结尾）；
 - 18 套效果配方：页数规则、素材门槛、图层结构、移植约束与跨配方通用规则；
 - 跨包幻灯片整页导入：复用参考件现成效果页的 timing/transition，导入后仅做文字替换与页序编排，主题色解析为显式色值避免漂移。
@@ -38,7 +39,11 @@ dynamic-pptx-deck/
 │   ├── doubao.yaml           豆包面板显示名与触发配置
 │   └── openai.yaml            同构配置
 ├── references/
-│   ├── effects-catalog.md    效果目录、行为节点、转场清单、timing 排错、轴心锁定、节奏规则、双端分级
+│   ├── effects-catalog.md    效果目录、行为节点、转场清单、timing 排错、轴心锁定、节奏规则、分层与预烘焙取舍
+│   ├── delivery-tiers.md     三档交付取向：场景判定、允许 / 禁止清单、结构化源契约与分档验收阻断规则
+│   ├── editability-audit.md  可编辑性审计：判定项、扣分码、评分表与修复建议
+│   ├── decor-bake.md         装饰层预渲染配方、可复现参数与素材登记口径
+│   ├── regeneration-guide.md  结构化源维护与页级局部重生成流程
 │   ├── animation-orchestration.md  编排三段、容器—文字配对矩阵、判定条件与反例形态、配对检查器口径
 │   ├── effect-routing.md     内容识别与效果路由矩阵：20 类页型识别特征、骨架、效果族、禁用项与反例形态、基调与规模约束
 │   ├── asset-index.md         双库索引（人读）：页角色 → 版式骨架 / 效果族候选清单（条件、代价、引擎、禁用场景）
@@ -51,6 +56,9 @@ dynamic-pptx-deck/
     ├── dynamic_deck.py       形状/文本/组合体封装、animate、transition、validate、CLI check/demo
     ├── pairing_check.py     容器—文字配对时序核对（零标准库依赖）：同批、延迟差、fade-only、退出顺序、孤儿计数、目标与预算
     ├── effect_router.py      内容识别与效果路由（零标准库依赖）：页型/特征/批次/预设/路线计划，逐项带规则编号
+    ├── editability_check.py 可编辑性审计：分层位图 / 文字位图 / 烘焙层判定，按交付档位出阻断结论
+    ├── decor_bake.py         装饰层预渲染管线：渐变/光晕/噪点/暗角/纹理/模糊铺底，同 spec 同 seed 字节级可复现
+    ├── page_regen.py         页级局部重生成回填：单页替换，其余 slide 部件逐字节不变
     └── slide_importer.py     跨包导入：文件级 zip 手术、媒体哈希去重、主题色解析、文字替换、页序重排
 ```
 
@@ -59,8 +67,7 @@ dynamic-pptx-deck/
 仓库本身就是 skill 目录，clone 到 agent 的用户级技能目录即可：
 
 ```bash
-git clone <仓库地址> \
-  ~/.doubao/agent_mode/workspace/.user_skills/dynamic-pptx-deck
+git clone <仓库地址> <你的技能根目录>/dynamic-pptx-deck
 ```
 
 目录名要和 `SKILL.md` 里的 `name: dynamic-pptx-deck` 一致。其他 agent（Claude Code、
@@ -78,8 +85,10 @@ pip install python-pptx lxml
 
 ## 最小使用流程
 
-1. 整理输入内容的章节、要点与结论；不补充素材里没有的事实。
-2. 读 `references/layout-recipes.md` 选配色基线与页型骨架。
+1. 整理输入内容的章节、要点与结论；不补充素材里没有的事实。动工前声明交付档位
+   （`fidelity_first` / `balanced` / `compat`，默认成品优先）。
+2. 读 `references/layout-recipes.md` 选配色基线与页型骨架；需要路由建议时跑
+   `scripts/effect_router.py --tier <档位>` 取页型、批次与装饰配方候选。
 3. 写一个 `build.py`，`sys.path` 接入 `scripts/dynamic_deck.py`，用封装函数画形状、
    用 `animate` 编排批次、用 `transition` 写转场，保存为 pptx。
 4. 结构体检：
@@ -88,7 +97,10 @@ pip install python-pptx lxml
 python3 scripts/dynamic_deck.py check <deck.pptx>
 ```
 
-5. 用 LibreOffice 导出 PDF/截图核对静态版式；移植类与高版本效果在目标软件 F5 复核。
+5. 按交付档位跑可编辑性审计；随成稿写 `deck-manifest.json`、facts 清单与素材引用
+   （生成参数与 `sha256`），交付件构成见「交付件模板」。
+
+6. 用 LibreOffice 导出 PDF/截图核对静态版式；移植类与高版本效果在目标软件 F5 复核。
 
 自测样例：
 
@@ -120,23 +132,43 @@ python3 scripts/dynamic_deck.py check /tmp/demo.pptx
 `--selftest` 跑内联 fixture 自检；退出码 0=全 PASS、1=有 FAIL、2=输入错误。
 
 内容识别与效果路由：`scripts/effect_router.py` 仅用标准库，CLI
-`python3 effect_router.py <deck.pptx|page.json> [--page N] [--engine effect_first|compat] [--json OUT] [--md OUT]`；
+`python3 effect_router.py <deck.pptx|page.json> [--page N] [--tier fidelity_first|balanced|compat] [--engine effect_first|compat] [--json OUT] [--md OUT]`；
 识别页型与信息特征，输出批次拆法、预设族、强调对象、转场与路线建议，逐项带规则编号；
-报告顶层 `engine_profile` 标注档位（默认 `effect_first`，`compat` 走兼容优先安全族），批次带 `degrade` 降级提示；
-退出码 0=正常出计划、2=输入不可读。规则矩阵见 `references/effect-routing.md`。
+`--tier` 默认 `fidelity_first`，该档每页带 `decor` 预烘焙配方与 `baked_decor_native_anim`
+候选；`balanced` / `compat` 输出与既有计划逐字段一致；报告顶层 `engine_profile` 标注引擎族，
+批次带 `degrade` 降级提示；退出码 0=正常出计划、2=输入不可读。规则矩阵见 `references/effect-routing.md`。
 
 跨包导入：`scripts/slide_importer.py` 仅用标准库做文件级 zip 手术；`SlideImporter(dst_pptx)`
 提供 `import_slide` / `replace_text` / `reorder` / `save`，模块级 `inspect` 读取参考页结构快照，
 支持有序整串与按形状名两种文字替换模式。完整口径见 `references/import-guide.md`。
 
-## 双档适配
+## 交付档位
 
-- **效果优先档（默认）**：目标 365 / 新版 WPS；放开 Morph 配对补间、p14 现代转场与高版本强调预设，安全族仅作可选兜底。
-- **兼容优先档（可选）**：明确要求兼容 2019 / 旧 WPS 时启用；只下发标准 DrawingML 安全族（入场、强调、退出与 ECMA 基础转场），高版本项不下发或仅作点缀。
+- **成品优先档 `fidelity_first`（默认）**：直接交付成品场景；装饰层可预渲染图像化，
+  内容层保留原生文本，结构化源随稿交付；可编辑性低不阻断，仅结构化源缺失 / 不全阻断。
+- **兼顾档 `balanced`**：成稿后续可能在编辑器内改文案、配色或局部排版；单页评分低于
+  阈值（默认 70）或出现整页图片式幻灯片、文字位图化即阻断。
+- **兼容优先档 `compat`**：明确要求兼容旧版本时启用；阻断项同兼顾档，且烘焙位图层也
+  计入阻断；引擎族只下发标准 DrawingML 安全族，高版本项不下发或仅作点缀。
+- **引擎族（独立维度）**：高版本 Morph 配对补间、p14 现代转场与强调预设在 `effect_first`
+  引擎族下发，弱引擎降级但不崩；`compat` 引擎族只给标准安全族。档位判定、允许 / 禁止清单
+  与分档阻断规则见 `references/delivery-tiers.md`。
 - **共同底线**：文件结构合法、能打开、不弹修复、内容不丢、不崩；弱引擎上允许降级但不允许损坏。
 - **排除层**：内嵌视频/mediacall、翻书页卷曲、3D、空壳预设、非商业素材，任何档位都不进模块。
 
-动工前先声明目标引擎档位；未声明按效果优先档交付，并在说明里写清 2019 上的降级预期。跨软件交付前在 PowerPoint 与 WPS 各 F5 一次。
+动工前先声明交付档位；未声明按成品优先档交付。跨软件交付前在 PowerPoint 与 WPS 各 F5 一次。
+
+## 交付件模板
+
+成品优先档交付时，成稿同级目录必须包含：
+
+- 成稿 `*.pptx`；
+- `deck-manifest.json`：`deck` 文件名、`tier` 档位，逐页 `index` / `page_type` /
+  `content` / `assets` / `notes`，并指向 `facts`；
+- facts 清单：文案、要点与数据口径，与成稿正文一一对应；
+- 素材引用：`assets/` 下图片与烘焙素材，manifest 的 `assets[]` 逐条登记路径、生成器、
+  生成参数与 `sha256`；
+- 验收报告：结构体检、容器—文字配对核对、按档位出具的可编辑性审计结论。
 
 ## 已知边界
 

@@ -8,11 +8,15 @@ JSON 页描述；输出 EffectPlan：页型、信息特征、批次拆法、预�
 判定条件编号（basis），识别不确定时给 confidence=low 与保守档，不猜。
 
 CLI：
-    python3 effect_router.py <deck.pptx> [--page N] [--engine effect_first|compat] [--json OUT] [--md OUT]
-    python3 effect_router.py <page-plan.json> [--engine effect_first|compat] [--json OUT] [--md OUT]
+    python3 effect_router.py <deck.pptx> [--page N] [--tier fidelity_first|balanced|compat]
+        [--engine effect_first|compat] [--json OUT] [--md OUT]
+    python3 effect_router.py <page-plan.json> [--tier fidelity_first|balanced|compat]
+        [--engine effect_first|compat] [--json OUT] [--md OUT]
 
-引擎档位：effect_first（默认，目标 365 / 新版 WPS，放开高版本预设与 Morph）；
-compat（明确要求兼容 2019 / 旧 WPS 时启用，只给标准 DrawingML 安全族）。
+交付档位：fidelity_first（默认，成品优先；装饰层可预渲染烘焙，内容层保原生文本）；
+balanced（效果与可编辑兼顾）；compat（兼容优先，只给标准 DrawingML 安全族）。
+`--engine` 为既有引擎族覆盖项；未显式给定时按档位映射。balanced / compat 输出与
+旧版逐字段一致，新增的 `decor` 字段与烘焙候选只出现在 fidelity_first。
 退出码：0=正常出计划；2=输入不可读。
 """
 from __future__ import annotations
@@ -98,6 +102,33 @@ EFFECTS_PER = {
 ENGINE_FIRST = "effect_first"
 ENGINE_COMPAT = "compat"
 ENGINES = (ENGINE_FIRST, ENGINE_COMPAT)
+
+# 交付档位（交付取向维度）：fidelity_first 成品优先（默认）；balanced 效果与可编辑
+# 兼顾；compat 兼容优先。引擎族由档位映射，--engine 仅作既有覆盖项。
+TIER_FIDELITY = "fidelity_first"
+TIER_BALANCED = "balanced"
+TIER_COMPAT = "compat"
+TIERS = (TIER_FIDELITY, TIER_BALANCED, TIER_COMPAT)
+TIER_ENGINE = {
+    TIER_FIDELITY: ENGINE_FIRST,
+    TIER_BALANCED: ENGINE_FIRST,
+    TIER_COMPAT: ENGINE_COMPAT,
+}
+
+# fidelity_first 下装饰层预烘焙配方映射：策略 / 观感强度 / 配方文档节号
+# 第 3 节为图层类型与参数表；策略字段标明具体图层类型。
+DECOR_RECIPES = {
+    "cover": ("baked_gradient", "high", "decor-bake.md#3"),
+    "section_transition": ("baked_glow", "high", "decor-bake.md#3"),
+    "closing": ("baked_gradient", "high", "decor-bake.md#3"),
+    "thanks": ("baked_gradient", "high", "decor-bake.md#3"),
+    "kpi": ("baked_glow", "medium", "decor-bake.md#3"),
+    "metric_band": ("baked_glow", "medium", "decor-bake.md#3"),
+    "trend_chart": ("baked_noise", "medium", "decor-bake.md#3"),
+    "quote": ("baked_vignette", "medium", "decor-bake.md#3"),
+    "gallery": ("baked_noise", "medium", "decor-bake.md#3"),
+}
+DECOR_DEFAULT = ("baked_noise", "medium", "decor-bake.md#3")
 
 # 高版本预设族：compat 档不下发；effect_first 档下发并附 2019 降级提示。
 HIGH_TIER = {"zoom_rot", "bounce_up", "drop_in", "grow_once"}
@@ -829,9 +860,9 @@ def _route(page_type: str, feat: dict, batches: list[dict] | None = None,
         "basis": ["BUILD-1"],
         "build": {
             "batches": batches or _batches(page_type, feat, engine),
-            "preset_tier": ("效果优先档：高版本预设按观感选用，2019 降级但不崩"
+            "preset_tier": ("effect_first 引擎族：高版本预设按观感选用，2019 降级但不崩"
                             if engine == ENGINE_FIRST else
-                            "兼容优先档：标准 DrawingML 安全族打底，高版本预设不下发"),
+                            "compat 引擎族：标准 DrawingML 安全族打底，高版本预设不下发"),
         },
         "cautions": cautions,
         "missing": missing,
@@ -839,7 +870,7 @@ def _route(page_type: str, feat: dict, batches: list[dict] | None = None,
 
 
 def _build_alternatives(page_type: str, budget: dict, engine: str,
-                        index: dict) -> list[dict]:
+                        index: dict, tier: str = TIER_FIDELITY) -> list[dict]:
     """多方案候选：至少 1 个锁结构模板式方案 + 1 个定制方案；索引有第三条候选时追加。
 
     每条候选：scheme_id / scheme(template|custom|effect|layout) / summary /
@@ -921,10 +952,35 @@ def _build_alternatives(page_type: str, budget: dict, engine: str,
             "tradeoff": extra.get("forbidden", ""),
             "ref": extra.get("id", ""),
         })
+    if tier == TIER_FIDELITY:
+        strategy, impact, ref = DECOR_RECIPES.get(page_type, DECOR_DEFAULT)
+        alts.append({
+            "scheme_id": "%s-baked-decor-1" % page_type,
+            "scheme": "effect",
+            "kind": "baked_decor_native_anim",
+            "summary": "装饰层预渲染铺底（%s，观感 %s），内容层保留原生文本与入场动画"
+                       % (strategy, impact),
+            "cost": {"effects": budget["estimated_effects"],
+                     "ctn": budget["estimated_ctn"], "complexity": "medium",
+                     "nodes": "≤%d 效果节点" % budget["estimated_effects"],
+                     "copy_fit": "结构化源须登记素材、生成参数与 sha256"},
+            "engine": engine,
+            "tradeoff": "装饰层可编辑性让位于观感；正文、数据与结构层保持原生，"
+                        "结构化源随稿交付可重生成",
+            "ref": ref,
+        })
     return alts
 
 
-def plan_page(feat: dict, engine: str = ENGINE_FIRST) -> dict:
+def _decor(page_type: str) -> dict:
+    """fidelity_first 下每页装饰层预烘焙配方描述；balanced / compat 不输出此字段。"""
+    strategy, impact, ref = DECOR_RECIPES.get(page_type, DECOR_DEFAULT)
+    return {"strategy": strategy, "engine": "decor_bake", "recipe_ref": ref,
+            "impact": impact, "editable_cost": "high"}
+
+
+def plan_page(feat: dict, engine: str = ENGINE_FIRST,
+              tier: str = TIER_FIDELITY) -> dict:
     cls = classify(feat)
     page_type = cls["page_type"]
     trans_main, trans_alt, trans_basis = TRANSITION_BY_TYPE[page_type]
@@ -952,18 +1008,18 @@ def plan_page(feat: dict, engine: str = ENGINE_FIRST) -> dict:
     batches = _batches(page_type, feat, engine)
     route = _route(page_type, feat, batches, engine)
     budget = _budget(batches)
-    alternatives = _build_alternatives(page_type, budget, engine, ASSET_INDEX)
+    alternatives = _build_alternatives(page_type, budget, engine, ASSET_INDEX, tier)
     ambient = page_type not in ("table_list",)
 
     engine_basis = ["ENGINE:%s" % engine]
     if engine == ENGINE_FIRST:
-        engine_note = ("默认效果优先档（目标 365 / 新版 WPS）；2019 上高版本项降级"
+        engine_note = ("effect_first 引擎族（目标 365 / 新版 WPS）；2019 上高版本项降级"
                        "但不损坏文件，逐批降级提示见 batches[].degrade")
     else:
-        engine_note = ("兼容优先档（明确要求兼容 2019 / 旧 WPS）；仅下发标准"
+        engine_note = ("compat 引擎族（明确要求兼容 2019 / 旧 WPS）；仅下发标准"
                        "DrawingML 安全族，高版本预设不下发")
 
-    return {
+    result = {
         "page": feat.get("index"),
         "page_type": page_type,
         "page_type_label": TYPE_LABEL[page_type],
@@ -1002,6 +1058,9 @@ def plan_page(feat: dict, engine: str = ENGINE_FIRST) -> dict:
         "alternatives": alternatives,
         "cautions": route.get("cautions", []),
     }
+    if tier == TIER_FIDELITY:
+        result["decor"] = _decor(page_type)
+    return result
 
 
 # ----------------------------------------------------------------------
@@ -1035,7 +1094,8 @@ def _slide_order(zf: zipfile.ZipFile) -> list[str]:
 
 
 def plan_pptx(path: str, page_only: int | None,
-              engine: str = ENGINE_FIRST) -> list[dict]:
+              engine: str = ENGINE_FIRST,
+              tier: str = TIER_FIDELITY) -> list[dict]:
     try:
         zf = zipfile.ZipFile(path)
     except (OSError, zipfile.BadZipFile) as e:
@@ -1050,12 +1110,13 @@ def plan_pptx(path: str, page_only: int | None,
                 continue
             feat = extract_features(part, zf.read(part))
             feat["index"] = i
-            plans.append(plan_page(feat, engine))
+            plans.append(plan_page(feat, engine, tier))
     return plans
 
 
 def plan_json(path: str, page_only: int | None,
-              engine: str = ENGINE_FIRST) -> list[dict]:
+              engine: str = ENGINE_FIRST,
+              tier: str = TIER_FIDELITY) -> list[dict]:
     try:
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
@@ -1067,7 +1128,7 @@ def plan_json(path: str, page_only: int | None,
         if page_only and i != page_only:
             continue
         feat = _normalize_page(raw, i)
-        plans.append(plan_page(feat, engine))
+        plans.append(plan_page(feat, engine, tier))
     return plans
 
 
@@ -1186,9 +1247,14 @@ def _md(plans: list[dict]) -> str:
                 seg += "；每批 %d 个，拆 %d 批" % (b["per_batch"], b["batch_count"])
             lines.append(seg)
         lines.append("- 预算：效果 %d/%d，cTn %d/%d，fits=%s" % (
-            p["budget"]["estimated_effects"], p["budget"]["max_effects"],
+            p["budget"]["estimated_effects"], p["budget"]["max_ctn"],
             p["budget"]["estimated_ctn"], p["budget"]["max_ctn"],
             p["budget"]["fits"]))
+        if p.get("decor"):
+            d = p["decor"]
+            lines.append("- 装饰层预烘焙：%s（引擎 %s，配方 %s，观感 %s，可编辑代价 %s）" % (
+                d["strategy"], d["engine"], d["recipe_ref"], d["impact"],
+                d["editable_cost"]))
         lines.append("- 候选方案（%d）：" % len(p["alternatives"]))
         for alt in p["alternatives"]:
             lines.append("  - `%s`（%s）%s｜复杂度 %s｜引擎 %s｜取舍：%s" % (
@@ -1204,28 +1270,41 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="内容识别与效果路由")
     ap.add_argument("input", help=".pptx 或 JSON 页描述")
     ap.add_argument("--page", type=int, default=None, help="只分析第 N 页（1 起）")
-    ap.add_argument("--engine", choices=list(ENGINES), default=ENGINE_FIRST,
-                    help="引擎档位：effect_first（默认，365 / 新版 WPS）或 compat（兼容 2019 / 旧 WPS）")
+    ap.add_argument("--tier", choices=list(TIERS), default=TIER_FIDELITY,
+                    help="交付档位：fidelity_first（默认，成品优先）/ balanced（兼顾）/ compat（兼容优先）")
+    ap.add_argument("--engine", choices=list(ENGINES), default=None,
+                    help="既有引擎族覆盖项：effect_first 或 compat；未给定时按 --tier 映射")
     ap.add_argument("--json", dest="json_out", help="机器可读计划输出路径")
     ap.add_argument("--md", dest="md_out", help="人读表格输出路径")
     args = ap.parse_args(argv)
 
+    tier = args.tier
+    engine = args.engine if args.engine else TIER_ENGINE[tier]
+    # 显式 --engine 是既有调用路径：按对应旧档口径抑制 fidelity_first 新增字段，
+    # 保证旧调用方输出与改动前逐字段一致。
+    if args.engine:
+        plan_tier = TIER_COMPAT if engine == ENGINE_COMPAT else TIER_BALANCED
+    else:
+        plan_tier = tier
+
     try:
         if args.input.lower().endswith(".json"):
-            plans = plan_json(args.input, args.page, args.engine)
+            plans = plan_json(args.input, args.page, engine, plan_tier)
         else:
-            plans = plan_pptx(args.input, args.page, args.engine)
+            plans = plan_pptx(args.input, args.page, engine, plan_tier)
     except RouterError as e:
         print("错误：%s" % e)
         return 2
 
-    report = {"engine_profile": args.engine,
+    report = {"engine_profile": engine,
               "plans": plans,
               "totals": {"pages": len(plans),
                          "high_confidence": sum(1 for p in plans if p["confidence"] == "high"),
                          "low_confidence": sum(1 for p in plans if p["confidence"] == "low"),
                          "routes": {r: sum(1 for p in plans if p["route"]["decision"] == r)
                                     for r in ("native_rebuild", "import", "block")}}}
+    if plan_tier == TIER_FIDELITY:
+        report["tier"] = tier
 
     if args.json_out:
         with open(args.json_out, "w", encoding="utf-8") as f:
@@ -1243,7 +1322,7 @@ def main(argv: list[str] | None = None) -> int:
                             for a in p["alternatives"])
         print("    候选 %d：%s" % (len(p["alternatives"]), alt_sum))
     print("合计 %d 页，档位 %s，高置信 %d，低置信 %d，路线分布 %s" % (
-        report["totals"]["pages"], args.engine, report["totals"]["high_confidence"],
+        report["totals"]["pages"], engine, report["totals"]["high_confidence"],
         report["totals"]["low_confidence"], report["totals"]["routes"]))
     return 0
 

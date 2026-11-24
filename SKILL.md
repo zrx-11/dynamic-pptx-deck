@@ -1,7 +1,7 @@
 ---
 name: dynamic-pptx-deck
 display_name: "高级动态PPT"
-description: "把任意已有内容（文档、报告、笔记、大纲、旧 pptx 原稿）做成带动画与转场的原生可编辑 .pptx。用于在 PowerPoint 2019/365 与 WPS 演示中编排入场/强调/退出/路径动画、页面转场与商务版式；覆盖五套主基线 + 11 套学术配色、通用页型骨架与母题、18 套效果配方、Morph 配对帧、双档适配（效果优先默认 / 兼容优先可选）与排除层、timing 树结构排错、容器—文字配对时序核对与效果弃用清单；支持跨包幻灯片整页导入，复用参考件现成效果页的动画与转场，导入后仅做文字替换与页序编排。"
+description: "把任意已有内容（文档、报告、笔记、大纲、旧 pptx 原稿）做成带动画与转场的原生可编辑 .pptx。用于在 PowerPoint 2019/365 与 WPS 演示中编排入场/强调/退出/路径动画、页面转场与商务版式；覆盖五套主基线 + 11 套学术配色、通用页型骨架与母题、18 套效果配方、Morph 配对帧、三档交付取向（成品优先默认 / 效果与可编辑兼顾 / 兼容优先可选）与排除层、timing 树结构排错、容器—文字配对时序核对与效果弃用清单；成品优先为默认，可编辑性按档位可选，可重生成性是硬要求，结构化源（deck-manifest + facts + 素材引用）随稿交付；支持跨包幻灯片整页导入，复用参考件现成效果页的动画与转场，导入后仅做文字替换与页序编排。"
 ---
 
 # 高级动态PPT
@@ -9,8 +9,9 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 ## 适用场景
 
 - 输入是已有素材：Word/Markdown/PDF 文档、汇报笔记、要点大纲、旧版静态 pptx 等；
-  交付物必须是原生可编辑 `.pptx`，目标放映环境覆盖 PowerPoint 2019/365 与 WPS 演示；
-  不用 HTML/JS/PDF 替代 pptx。
+  交付物是 `.pptx`，目标放映环境覆盖 PowerPoint 2019/365 与 WPS 演示；
+  不用 HTML/JS/PDF 替代 pptx。成品优先档下装饰层可预渲染图像化，但正文、数据与
+  结构层保持原生，并随稿交付可重生成的结构化源。
 - 需要把静态内容讲成有节奏的演示：对象分批入场、强调重点、路径漂移、页面转场、
   跨页母题连贯；按素材性质选版式骨架与配色基线，不绑定特定题材（汇报、总结、
   宣讲、路演、课程、答辩等通用）。
@@ -21,8 +22,11 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 
 1. **整理内容大纲**：从素材中提取章节、要点、数据与结论；不编造经历、统计数字与
    事实，素材缺失的信息用【】占位；先定页数与每页承载的信息块，再谈视觉。
-   动工前先声明目标引擎档位：效果优先档（默认，365 / 新版 WPS）或兼容优先档
-   （明确要求兼容 2019 / 旧 WPS）；未声明按效果优先档交付，并写明 2019 降级预期。
+   动工前先声明交付档位：`fidelity_first` 成品优先（默认，直接交付成品场景）、
+   `balanced` 效果与可编辑兼顾、`compat` 兼容优先；档位判定、允许 / 禁止清单与
+   验收阻断规则见 `references/delivery-tiers.md`。引擎兼容性（高版本预设 / 标准安全族）
+   是独立维度，按 `effects-catalog.md` 第 10 节另行声明；未声明交付档位按
+   成品优先档交付。
 2. 读 `references/layout-recipes.md`：选定配色基线（A 浅色商务 / B 深色科技 / C 红金 /
    D 紫夜 / E 深绿青碧，或 11 套学术配色），按内容选版式骨架（封面、目录、章节过渡、卡片、双栏、
    时间线、表格、Q&A、数字带、轮播、模糊大字页、结尾）。
@@ -47,8 +51,16 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
    ③ 容器—文字配对（同批、文字 fade 晚 150—450ms、退出文字先容器后）。
    配对矩阵、判定条件与反例形态见 `references/animation-orchestration.md`。
 6. 生成后跑 `dynamic_deck.py check` 做结构体检，再跑 `pairing_check.py` 核对
-   容器—文字配对；用 LibreOffice 导出 PDF/截图核对静态版式。LO 不解释动画，
+   容器—文字配对；按交付档位跑可编辑性审计（阻断规则见 `delivery-tiers.md` 第 3—5 节）；
+   用 LibreOffice 导出 PDF/截图核对静态版式。LO 不解释动画，
    移植类与导入页效果必须在目标机 F5 复核，结果记入验证记录。
+7. **写 deck-manifest**：成稿同级目录落 `deck-manifest.json`，逐页登记 `index`、
+   `page_type`、`content`、`assets` 与 `notes`；facts 清单与素材引用（生成器、
+   生成参数、sha256）随稿交付；契约与齐全性判定见 `references/delivery-tiers.md`
+   第 3.4 节。
+8. **按页重生成复核**：核对每页可仅凭 manifest 条目、facts 与素材引用重建；
+   局部换页后其余 slide part 逐字节不变；重生成流程见
+   `references/regeneration-guide.md`。
 
 ## 脚本接口（scripts/dynamic_deck.py）
 
@@ -92,11 +104,13 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 （basis）与引擎档位依据（`ENGINE:effect_first` / `ENGINE:compat`）；信号重叠或稀疏时给
 `confidence: low` 与保守档，不猜。
 
-- CLI：`python3 effect_router.py <deck.pptx|page.json> [--page N] [--engine effect_first|compat] [--json OUT] [--md OUT]`；
+- CLI：`python3 effect_router.py <deck.pptx|page.json> [--page N] [--tier fidelity_first|balanced|compat] [--engine effect_first|compat] [--json OUT] [--md OUT]`；
   `--json` 出机器可读计划，`--md` 出人读表格。
-- `--engine` 默认 `effect_first`（效果优先档，放开高版本预设与 Morph 建议）；传 `compat`
-  走兼容优先档，只给标准 DrawingML 安全族。报告顶层 `engine_profile` 标注档位，每条批次
-  带 `degrade` 字段注明在 2019 上的降级行为。
+- `--tier` 默认 `fidelity_first`（成品优先）；`balanced`（兼顾）与 `compat`（兼容优先）
+  输出与既有计划逐字段一致。`--engine` 是既有引擎族覆盖项，未显式给定时按档位映射。
+- `fidelity_first` 下每页新增 `decor` 字段（预烘焙装饰策略、配方文档节号、观感强度、
+  可编辑代价），并在 `alternatives` 中至少给一条 `kind: "baked_decor_native_anim"`
+  候选（装饰层预渲染铺底 + 内容层原生动画）；其余字段沿用既有结构。
 - 退出码：0=正常出计划；2=输入不可读。
 - 批次按页型角色矩阵生成（KPI / 时间线 / 表格 / 卡片 / 双栏 / 引语 / 过渡 / 结尾各有独立
   角色、数量、预设族与延迟区间）；路由为原生重建时，批次结构（角色 + 数量 + 预设族 + 延迟
@@ -132,13 +146,17 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 
 - 实测可用（标准 DrawingML 安全族，2019 / 365 / WPS 均可解析）：`fade`、`fly_up`、`wipe_l`、`spin`。
 - 结构移植（带真实行为节点，未在目标机复测）：其余 fly/wipe 方向、`zoom`、`appear`、`blink`、`path`。
-- 高版本增强（效果优先档下发；弱引擎降级但不崩）：`zoom_rot`、`zoom_out`、`bounce_up`、`drop_in`、`grow_once`、p14 现代转场、Morph 配对补间；兼容优先档不下发或仅作点缀。
-- 双档口径见 effects-catalog 第 10 节：默认效果优先；只有明确要求兼容 2019 / 旧 WPS 时才切兼容优先档，转场只用 ECMA 基础组、主入场用安全族。
+- 高版本增强（effect_first 引擎族下发；弱引擎降级但不崩）：`zoom_rot`、`zoom_out`、`bounce_up`、`drop_in`、`grow_once`、p14 现代转场、Morph 配对补间；compat 引擎族不下发或仅作点缀。
+- 引擎族口径见 effects-catalog 第 10 节：默认 effect_first；只有明确要求兼容 2019 / 旧 WPS 时才切 compat 引擎族，转场只用 ECMA 基础组、主入场用安全族。交付取向三档（成品优先 / 兼顾 / 兼容优先）见 `delivery-tiers.md`，与引擎族分别声明。
 - 弃用清单（已确认不生效，不要加回）：`box`、旧版 zoom、stretch、空壳预设、翻书页/页面卷曲、内嵌视频；Morph 仅在配对成立时使用。详见 effects-catalog 第 4 节。
 
 ## 参考文档
 
-- `references/effects-catalog.md`：效果目录、行为节点、转场清单、timing 树结构与排错顺序、方向位标记、轴心锁定、节奏规则、容器—文字配对时序纪律与页面活着基线。
+- `references/effects-catalog.md`：效果目录、行为节点、转场清单、timing 树结构与排错顺序、方向位标记、轴心锁定、节奏规则、容器—文字配对时序纪律与页面活着基线、分层与预烘焙取舍。
+- `references/delivery-tiers.md`：三档交付取向——成品优先 / 兼顾 / 兼容优先的适用场景、允许与禁止清单、结构化源契约与分档验收阻断规则、页级重生成反向要求。
+- `references/editability-audit.md`：可编辑性判定项、扣分码、评分表与修复建议；按交付档位出阻断结论。
+- `references/decor-bake.md`：装饰层预渲染配方（渐变 / 光晕 / 噪点 / 暗角 / 纹理 / 模糊）、可复现参数与素材登记口径。
+- `references/regeneration-guide.md`：结构化源维护与页级局部重生成流程。
 - `references/animation-orchestration.md`：编排三段、容器—文字配对矩阵、判定条件与反例形态、配对检查器口径。
 - `references/effect-routing.md`：内容识别与效果路由矩阵——20 类页型的识别特征、版式骨架、效果族、禁用项与反例形态、易混分界阈值、基调与规模约束、保守档口径。
 - `references/asset-index.md` / `references/asset-index.json`：双库索引——20 个页角色各自的版式骨架与效果族候选清单（适用条件、代价、引擎要求、禁用场景）；机读 JSON 供路由器按页角色生成多方案候选，两文件键集合一致。

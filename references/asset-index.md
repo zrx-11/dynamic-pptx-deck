@@ -3,7 +3,7 @@
 > 键为页角色（`page_type`），值为候选清单；机读版见 `asset-index.json`，两文件键集合一致（20 个）。
 > `kind=layout` 指向 `layout-recipes.md` 的版式骨架；`kind=effect` 指向 `effects-catalog.md`
 > 的效果族或 `effect-recipes.md` 的配方。每条候选给出适用条件、代价、引擎要求与禁用场景。
-> 引擎要求：`both`（两档可用）/ `effect_first`（效果优先档下发，弱引擎降级）/ `compat`（仅安全族）。
+> 引擎要求：`both`（两族可用）/ `effect_first`（effect_first 引擎族下发，弱引擎降级）/ `compat`（仅安全族）。
 
 ## 字段口径
 
