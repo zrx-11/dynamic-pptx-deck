@@ -1,0 +1,87 @@
+# 成品版式页覆盖率报告
+
+- 参考根目录（相对标签）：`ext-research/ppt-effects/effects`
+- 扫描包数：**29**（master 28 · filled_sample 1）；总页数：**406**
+- 可换文案页数：**386**；不可直接换文案页数：**20**
+
+## 一、角色覆盖（按可换文案口径）
+
+| 角色键 | 角色名 | 成品页数 | 可换文案页数 | 覆盖档位 |
+|---|---|---|---|---|
+| `cover` | 封面 | 121 | 115 | ≥2 张可用 |
+| `section_transition` | 章节过渡 | 4 | 4 | ≥2 张可用 |
+| `kpi` | KPI 数字 | 7 | 7 | ≥2 张可用 |
+| `table_list` | 表格清单 | 0 | 0 | 0 张可用 |
+| `timeline` | 时间线 / 学期推进 | 0 | 0 | 0 张可用 |
+| `process` | 流程步骤 | 20 | 20 | ≥2 张可用 |
+| `two_column_compare` | 双栏对比 | 0 | 0 | 0 张可用 |
+| `card_grid` | 并列卡片 | 170 | 157 | ≥2 张可用 |
+| `agenda` | 目录 | 0 | 0 | 0 张可用 |
+| `metric_band` | 指标带 | 0 | 0 | 0 张可用 |
+| `trend_chart` | 趋势图 | 0 | 0 | 0 张可用 |
+| `compare_table` | 对比表 | 0 | 0 | 0 张可用 |
+| `org_chart` | 组织结构 | 0 | 0 | 0 张可用 |
+| `risk_alert` | 风险提示 | 0 | 0 | 0 张可用 |
+| `case_card` | 案例卡 | 0 | 0 | 0 张可用 |
+| `conclusion_list` | 结论清单 | 0 | 0 | 0 张可用 |
+| `thanks` | 致谢页 | 1 | 1 | ≥1 张可用 |
+| `gallery` | 图集 / 图墙 | 83 | 82 | ≥2 张可用 |
+| `quote` | 引语页 | 0 | 0 | 0 张可用 |
+| `closing` | 结尾 | 0 | 0 | 0 张可用 |
+
+- 有 ≥1 张可用成品页的角色（7）：`cover`、`section_transition`、`kpi`、`process`、`card_grid`、`thanks`、`gallery`
+- 有 ≥2 张可用成品页的角色（6）：`cover`、`section_transition`、`kpi`、`process`、`card_grid`、`gallery`
+- 0 张可用的角色（13）：`table_list`、`timeline`、`two_column_compare`、`agenda`、`metric_band`、`trend_chart`、`compare_table`、`org_chart`、`risk_alert`、`case_card`、`conclusion_list`、`quote`、`closing`
+
+## 二、academic（学术蓝）家族角色覆盖
+
+academic/ 子树是最可能直接复用的母版家族（含 6 个导航栏模板、
+1 个纵横导航母版与 1 个实填样例）。下表只统计该家族内部的角色分布。
+
+| 角色键 | 角色名 | 家族页数 | 其中可换文案 |
+|---|---|---|---|
+| `cover` | 封面 | 36 | 36 |
+| `kpi` | KPI 数字 | 6 | 6 |
+| `card_grid` | 并列卡片 | 96 | 96 |
+| `gallery` | 图集 / 图墙 | 40 | 40 |
+
+- 家族覆盖角色（4）：`cover`、`kpi`、`card_grid`、`gallery`
+- 家族未覆盖角色（16）：`section_transition`、`table_list`、`timeline`、`process`、`two_column_compare`、`agenda`、`metric_band`、`trend_chart`、`compare_table`、`org_chart`、`risk_alert`、`case_card`、`conclusion_list`、`thanks`、`quote`、`closing`
+
+## 三、仅可整页复用、不可换文案的页面
+
+以下页面满足任一阻断条件：大字已烘焙进位图（baked_text=yes），
+或强依赖 `useBgFill` 幻灯片背景填充透出。整页视觉可复用，换文案前需重建文本层。
+
+| id | 来源效果 | 阻断原因 | 依据 |
+|---|---|---|---|
+| ref-001-p2 | 001_湖景斜切/reference | 烘焙文字=yes（high） | 图片覆盖 ≥75%，原生文本节点 ≤1 且与图重叠或仅剩装饰短字，大字大概率已烘焙进位图 |
+| ref-002-p1 | 002_玻璃碎片/reference | 无原生文本槽 | 无原生可替换文本槽（动画过渡帧 / 纯装饰页） |
+| ref-003-p1 | 002_玻璃碎片/reference | 无原生文本槽 | 无原生可替换文本槽（动画过渡帧 / 纯装饰页） |
+| ref-004-p1 | 002_玻璃碎片/reference | 无原生文本槽 | 无原生可替换文本槽（动画过渡帧 / 纯装饰页） |
+| ref-009-p1 | 007_环形开场/reference | 无原生文本槽 | 无原生可替换文本槽（动画过渡帧 / 纯装饰页） |
+| ref-009-p2 | 007_环形开场/reference | 无原生文本槽 | 无原生可替换文本槽（动画过渡帧 / 纯装饰页） |
+| ref-009-p23 | 007_环形开场/reference | 无原生文本槽 | 无原生可替换文本槽（动画过渡帧 / 纯装饰页） |
+| ref-009-p24 | 007_环形开场/reference | 无原生文本槽 | 无原生可替换文本槽（动画过渡帧 / 纯装饰页） |
+| ref-009-p25 | 007_环形开场/reference | 无原生文本槽 | 无原生可替换文本槽（动画过渡帧 / 纯装饰页） |
+| ref-009-p3 | 007_环形开场/reference | 无原生文本槽 | 无原生可替换文本槽（动画过渡帧 / 纯装饰页） |
+| ref-009-p6 | 007_环形开场/reference | 无原生文本槽 | 无原生可替换文本槽（动画过渡帧 / 纯装饰页） |
+| ref-009-p7 | 007_环形开场/reference | 无原生文本槽 | 无原生可替换文本槽（动画过渡帧 / 纯装饰页） |
+| ref-010-p30 | 008_纯矢量动画/reference | 无原生文本槽 | 无原生可替换文本槽（动画过渡帧 / 纯装饰页） |
+| ref-010-p9 | 008_纯矢量动画/reference | 无原生文本槽 | 无原生可替换文本槽（动画过渡帧 / 纯装饰页） |
+| ref-011-p13 | 009_金边弧线/reference | 烘焙文字=yes（mid） | 图片覆盖 ≥60%，文本槽压在图片区域 ≥50%，标题 / 文案疑似烘焙 |
+| ref-011-p16 | 009_金边弧线/reference | 烘焙文字=yes（mid） | 图片覆盖 ≥60%，文本槽压在图片区域 ≥50%，标题 / 文案疑似烘焙 |
+| ref-011-p18 | 009_金边弧线/reference | 无原生文本槽 | 无原生可替换文本槽（动画过渡帧 / 纯装饰页） |
+| ref-011-p19 | 009_金边弧线/reference | 烘焙文字=yes（high） | 图片覆盖 ≥75%，原生文本节点 ≤1 且与图重叠或仅剩装饰短字，大字大概率已烘焙进位图 |
+| ref-011-p3 | 009_金边弧线/reference | 烘焙文字=yes（mid） | 图片覆盖 ≥60%，文本槽压在图片区域 ≥50%，标题 / 文案疑似烘焙 |
+| ref-011-p7 | 009_金边弧线/reference | 烘焙文字=yes（mid） | 图片覆盖 ≥60%，文本槽压在图片区域 ≥50%，标题 / 文案疑似烘焙 |
+
+## 四、优先复用建议（Top 5，按槽位容量与槽位数排序）
+
+| 排名 | id | 角色 | 槽位数 | 可替换字数 | 基调 | 理由 |
+|---|---|---|---|---|---|---|
+| 1 | ref-007-p2 | card_grid | 9 | 354 | dark | 9 个槽位共 354 字容量，动画节点 0，dark 底；槽位结构可直接套文案 |
+| 2 | ref-007-p3 | cover | 6 | 269 | dark | 6 个槽位共 269 字容量，动画节点 0，dark 底；槽位结构可直接套文案 |
+| 3 | ref-007-p1 | card_grid | 8 | 224 | dark | 8 个槽位共 224 字容量，动画节点 3，dark 底；槽位结构可直接套文案 |
+| 4 | ref-010-p4 | card_grid | 45 | 189 | light | 45 个槽位共 189 字容量，动画节点 0，light 底；槽位结构可直接套文案 |
+| 5 | ref-010-p5 | card_grid | 45 | 184 | light | 45 个槽位共 184 字容量，动画节点 0，light 底；槽位结构可直接套文案 |

@@ -1,166 +1,173 @@
 ---
 name: dynamic-pptx-deck
 display_name: "高级动态PPT"
-description: "把任意已有内容（文档、报告、笔记、大纲、旧 pptx 原稿）做成带动画与转场的原生可编辑 .pptx。用于在 PowerPoint 2019/365 与 WPS 演示中编排入场/强调/退出/路径动画、页面转场与商务版式；覆盖五套主基线 + 11 套学术配色、通用页型骨架与母题、18 套效果配方、Morph 配对帧、三档交付取向（成品优先默认 / 效果与可编辑兼顾 / 兼容优先可选）与排除层、timing 树结构排错、容器—文字配对时序核对与效果弃用清单；成品优先为默认，可编辑性按档位可选，可重生成性是硬要求，结构化源（deck-manifest + facts + 素材引用）随稿交付；支持跨包幻灯片整页导入，复用参考件现成效果页的动画与转场，导入后仅做文字替换与页序编排。"
+description: "把任意已有内容（文档、报告、笔记、大纲、旧 pptx 原稿）做成带动画与转场的原生可编辑 .pptx。默认路线是检索成品页资产、整页导入后只替换文案/数字/配色/图片并叠加原生动画；自绘版式仅在资产索引无匹配页时兜底。技能价值在原生动画编排、效果配方、跨包整页导入与校验工具链，不承担版式设计本身。覆盖三档交付取向、Morph 配对帧、容器—文字配对时序、页内动效配额与合并校验；结构化源随稿交付。"
 ---
 
 # 高级动态PPT
 
-## 适用场景
+## 定位
 
-- 输入是已有素材：Word/Markdown/PDF 文档、汇报笔记、要点大纲、旧版静态 pptx 等；
-  交付物是 `.pptx`，目标放映环境覆盖 PowerPoint 2019/365 与 WPS 演示；
-  不用 HTML/JS/PDF 替代 pptx。成品优先档下装饰层可预渲染图像化，但正文、数据与
-  结构层保持原生，并随稿交付可重生成的结构化源。
-- 需要把静态内容讲成有节奏的演示：对象分批入场、强调重点、路径漂移、页面转场、
-  跨页母题连贯；按素材性质选版式骨架与配色基线，不绑定特定题材（汇报、总结、
-  宣讲、路演、课程、答辩等通用）。
-- 动画不在 python-pptx / PptxGenJS API 内，全部写在每页 `ppt/slides/slideN.xml` 的
-  `<p:timing>`；转场写在 `<p:transition>`。节点写错 PowerPoint 会静默丢弃整页动画。
+- **默认路线**：检索成品页资产 → 整页导入 → 只替换文案 / 数字 / 配色 / 图片 → 叠加原生
+  动画。成品页的几何、层级与时序由源页锁定，导入后不强行复刻形状顶点。
+- **兜底分支**：仅当资产索引无匹配页（缺口角色，或同角色无可换文案页）时，才走原生
+  自绘构建。
+- **不可替代能力**：原生动画编排、效果配方、跨包整页导入与校验工具链；本技能不做版式
+  设计本身，也不产出 HTML / JS / PDF 替代 pptx。
+- 交付物始终是可在 PowerPoint 2019 / 365 与 WPS 演示打开的 OOXML 文件；动画写在每页
+  `ppt/slides/slideN.xml` 的 `<p:timing>`，转场写在 `<p:transition>`，节点写错会被
+  PowerPoint 静默丢弃整页动画。
 
 ## 工作流
 
-1. **整理内容大纲**：从素材中提取章节、要点、数据与结论；不编造经历、统计数字与
-   事实，素材缺失的信息用【】占位；先定页数与每页承载的信息块，再谈视觉。
-   动工前先声明交付档位：`fidelity_first` 成品优先（默认，直接交付成品场景）、
-   `balanced` 效果与可编辑兼顾、`compat` 兼容优先；档位判定、允许 / 禁止清单与
-   验收阻断规则见 `references/delivery-tiers.md`。引擎兼容性（高版本预设 / 标准安全族）
-   是独立维度，按 `effects-catalog.md` 第 10 节另行声明；未声明交付档位按
-   成品优先档交付。
-2. 读 `references/layout-recipes.md`：选定配色基线（A 浅色商务 / B 深色科技 / C 红金 /
-   D 紫夜 / E 深绿青碧，或 11 套学术配色），按内容选版式骨架（封面、目录、章节过渡、卡片、双栏、
-   时间线、表格、Q&A、数字带、轮播、模糊大字页、结尾）。
-3. 路线选型：素材进入目标稿前先过适配检查，按目标基调、配色族、槽位与背景类型判定
-   路线（整页导入 / 抽结构原生重建 / 阻断，判据见 `references/import-guide.md` 第 1 节）。
-   参考件中已有满足需求的高冲击效果页、几何层级时序从零重建会失真、且冲突有确定性
-   消解路径时，优先用 `scripts/slide_importer.py` 整页导入，复用其 timing/transition，
-   导入后只做文字替换与页序编排；`useBgFill` 依赖重、烘焙像素主导或形状必须大改的页面
-   走 `scripts/dynamic_deck.py` 原生构建。两条路线可同稿混用，适配检查、分工边界与
-   阻断口径见 `references/import-guide.md` 第 1、3、9 节。
-3b. 按页角色查双库索引（`references/asset-index.md` / `.json`）：每个页角色给 2–3 个候选
-    （锁结构模板式 + 定制方案，含适用条件、代价、引擎要求与禁用场景），比对字数槽位与
-    节点预算后再定稿；索引无对应骨架时退保守档，不硬套高复杂度配方。
-4. 先按页型排出转场分工表：主轴方向全稿统一，转场类型按页型轮换、相邻页不堆叠同一预设
-   （分工表见 `references/layout-recipes.md` 第 7b 节）；再生成脚本 `build.py` 接入
-   `scripts/dynamic_deck.py`：用封装函数画形状与文本，用 `animate` 编排动画批次，
-   用 `transition` 写转场。
-5. 动画纪律、方向位标记、轴心锁定、节奏规则见 `references/effects-catalog.md`；
-   新页面动效先查效果目录，白名单外的预设不要加。
-5b. 动画编排按三段走：① 常驻环境动效基线（环自转 / 光点往返，indefinite）；
-   ② 分批入场（3—6 批，批内 delay 错开，换批用旧退出 + 新入场）；
-   ③ 容器—文字配对（同批、文字 fade 晚 150—450ms、退出文字先容器后）。
-   配对矩阵、判定条件与反例形态见 `references/animation-orchestration.md`。
-6. 生成后跑 `dynamic_deck.py check` 做结构体检，再跑 `pairing_check.py` 核对
-   容器—文字配对；按交付档位跑可编辑性审计（阻断规则见 `delivery-tiers.md` 第 3—5 节）；
-   用 LibreOffice 导出 PDF/截图核对静态版式。LO 不解释动画，
-   移植类与导入页效果必须在目标机 F5 复核，结果记入验证记录。
-7. **写 deck-manifest**：成稿同级目录落 `deck-manifest.json`，逐页登记 `index`、
-   `page_type`、`content`、`assets` 与 `notes`；facts 清单与素材引用（生成器、
-   生成参数、sha256）随稿交付；契约与齐全性判定见 `references/delivery-tiers.md`
-   第 3.4 节。
-8. **按页重生成复核**：核对每页可仅凭 manifest 条目、facts 与素材引用重建；
-   局部换页后其余 slide part 逐字节不变；重生成流程见
-   `references/regeneration-guide.md`。
+1. **整理内容大纲**：从素材提取章节、要点、数据与结论；不编造经历、统计数字与事实，
+   素材缺失用【】占位；先定页数与每页信息块。动工前声明交付档位：`fidelity_first`
+   成品优先（默认）、`balanced` 兼顾、`compat` 兼容优先；档位判定与阻断规则见
+   `references/delivery-tiers.md`。
+2. **查成品页资产索引**（版式来源先查资产，不先画版式）：读 `references/layout-assets.md`
+   与人读分组、`references/layout-assets.json` 机读记录，按页角色选候选页；选定后记录
+   `source_id`（索引 `id`）、`deck` 相对路径、页码、基调、槽位容量、烘焙文字与背景填充
+   标记。索引覆盖 7 个可换文案角色，其余为缺口角色；无匹配页时转兜底分支（第 12 步）。
+3. **过选页闸**：候选页排除摄影背景、锁定大图、烘焙文字与短槽容量不足项；细则见
+   `references/template-pipeline.md` 第 2.1 节。
+4. **导入前适配检查**：`inspect` 读结构快照，`check_slide` 对照目标画像出四维度适配
+   报告；报告先行，未通过的页面不导入、不适配。口径见 `references/import-guide.md`
+   第 2、3 节。
+5. **整页导入**：用 `scripts/slide_importer.py` 的 `import`（或带 Profile 的 `adapt`）
+   把源页整页复制进目标包，复用其 timing / transition；导入参数与接口见
+   `references/import-guide.md` 第 4、11 节。
+6. **只替换 `a:t` 与色值**：允许替换文案 / 数字、按重着色映射改角色色、按媒体映射换图；
+   **禁止重排坐标、禁止改几何层级、禁止重建文本框**（重建会丢失动画绑定）。过容量闸：
+   逐槽用真实字体实测宽高（实测而非估算），超标先换短文案再换页，不缩字号、不拉伸文本框；
+   细则见 `references/import-guide.md` 第 6、7 节与 `references/template-pipeline.md` 第 4 节。
+7. **内容框闸**：逐框判定填满（墨块覆盖率 ≥25%、无空框），未用槽位补文案或删形状；细则见
+   `references/template-pipeline.md` 第 5 节。
+8. **挂页内动画补配额**：按下方「页内动效配额」核对并补足；编排三段与容器—文字配对
+   矩阵见 `references/animation-orchestration.md`。
+9. **成稿闸**：重叠检测（文本框互压 + 文字超出框高）与内容框检测并列，任一命中即不得交付；
+   细则见 `references/template-pipeline.md` 第 7 节。
+10. **一次合并校验**：跑一次 `scripts/audit_all.py` 出合并报告与退出码；不要分别跑
+   `dynamic_deck.py check`、`pairing_check.py`、`editability_check.py`、
+   `effect_router.py` 四遍。单独调用这些脚本仅用于排障定位。
+11. **一次 LibreOffice 导出**：导出 PDF / 静帧核对静态版式与文本落位；LO 不解释动画。
+   只对 audit 报错的页面（配额不达标、可编辑性阻断、Morph 冲突）看图，修完重跑一次
+   `audit_all.py` 复核。移植类与高版本效果须在目标放映软件 F5 复核。
+12. **兜底分支（仅索引无匹配页时）**：用 `scripts/dynamic_deck.py` 原生构建，版式骨架与
+   效果族候选查 `references/asset-index.md` / `asset-index.json`，配色基线与页型骨架见
+   `references/layout-recipes.md`。
+13. **结构化源交付**：成稿同级落 `deck-manifest.json`，逐页登记 `index`、`page_type`、
+    `content`、`assets`、`notes`；facts 清单与素材引用（生成器、参数、sha256）随稿交付；
+    页级重生成复核见 `references/regeneration-guide.md`。
 
-## 脚本接口（scripts/dynamic_deck.py）
+## 页内动效配额
 
-形状与文本：`text` / `rect` / `oval` / `donut` / `set_name`；
-自转组合体：`spin_group` / `spin_arc` / `spin_pie`（轴心锁定，避免短弧绕自身中心偏离圆心）。
+配额写死，`audit_all.py` 逐页判定：
 
-动画：`animate(slide, groups, auto=0)`
-- `groups` 是点击批次列表；每批是元素元组列表。同组同时开始，先后靠各自 delay 错开。
-- `auto=N`：前 N 批进页即自动播（delay=0），其余等点击。
-- 元素元组：
-  - 入场/退出：`(name, kind, delay_ms, dur_ms)`；退出含 `disappear`、`zoom_out`、`wipe_out_l/r/u/d`、`fly_out_l/r/u/d`
-  - 强调自转：`(name, "spin", delay, dur[, by])`；小角度钟摆回摆：`(name, "swing", delay, dur[, by])`
-  - 放大回弹：`(name, "grow", delay, dur)`；单次放大：`(name, "grow_once", delay, dur)`
-  - 闪烁：`(name, "blink", delay, dur)`；路径漂移：直线 `(name, "path", delay, dur, dx, dy)`，
-    折线巡游 `(name, "path", delay, dur, 0, 0, "M 0 0 L x y …")`
-  - 自动换片：`transition(slide, kind, adv_ms=2000, on_click=False)`
+- **可感知运动对象 ≥3**：位移 / 缩放 / 旋转 / 擦除 / 路径 / fly / zoom 计入；纯 fade、
+  opacity、appear 不计；退出类效果不计入可感知运动对象计数。
+- **持续循环 ≥1**：环自转（spin + 无限重复）或光点路径巡游（path + 无限重复）。
+- **效果总数 ≤12**；**cTn 节点 ≤60**。
+- **Morph 配对对象**（同名同类型跨页出现）不得叠加页内位置类动画（位移 / 路径 / fly /
+  wipe），页内只允许 fade / opacity。
+- **不合格形态**：只靠 Morph 转场衔接、页内近乎静态（仅纯 fade 入场）的页面判不合格；
+  页内动效应挂在非配对对象上（装饰环、光点、连线、数字、标题下划线、卡片内文字等）。
 
-转场：`transition(slide, kind)`；可用清单、观感分组与选型纪律见 `references/effects-catalog.md` 第 5 节，
-页型分工表见 `references/layout-recipes.md` 第 7b 节；18 套完整效果配方见 `references/effect-recipes.md`。
-体检：`validate(path)`；CLI：`python3 dynamic_deck.py check <deck.pptx>` / `demo <out.pptx>`。
+## 许可纪律
 
-## 配对检查接口（scripts/pairing_check.py）
+- 成品页资产属第三方素材：个人学习与校内汇报场景可用；公开放映或商业交付前，必须在
+  交付说明 / README 声明资产来源与许可范围，未获授权则退回自绘分支。
+- 资产索引只记录路径与结构特征，**不打包资产本体**（pptx / 静帧 / svg 均留在参考件
+  目录）；许可分级与素材使用纪律见 `references/source-inventory.md` 第 1、2 节。
 
-仅用标准库（zipfile + xml.etree），逐页核对容器—文字配对：同批绑定、延迟差
-150—450ms、文字只挂 fade、退出文字先容器后 100—150ms，统计孤儿文字、cTn 预算、
-转场与悬空 spTgt；另做跨页配对互斥核对：同名同类型出现在 ≥2 页的对象判为 Morph
-配对对象，包内实际使用 Morph 时，挂页内位置动画（位移 / 路径 / fly / wipe）判 FAIL，
-纯 fade / opacity 记 info 放行；无 Morph 的包按独立重复元素处理，不判互斥。
+## 按需读取表
 
-- CLI：`python3 pairing_check.py <deck.pptx> [--min-gap 150] [--max-gap 450] [--max-ctn 60] [--json OUT] [--md OUT]`；
-  `--json` 出机器可读报告，`--md` 出人读表格。
-- 退出码：0=全部 PASS；1=存在 FAIL；2=输入错误或包不可读。
-- `python3 pairing_check.py --selftest`：内联最小 fixture 断言七类判定，含必然 FAIL
-  的反例；口径见 `references/animation-orchestration.md` 第 3、5 节。
+| 你要做什么 | 读哪份 reference 的哪一节 |
+|---|---|
+| 选成品页（检索候选、看容量与可换文案性） | `layout-assets.md`「怎么用这份索引」及角色分组；机读 `layout-assets.json` |
+| 整页导入（适配检查、导入参数、文字替换） | `import-guide.md` 第 1、3、7、11 节 |
+| 挂动画（编排三段、配对矩阵、反例形态） | `animation-orchestration.md` 第 1、2、3 节 |
+| 查页型路由与效果预算 | `effect-routing.md` 第 2 节 |
+| 跑校验（CLI、报告字段、配额判定、退出码） | `audit-all.md` |
+| 判定交付档位与允许 / 禁止清单 | `delivery-tiers.md` 第 1–3 节 |
+| 装饰层预渲染 | `decor-bake.md` 第 7 节 |
+| 页级局部重生成 | `regeneration-guide.md` 第 3、6 节 |
+| 全稿复用工序总览 | `template-pipeline.md` |
+| 素材许可分级与使用纪律 | `source-inventory.md` 第 1、2 节 |
+| 兜底自绘的版式骨架 / 效果族候选 | `asset-index.md` / `asset-index.json` |
+| 配色基线、页型骨架与字号阶梯 | `layout-recipes.md` |
+| 效果目录、转场清单、弃用清单 | `effects-catalog.md` |
+| 完整效果配方 | `effect-recipes.md` |
+| 可编辑性扣分码与评分表 | `editability-audit.md` |
 
-## 效果路由接口（scripts/effect_router.py）
+## 脚本接口摘要
 
-仅用标准库（zipfile + xml.etree + json），解析每页形状 / 文本 / 数字 / 层级 / 时间词，
-或接收 JSON 页描述；输出 EffectPlan：页型、信息特征、批次拆法、预设族、常驻环境动效、
-强调对象、转场建议与路线建议（原生重建 / 整页导入 / 阻断），每个推荐项带命中的规则编号
-（basis）与引擎档位依据（`ENGINE:effect_first` / `ENGINE:compat`）；信号重叠或稀疏时给
-`confidence: low` 与保守档，不猜。
-
-- CLI：`python3 effect_router.py <deck.pptx|page.json> [--page N] [--tier fidelity_first|balanced|compat] [--engine effect_first|compat] [--json OUT] [--md OUT]`；
-  `--json` 出机器可读计划，`--md` 出人读表格。
-- `--tier` 默认 `fidelity_first`（成品优先）；`balanced`（兼顾）与 `compat`（兼容优先）
-  输出与既有计划逐字段一致。`--engine` 是既有引擎族覆盖项，未显式给定时按档位映射。
-- `fidelity_first` 下每页新增 `decor` 字段（预烘焙装饰策略、配方文档节号、观感强度、
-  可编辑代价），并在 `alternatives` 中至少给一条 `kind: "baked_decor_native_anim"`
-  候选（装饰层预渲染铺底 + 内容层原生动画）；其余字段沿用既有结构。
-- 退出码：0=正常出计划；2=输入不可读。
-- 批次按页型角色矩阵生成（KPI / 时间线 / 表格 / 卡片 / 双栏 / 引语 / 过渡 / 结尾各有独立
-  角色、数量、预设族与延迟区间）；路由为原生重建时，批次结构（角色 + 数量 + 预设族 + 延迟
-  区间）直接喂给 build 脚本；整页导入时给出 `check_slide` 参数与背景 / 重着色要点；阻断时
-  写明缺什么（烘焙像素声明、字号档、授权素材、基调 recolor 路径等）。规则矩阵见
-  `references/effect-routing.md`。命令行默认输出带批次角色 + 预设族摘要。
-- 预算收敛：每页估算 `estimated_effects`（≤12）与 `estimated_ctn`（≤60），写入
-  `budget.fits`；超预算时按角色给 `split_plan`（每批配额 `per_batch`、批数 `batch_count`），
-  卡片容器与文字同批成对，编号圆牌随卡片 zoom 不另占节点；表格按行聚类、表头不进滚动批次。
-- 多方案输出：每页 `alternatives` 至少 2 个候选——1 个锁结构模板式（索引骨架只换文案）+
-  1 个定制方案（按页角色重排效果），索引有第三条候选时追加；每条含 `scheme_id`、`summary`、
-  `cost`（节点数估算 + 复杂度 + 字数要求）、`engine`、`tradeoff`；既有 plan 字段保留，
-  `alternatives` 只增不改。
-
-## 跨包导入接口（scripts/slide_importer.py）
-
-仅用标准库做文件级 zip 手术，不依赖 python-pptx；整页复制参考件的 slide part、rels 与媒体，
-导入后只做文字替换与页序编排。完整口径见 `references/import-guide.md`。
-
-- `TargetProfile(tone: str, bg_color: str, palette: dict, fonts: dict | None = None, baked_declarations: list | None = None, strict: bool = False)`：目标对象画像；`tone` 取 dark/light，`palette` 角色为 bg/card/ink/mut/accent1/accent2/accent3/line；`baked_declarations` 条目为 `{"media": partname 或 sha1, "baked_text": str, "action": replace|keep|block}`；`strict` 时未消解警告升级阻断；含 `to_dict` / `from_dict`。
-- `SlideImporter(dst_pptx: str)`：目标包构造器。
-  - `check_slide(src_pptx, src_index=0, target=None, target_texts=None) -> dict`：对照目标 Profile 出适配报告（槽位、基调配色、媒体背景、烘焙像素四维度），报告先行。
-  - `adapt_slide(src_pptx, src_index=0, target=None, text_map=None, recolor_map=None, media_map=None, background=None, strict=None) -> int`：按消解结果适配写入，返回新页索引；target 必传（传 None 抛错），未消解冲突时写入前阻断。
-  - `import_slide(src_pptx: str, src_index: int = 0, text_map: dict | None = None, by_name: bool = False) -> int`：导入参考页，返回新页索引；可随导入一并传入文字映射。
-  - `replace_text(slide_index: int, mapping: dict, by_name: bool = False) -> None`：替换指定页文本；默认有序整串匹配，`by_name=True` 按形状名替换。
-  - `reorder(order: list[int]) -> None`：按索引列表重排页序。
-  - `save(path: str | None = None) -> None`：落盘；不传路径回写目标包。
-- `inspect(src_pptx: str, src_index: int = 0) -> dict`：读取参考页结构快照（文本槽、媒体、主题色、关系类型，及 `background` / `useBgFill` / `baked_candidates` / `colors`）。
-- 模块级工具：`recolor_srgb`（重着色并保留颜色变换）、`luminance`（亮度判定基调）、`hue_family`（色相族归并）、`estimate_slot`（槽位容量与溢出估算）、`center_crop`（居中裁切 srcRect）、`detect_background`（背景类型识别）、`find_bg_fill_shapes`（背景填充形状清单）。
-- CLI：`inspect --src X.pptx [--index N]`；`check --src X.pptx [--index N] [--profile profile.json] [--target-texts texts.json]`；`adapt --src X.pptx [--index N] --dst D.pptx --profile profile.json [--out O.pptx] [--map map.json] [--recolor recolor.json] [--media media.json] [--strict]`；`import --src X.pptx --index N --dst D.pptx [--out O.pptx] [--map map.json] [--by-name]`；`replace --dst D.pptx --index N --map map.json [--by-name] [--out O.pptx]`；`reorder --dst D.pptx --order 0,3,1,2 [--out O.pptx]`。
+- **原生构建 `scripts/dynamic_deck.py`**：形状与文本 `text` / `rect` / `oval` / `donut` /
+  `set_name`；自转组合体 `spin_group` / `spin_arc` / `spin_pie`（轴心锁定）。动画
+  `animate(slide, groups, auto=0)`：`groups` 为点击批次列表，同组同时开始、靠 `delay`
+  错开；`auto=N` 前 N 批进页自动播。元素元组：入场 / 退出 `(name, kind, delay_ms,
+  dur_ms)`；自转 `(name, "spin", delay, dur[, by])`；钟摆 `(name, "swing", ...)`；
+  放大回弹 / 单次放大 `grow` / `grow_once`；闪烁 `blink`；路径 `path`（直线 dx,dy 或
+  折线串）。转场 `transition(slide, kind, adv_ms=毫秒, on_click=False)`。CLI：
+  `python3 scripts/dynamic_deck.py check <deck.pptx>` / `demo <out.pptx>` / `selftest`。
+- **跨包导入 `scripts/slide_importer.py`**：`SlideImporter(dst_pptx)` 提供
+  `import_slide` / `check_slide` / `adapt_slide` / `replace_text` / `reorder` / `save`；
+  模块级 `inspect` 读结构快照。CLI 子命令 `inspect` / `check` / `adapt` / `import` /
+  `replace` / `reorder` / `selftest`；完整签名与快照键见 `import-guide.md` 第 11 节。
+- **合并校验 `scripts/audit_all.py`**：一次调用合并结构、配对、可编辑性、schema 深扫、
+  动效配额；CLI `python3 scripts/audit_all.py <deck.pptx> [--manifest P]
+  [--tier 档位] [--fast] [--json OUT] [--md OUT]`，`--selftest` 跑内联自检；口径见
+  `audit-all.md`。
+- **配对检查 `scripts/pairing_check.py`**：仅标准库，核对同批绑定、延迟差 150–450ms、
+  文字只挂 fade、退出顺序与 Morph 互斥；CLI
+  `python3 scripts/pairing_check.py <deck.pptx> [--min-gap 150] [--max-gap 450]
+  [--max-ctn 60] [--json OUT] [--md OUT]`，`--selftest` 跑内联自检。
+- **效果路由 `scripts/effect_router.py`**：规划工具，识别页型与信息特征，输出批次拆法、
+  预设族、强调对象、转场与路线建议；CLI
+  `python3 scripts/effect_router.py <deck.pptx|page.json> [--page N] [--tier 档位]
+  [--engine effect_first|compat] [--json OUT] [--md OUT]`。
+- **索引扫描 `scripts/scan_layout_assets.py`**：一键重扫参考件目录，重建
+  `references/layout-assets.json`、`layout-assets.md` 与
+  `reports/layout-asset-coverage.md`；CLI `--root / --out / --md / --report /
+  --skill-root`。
 
 ## 效果分级原则
 
-- 实测可用（标准 DrawingML 安全族，2019 / 365 / WPS 均可解析）：`fade`、`fly_up`、`wipe_l`、`spin`。
-- 结构移植（带真实行为节点，未在目标机复测）：其余 fly/wipe 方向、`zoom`、`appear`、`blink`、`path`。
-- 高版本增强（effect_first 引擎族下发；弱引擎降级但不崩）：`zoom_rot`、`zoom_out`、`bounce_up`、`drop_in`、`grow_once`、p14 现代转场、Morph 配对补间；compat 引擎族不下发或仅作点缀。
-- 引擎族口径见 effects-catalog 第 10 节：默认 effect_first；只有明确要求兼容 2019 / 旧 WPS 时才切 compat 引擎族，转场只用 ECMA 基础组、主入场用安全族。交付取向三档（成品优先 / 兼顾 / 兼容优先）见 `delivery-tiers.md`，与引擎族分别声明。
-- 弃用清单（已确认不生效，不要加回）：`box`、旧版 zoom、stretch、空壳预设、翻书页/页面卷曲、内嵌视频；Morph 仅在配对成立时使用。详见 effects-catalog 第 4 节。
+- 实测可用（标准 DrawingML 安全族，2019 / 365 / WPS 均可解析）：`fade`、`fly_up`、
+  `wipe_l`、`spin`。
+- 结构移植（带真实行为节点，未在目标机复测）：其余 fly / wipe 方向、`zoom`、`appear`、
+  `blink`、`path`。
+- 高版本增强（effect_first 引擎族下发，弱引擎降级但不崩）：`zoom_rot`、`zoom_out`、
+  `bounce_up`、`drop_in`、`grow_once`、p14 现代转场、Morph 配对补间；compat 引擎族
+  不下发或仅作点缀。
+- 弃用清单（已确认不生效，不要加回）：`box`、旧版 zoom、stretch、空壳预设、翻书页 /
+  页面卷曲、内嵌视频；Morph 仅在配对成立时使用。引擎族口径见 `effects-catalog.md`
+  第 10 节。
 
 ## 参考文档
 
-- `references/effects-catalog.md`：效果目录、行为节点、转场清单、timing 树结构与排错顺序、方向位标记、轴心锁定、节奏规则、容器—文字配对时序纪律与页面活着基线、分层与预烘焙取舍。
-- `references/delivery-tiers.md`：三档交付取向——成品优先 / 兼顾 / 兼容优先的适用场景、允许与禁止清单、结构化源契约与分档验收阻断规则、页级重生成反向要求。
-- `references/editability-audit.md`：可编辑性判定项、扣分码、评分表与修复建议；按交付档位出阻断结论。
-- `references/decor-bake.md`：装饰层预渲染配方（渐变 / 光晕 / 噪点 / 暗角 / 纹理 / 模糊）、可复现参数与素材登记口径。
+- `references/template-pipeline.md`：成品页复用流水线完整工序（选页判据、导入参数、
+  容量纪律、配额挂载、校验、导出与许可声明模板）。
+- `references/audit-all.md`：合并校验入口 CLI、报告字段、配额判定、`--fast` 取舍、
+  退出码与既有脚本关系。
+- `references/import-guide.md`：跨包整页导入口径——三路线判定、适配检查、处理范围、
+  主题色解析、文字替换、组装纪律与接口 / CLI 参考。
+- `references/animation-orchestration.md`：编排三段、容器—文字配对矩阵、判定条件与
+  反例形态、配对检查器口径。
+- `references/effect-routing.md`：20 类页型识别特征、骨架、效果族、禁用项与反例形态。
+- `references/delivery-tiers.md`：三档交付取向的场景判定、允许 / 禁止清单、结构化源
+  契约与分档验收阻断规则。
+- `references/asset-index.md` / `asset-index.json`：20 个页角色的版式骨架与效果族候选
+  库（兜底自绘分支选型用）；与成品页资产索引 `layout-assets.md` / `layout-assets.json`
+  是两件事。
+- `references/layout-assets.md` / `layout-assets.json`：成品页资产检索索引（默认复用
+  路线选页用）；覆盖率报告见 `reports/layout-asset-coverage.md`。
+- `references/effects-catalog.md`：效果目录、行为节点、转场清单、timing 树排错、方向位
+  标记、轴心锁定、节奏规则与分层取舍。
+- `references/effect-recipes.md`：18 套完整效果配方（页数规则、素材门槛、图层结构、
+  移植约束）。
+- `references/layout-recipes.md`：配色字体基线、页型构成与字号阶梯、通用骨架与母题、
+  配方级版式与环境动效母题。
+- `references/decor-bake.md`：装饰层预渲染配方、可复现参数与素材登记口径。
+- `references/editability-audit.md`：可编辑性判定项、扣分码、评分表与修复建议。
 - `references/regeneration-guide.md`：结构化源维护与页级局部重生成流程。
-- `references/animation-orchestration.md`：编排三段、容器—文字配对矩阵、判定条件与反例形态、配对检查器口径。
-- `references/effect-routing.md`：内容识别与效果路由矩阵——20 类页型的识别特征、版式骨架、效果族、禁用项与反例形态、易混分界阈值、基调与规模约束、保守档口径。
-- `references/asset-index.md` / `references/asset-index.json`：双库索引——20 个页角色各自的版式骨架与效果族候选清单（适用条件、代价、引擎要求、禁用场景）；机读 JSON 供路由器按页角色生成多方案候选，两文件键集合一致。
-- `references/layout-recipes.md`：配色字体基线（含 11 套学术配色）、页型构成与字号阶梯、通用页型骨架与母题、配方级版式（轮播/扇形/六边形/模糊大字等）、深色技术风装饰手法、环境动效母题、跨页流畅感编排、工程注意事项与许可边界。
-- `references/source-inventory.md`：素材许可分级、样稿预设统计归档、路线选型与验证边界。
-- `references/effect-recipes.md`：18 套效果配方（页数规则、素材门槛、图层结构、移植约束、跨配方通用规则）。
-- `references/import-guide.md`：跨包幻灯片导入口径——适配前置总原则与三路线判定（整页导入 / 原生重建 / 阻断）、inspect 结构快照、check_slide 四维度适配检查、adapt_slide 适配动作、导入处理范围、主题色解析与重着色、文字替换两种模式、组装与路线混用边界、验证纪律与接口/CLI 参考。
+- `references/source-inventory.md`：素材许可分级、样稿预设统计归档与路线选型边界。
