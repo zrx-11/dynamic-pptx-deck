@@ -61,6 +61,148 @@ FULLBLEED_H = 0.85
 PAGE_NUM_RE = re.compile(r"(?:第\s*(\d+)\s*页|_p(\d+)|p(\d+))\.png$", re.I)
 SLIDE_FILE_RE = re.compile(r"ppt/slides/slide\d+\.xml$")
 
+# ----------------------------------------------------------------------
+# v1.3.0 新增包人工覆盖策略
+#
+# 018–022 五个效果包由人工按 spec.json 核定角色 / 变体 / 硬约束；
+# 覆盖记录的 role_source 标为 ``人工-覆盖``，不伪造 router 结果。
+# 旧包（001–017 与 academic）仍走 router + 兜底规则，结构不变。
+# ----------------------------------------------------------------------
+
+# 上一轮（v1.2.0，29 包 406 页）逐角色基线：(成品页数, 可换文案页数)。
+PREV_ROLE_BASELINE: dict[str, tuple[int, int]] = {
+    "cover": (121, 115), "section_transition": (4, 4), "kpi": (7, 7),
+    "table_list": (0, 0), "timeline": (0, 0), "process": (20, 20),
+    "two_column_compare": (0, 0), "card_grid": (170, 157), "agenda": (0, 0),
+    "metric_band": (0, 0), "trend_chart": (0, 0), "compare_table": (0, 0),
+    "org_chart": (0, 0), "risk_alert": (0, 0), "case_card": (0, 0),
+    "conclusion_list": (0, 0), "thanks": (1, 1), "gallery": (83, 82),
+    "quote": (0, 0), "closing": (0, 0),
+}
+PREV_TOTAL_PAGES = 406
+PREV_USABLE_PAGES = 386
+PREV_PACKS = 29
+
+
+def _pr(pages: list[int], role: str, default: str | None = None) -> dict:
+    """生成 ``{页码: 角色}`` 映射，default 为未列出页的兜底角色。"""
+    return {"pages": {p: role for p in pages}, "default": default}
+
+
+PACK_POLICY: dict[str, dict] = {
+    "018_摄像机转场": {
+        "constraint": "normal",
+        "lock_palette": False,
+        "roles": {**_pr([1], "cover"), "default": "section_transition"},
+        "notes": [
+            "材料：1 张 16:9 横构图照片（宽高比容差 0.08）；副标题 ≤20 字，超长会缩字号",
+            "三层结构：全屏底图 / 中部横幅 / 底部装饰；中部横幅可缺省，单张照片版只保留底图",
+            "三层图须同一色调，否则旋转切换时接缝明显；中部横幅建议透明 PNG",
+        ],
+        "boundary": {
+            "cover": "三层结构（全屏底图 / 中部横幅 / 底部装饰）；可承担开场镜头帧，不能承担正文内容页与多图并列展示；中部横幅可缺省，单张照片版只保留底图",
+            "section_transition": "三层结构（全屏底图 / 中部横幅 / 底部装饰）；可承担章节过渡的镜头甩动帧，不能承担正文内容页与多图并列展示；中部横幅可缺省，单张照片版只保留底图",
+        },
+    },
+    "019_情景演绎双版本": {
+        "constraint": "strong",
+        "lock_palette": False,
+        "roles": {
+            "pages": {**{p: "cover" for p in (1, 2, 3)},
+                      **{p: "quote" for p in range(4, 9)},
+                      **{p: "case_card" for p in range(9, 14)}},
+            "default": "quote",
+        },
+        "notes_shared": [
+            "实为情景演绎页：选页必须按用户素材情况定版本——有透明 PNG 主体 5–6 个 + 背景 2–4 张走 cutout，只有普通照片 5–6 张走 plain",
+            "两版页数相同；抠图版每页比免抠版多 1–2 张图，选页时按素材情况判成本",
+            "台词为中英两行；英文过长缩字号，不得换行超过两行",
+            "画布外的同名对象是下一页 Morph 起点，不可删；低版本 PowerPoint 只剩淡入淡出",
+        ],
+        "notes_variant": {
+            "cutout": "抠图版：透明 PNG 主体 5–6 个（建议 ≥1000px 宽）+ 背景 2–4 张横构图；主体可单独位移/缩放，层次最强",
+            "plain": "免抠图版：普通照片 5–6 张（建议 ≥1600px 宽），主体居中偏上；零准备成本，层次弱一档",
+        },
+        "boundary": {
+            "cover": "实为情景演绎页（开场帧）：可承担对话开场的纯文字 + 背景帧；不能承担标准封面长文案排版",
+            "quote": "实为情景演绎页（对话帧）：可承担中英两行台词叙事；不能承担标准引语页或流程步骤页",
+            "case_card": "实为情景演绎页（招式卡）：可承担单主体招式/案例式卡片；最接近既有 case_card 键，不能承担标准并列卡片网格",
+        },
+    },
+    "020_照片接力转场": {
+        "constraint": "strong",
+        "lock_palette": False,
+        "roles": {**_pr([1, 2, 3, 4], "cover"), "default": "section_transition"},
+        "notes": [
+            "仅作封面 / 章节过渡，不承担正文内容页",
+            "机制：同一张照片两种承载（p:pic 小图 + 幻灯片背景 blipFill 整页填充）；Morph 靠对象名 图片1/2/3 与 !!1/!!2/!!3 配对",
+            "背景填充页换图须同时换图片对象与对应背景；画布外待命对象不可删；照片比例与原媒体一致，否则铺满时拉伸",
+        ],
+        "boundary": {
+            "cover": "无足量 16:9 照片不上调；照片数不足会导致重复；可承担标题结构开场帧，不能承担正文信息页",
+            "section_transition": "无足量 16:9 照片不上调；照片数不足会导致重复；可承担照片接力过渡帧与 THANK YOU 收尾帧，不能承担正文信息页",
+        },
+    },
+    "021_词云开场": {
+        "constraint": "strong",
+        "lock_palette": True,
+        "roles": {**_pr([1], "cover"), "default": "cover"},
+        "notes": [
+            "白字黑底，强调色不可改（spec 实测改色像素差 0.00）",
+            "槽位：标题 115pt / 短句引子 80pt / 三句 72pt / 关键词 44pt×7",
+            "部分槽位初始 x 为负（画布外左侧，靠动画入场）：初始出画槽位，禁止在静态稿里判为越界",
+            "全部 12 个文本框都要换，漏一个会留下占位；文本框单行，文字变长加长框，不缩字号、不换行",
+        ],
+        "boundary": {
+            "cover": "可承担单页词云开场；不能承担多段正文与数据展示；配色与出画位置锁定",
+        },
+    },
+    "022_园林摄影集": {
+        "constraint": "normal",
+        "lock_palette": False,
+        "roles": {
+            "pages": {
+                **{p: "cover" for p in (1, 2)},
+                **{p: "section_transition" for p in range(3, 20)},
+                20: "agenda",
+                **{p: "section_transition" for p in (21, 24, 27, 30)},
+                **{p: "card_grid" for p in (22, 23, 25, 26, 28, 29, 31, 32)},
+                33: "section_transition",
+            },
+            "default": "section_transition",
+        },
+        "notes": [
+            "需要 16:9 照片流，最多 17 张；不足会循环重复，须先确认用户是否接受重复",
+            "照片全部按 16:9 铺满，竖构图会裁掉大量内容；帧号 n/45 换图后最好连续编号",
+        ],
+        "boundary": {
+            "cover": "摄影集封面帧；需要 16:9 照片流，最多 17 张，不足会循环重复，须先确认用户是否接受重复；不能承担非摄影类封面长文案",
+            "section_transition": "摄影集照片流 / 章节扉帧；需要 16:9 照片流，最多 17 张，不足会循环重复，须先确认用户是否接受重复；不能承担非摄影类正文长文案",
+            "agenda": "目录页（01–04 四章）；随摄影集风格，文字槽为 18pt 小字，长文案不适用",
+            "card_grid": "正文三栏页；随摄影集风格，文字槽为 18pt 小字，每段 ≤14 字，长文案不适用",
+        },
+        "boundary_pages": {
+            33: "结尾待续帧（未完待续 / TO BE CONTINUED）；不能承担标准致谢页，也不承担正文长文案",
+        },
+    },
+}
+
+# 扫描器固定附加段：槽位自适应边界（上游 tools/flex_slots.py 口径，转换为本仓库口径）。
+# 写成脚本常量，重扫自动带上；不得在产物 md 里手工删改。
+SLOT_ADAPT_RULES_MD = """## 附录：槽位自适应边界（flex_slots 口径，扫描器固定附加段）
+
+> 本段由 `scripts/scan_layout_assets.py` 作为常量写入，重扫自动保留，不得手工删改。
+> 坐标换算：原画布 1280×720 px（13.333in 宽幻灯片），1 px = 9525 EMU。
+
+1. **槽位身份可互换**：文框与图形框在视觉层级不变时可互换承载；文本优先文框，整块图优先图形框。
+2. **相邻槽可合并**：文案字数超单槽容量 1.5 倍以上时，允许合并同行 / 同列相邻两槽；合并宽度取两槽外框并集，不得越出内容区。
+3. **可放大**：向外扩展不得超过原尺寸 25%，且不得与其它槽重叠。
+4. **可下移避让**：与标题 / 装饰冲突时整体下移，下移量以冲突消除为准，上限为内容区高度的 15%。
+5. **标题槽**：宽 380–1160 px（折算 3,619,500–11,047,800 EMU），高 56 px 单行 / 96 px 两行；顶部对齐，两行时不得压行距。
+6. **横向导航条**：厚度 64–72 px 可变，宽度固定。
+7. **内容槽一律不得移出画布。**
+"""
+
 
 # ----------------------------------------------------------------------
 # 基础解析工具
@@ -456,15 +598,23 @@ def _pack_usebgfill(pack_dir: str) -> bool:
     return False
 
 
-def _preview_map(pack_dir: str) -> tuple[dict[int, str], list[str]]:
-    """预览静帧：按文件名页号映射到页码；无页号的总览图归入包级概览。"""
+def _preview_map(pack_dir: str, variant: str | None = None
+                 ) -> tuple[dict[int, str], list[str]]:
+    """预览静帧：按文件名页号映射到页码；无页号的总览图归入包级概览。
+
+    019 双版本预览带 `抠图版-` / `免抠图版-` 前缀；按 ``variant`` 过滤，
+    避免两版同页号互相覆盖。
+    """
     preview_dir = os.path.join(pack_dir, "preview")
     per_page: dict[int, str] = {}
     overview: list[str] = []
     if not os.path.isdir(preview_dir):
         return per_page, overview
+    prefix = {"cutout": "抠图版", "plain": "免抠图版"}.get(variant, "")
     for fname in sorted(os.listdir(preview_dir)):
         if not fname.lower().endswith(".png"):
+            continue
+        if prefix and not fname.startswith(prefix + "-"):
             continue
         m = PAGE_NUM_RE.search(fname)
         rel = "preview/" + fname
@@ -475,6 +625,63 @@ def _preview_map(pack_dir: str) -> tuple[dict[int, str], list[str]]:
                 continue
         overview.append(rel)
     return per_page, overview
+
+
+def _load_spec(pack_dir: str) -> dict:
+    """读取包内 spec.json；先查 reference 同级包根，再查上级目录；缺失返回空 dict。"""
+    for candidate in (pack_dir, os.path.dirname(pack_dir)):
+        spec_path = os.path.join(candidate, "spec.json")
+        if not os.path.isfile(spec_path):
+            continue
+        try:
+            with open(spec_path, encoding="utf-8") as f:
+                data = json.load(f)
+            return data if isinstance(data, dict) else {}
+        except (OSError, ValueError):
+            return {}
+    return {}
+
+
+def _resolve_variant(spec: dict, deck_rel: str, fname: str) -> str | None:
+    """按 spec.variants 的 reference 路径匹配变体；回落文件名关键词。"""
+    variants = spec.get("variants") or {}
+    for vkey, vmeta in variants.items():
+        ref = (vmeta or {}).get("reference")
+        if ref and (deck_rel.endswith(ref) or fname.endswith(os.path.basename(ref))):
+            return vkey
+    if "抠图" in fname:
+        return "cutout"
+    if "免抠" in fname:
+        return "plain"
+    return None
+
+
+def _materials(spec: dict, variant: str | None) -> dict:
+    """从 spec.materials 抽取素材门槛；spec 缺失时留空，不编造。"""
+    m = spec.get("materials") or {}
+    out: dict = {
+        "min": m.get("min"),
+        "max": m.get("max"),
+        "aspect": m.get("aspects") or [],
+        "orientation": m.get("orientation"),
+        "note": m.get("requirement") or "",
+    }
+    if variant and isinstance(m.get("variants"), dict):
+        vk = "抠图版" if variant == "cutout" else "免抠图版"
+        vm = (m["variants"] or {}).get(vk) or {}
+        if vm:
+            out["min"] = vm.get("min", out["min"])
+            out["max"] = vm.get("max", out["max"])
+            out["note"] = vm.get("requirement") or out["note"]
+    return out
+
+
+def _policy_for(pack_rel: str) -> tuple[str, dict] | None:
+    """按包目录首段命中 v1.3.0 人工覆盖策略。"""
+    head = pack_rel.split("/", 1)[0]
+    if head in PACK_POLICY:
+        return head, PACK_POLICY[head]
+    return None
 
 
 # ----------------------------------------------------------------------
@@ -490,11 +697,18 @@ def scan_deck(pack: dict, root: str, seq: int) -> list[dict]:
         plans = {}
 
     pack_dir = os.path.join(root, pack["rel"])
-    preview_map, _ = _preview_map(pack_dir)
+    spec = _load_spec(pack_dir)
+    fname = os.path.basename(pack["deck"])
+    variant = _resolve_variant(spec, pack["deck"], fname)
+    materials = _materials(spec, variant)
+    policy_hit = _policy_for(pack["rel"])
+    policy = policy_hit[1] if policy_hit else None
+
+    preview_map, _ = _preview_map(pack_dir, variant)
     if not preview_map:
         parent_dir = os.path.dirname(pack_dir)
         if parent_dir != root:
-            preview_map, _ = _preview_map(parent_dir)
+            preview_map, _ = _preview_map(parent_dir, variant)
 
     with zipfile.ZipFile(deck_path) as zf:
         parts = router._slide_order(zf)
@@ -534,6 +748,26 @@ def scan_deck(pack: dict, root: str, seq: int) -> list[dict]:
                 notes.append("router=low，人工归为 %s（router 原判 %s）"
                              % (role, router_role or "unknown"))
 
+            # v1.3.0 人工覆盖策略：角色 / 硬约束 / 边界 / 素材门槛以 spec 核定为准。
+            constraint = "normal"
+            constraint_notes: list[str] = []
+            role_boundary = ""
+            lock_palette = False
+            if policy is not None:
+                role = policy["roles"]["pages"].get(
+                    idx, policy["roles"].get("default") or role)
+                role_source = "人工-覆盖"
+                constraint = policy["constraint"]
+                lock_palette = bool(policy["lock_palette"])
+                constraint_notes = list(policy.get("notes") or [])
+                if variant and policy.get("notes_variant", {}).get(variant):
+                    constraint_notes.append(policy["notes_variant"][variant])
+                if policy.get("notes_shared"):
+                    constraint_notes = list(policy["notes_shared"]) + constraint_notes
+                role_boundary = policy["boundary"].get(role, "")
+                if idx in policy.get("boundary_pages", {}):
+                    role_boundary = policy["boundary_pages"][idx]
+
             # 基调：背景亮度优先；背景为图片时按墨色深浅反推。
             if bg["kind"] == "blipfill" or bg["fullbleed_pic"]:
                 tone = "dark" if _luminance(palette["ink"]) > 150 else "light"
@@ -563,6 +797,12 @@ def scan_deck(pack: dict, root: str, seq: int) -> list[dict]:
                 "capacity_total": capacity_total,
                 "anim": anim,
                 "preview": preview,
+                "variant": variant,
+                "constraint": constraint,
+                "constraint_notes": constraint_notes,
+                "materials": materials,
+                "role_boundary": role_boundary,
+                "lock_palette": lock_palette,
                 "stats": {
                     "shapes": len(shapes),
                     "images": len(pics),
@@ -594,21 +834,31 @@ def build_index(packs: list[dict], root: str) -> dict:
         records = scan_deck(pack, root, seq)
         pages.extend(records)
         _, overview = _preview_map(os.path.join(root, pack["rel"]))
+        variant = records[0]["variant"] if records else None
         pack_meta.append({
             "id": "ref-%03d" % seq,
             "pack": pack["rel"],
             "deck": pack["deck"],
             "kind": pack["kind"],
+            "variant": variant,
             "usebgfill": pack["usebgfill"],
             "pages": len(records),
             "overview_previews": overview,
         })
-    return {"schema": "layout-assets/v1",
+    physical = len(pages)
+    # canonical：同一效果只计一版；019 免抠图版（plain）为重复 variant，不计入。
+    canonical = sum(1 for p in pages if p["variant"] != "plain")
+    return {"schema": "layout-assets/v1.3",
             "generated_by": "scripts/scan_layout_assets.py",
             "reference_root_label": "ext-research/ppt-effects/effects",
             "kind_legend": {"master": "版式母版 / 成品页包",
                              "filled_sample": "samples/ 下已换文案的成品样例"},
             "role_keys": ROLE_KEYS,
+            "counts": {"physical": physical,
+                       "canonical": canonical,
+                       "variant_duplicate": physical - canonical,
+                       "caliber_note": "physical 按每个 pptx 文件计页；canonical 同一效果只计一版，"
+                                       "019 双版本中 plain 免抠图版为重复 variant，差值即重复页数"},
             "packs": pack_meta,
             "pages": pages}
 
@@ -672,10 +922,14 @@ def render_md(index: dict) -> str:
     lines.append("")
 
     total = len(pages)
+    counts = index.get("counts", {})
+    canonical = counts.get("canonical", total)
     covered = [r for r in ROLE_KEYS if by_role.get(r)]
     lines.append("## 统计概览")
     lines.append("")
-    lines.append("- 总页数：**%d**" % total)
+    lines.append("- 总页数（physical，按每个 pptx 文件计）：**%d**" % total)
+    lines.append("- 总页数（canonical，同一效果只计一版）：**%d**；差值 %d 页来自 019 双版本的重复 variant（plain 免抠图版）。"
+                 % (canonical, total - canonical))
     lines.append("- 覆盖页角色数：**%d / 20**" % len(covered))
     usable = [r for r in pages if _usable(r)]
     lines.append("- 可换文案页数（非烘焙文字、非背景填充依赖、有文本槽）：**%d**" % len(usable))
@@ -709,8 +963,8 @@ def render_md(index: dict) -> str:
                          % (cl["size"], rep_pages, rep, members))
         if role_clusters:
             lines.append("")
-        lines.append("| id | 来源效果 | 槽位数 | 可替换字数 | 烘焙文字 | bgFill | 动画节点 | 基调 | 适用说明 |")
-        lines.append("|---|---|---|---|---|---|---|---|---|")
+        lines.append("| id | 来源效果 | variant | 槽位数 | 可替换字数 | 烘焙文字 | bgFill | 动画节点 | 基调 | 适用说明 |")
+        lines.append("|---|---|---|---|---|---|---|---|---|---|")
         for rec in visible:
             baked = rec["baked_text"]["state"]
             baked_conf = rec["baked_text"]["confidence"]
@@ -725,10 +979,15 @@ def render_md(index: dict) -> str:
             cl = cluster[rec["deck"]]
             if cl["size"] > 1:
                 source += "（同构×%d）" % cl["size"]
-            lines.append("| %s | %s | %d | %d | %s | %s | %d | %s | %s%s |" % (
-                rec["id"], source, len(rec["slots"]), rec["capacity_total"],
-                baked_cell, bgfill, rec["anim"]["total"], rec["tone"],
-                _one_liner(role, rec), lock_note))
+            variant_cell = rec.get("variant") or "—"
+            boundary = rec.get("role_boundary") or ""
+            explain = _one_liner(role, rec)
+            if boundary:
+                explain += "；边界：" + boundary
+            lines.append("| %s | %s | %s | %d | %d | %s | %s | %d | %s | %s%s |" % (
+                rec["id"], source, variant_cell, len(rec["slots"]),
+                rec["capacity_total"], baked_cell, bgfill,
+                rec["anim"]["total"], rec["tone"], explain, lock_note))
         lines.append("")
 
     # 缺口角色
@@ -760,6 +1019,8 @@ def render_md(index: dict) -> str:
     lines.append("- 仅可整页复用、不可换文案：**%d** 页；完整阻断清单与 academic 家族覆盖见覆盖率报告。"
                  % (total - len(usable)))
     lines.append("")
+    lines.append(SLOT_ADAPT_RULES_MD.rstrip("\n"))
+    lines.append("")
     return "\n".join(lines)
 
 
@@ -771,38 +1032,55 @@ def render_report(index: dict) -> str:
     for rec in usable:
         usable_by_role.setdefault(rec["role"], []).append(rec)
 
+    counts = index.get("counts", {})
+    physical = len(pages)
+    canonical = counts.get("canonical", physical)
     lines: list[str] = []
     lines.append("# 成品版式页覆盖率报告")
     lines.append("")
     lines.append("- 参考根目录（相对标签）：`%s`" % index["reference_root_label"])
-    lines.append("- 扫描包数：**%d**（master %d · filled_sample %d）；总页数：**%d**"
+    lines.append("- 扫描包数：**%d**（master %d · filled_sample %d）"
                  % (len(index["packs"]),
                     sum(1 for p in index["packs"] if p["kind"] == "master"),
-                    sum(1 for p in index["packs"] if p["kind"] == "filled_sample"),
-                    len(pages)))
+                    sum(1 for p in index["packs"] if p["kind"] == "filled_sample")))
+    lines.append("- 总页数（physical，每个 pptx 文件都计）：**%d**；"
+                 "总页数（canonical，同一效果只计一版）：**%d**；差值 **%d** 页来自 019 双版本"
+                 "（plain 免抠图版为重复 variant，cutout 抠图版计入 canonical）。"
+                 % (physical, canonical, physical - canonical))
     lines.append("- 可换文案页数：**%d**；不可直接换文案页数：**%d**"
-                 % (len(usable), len(pages) - len(usable)))
+                 % (len(usable), physical - len(usable)))
     lines.append("")
 
     ge1 = [r for r in ROLE_KEYS if usable_by_role.get(r)]
     ge2 = [r for r in ROLE_KEYS if len(usable_by_role.get(r, [])) >= 2]
     zero = [r for r in ROLE_KEYS if not usable_by_role.get(r)]
 
-    lines.append("## 一、角色覆盖（按可换文案口径）")
+    lines.append("## 一、角色覆盖：本轮 vs 上一轮（v1.2.0 → v1.3.0）")
     lines.append("")
-    lines.append("| 角色键 | 角色名 | 成品页数 | 可换文案页数 | 覆盖档位 |")
-    lines.append("|---|---|---|---|---|")
+    lines.append("上一轮基线：%d 包 %d 页，可换文案 %d 页（基线取自 v1.2.0 报告）。"
+                 % (PREV_PACKS, PREV_TOTAL_PAGES, PREV_USABLE_PAGES))
+    lines.append("")
+    lines.append("| 角色键 | 角色名 | 上一轮成品页 | 上一轮可用 | 本轮成品页 | 本轮可用 | 变化 |")
+    lines.append("|---|---|---|---|---|---|---|")
     for role in ROLE_KEYS:
+        prev_all, prev_ok = PREV_ROLE_BASELINE.get(role, (0, 0))
         all_n = len(by_role.get(role, []))
         ok_n = len(usable_by_role.get(role, []))
-        if ok_n >= 2:
-            band = "≥2 张可用"
-        elif ok_n == 1:
-            band = "≥1 张可用"
-        else:
-            band = "0 张可用"
-        lines.append("| `%s` | %s | %d | %d | %s |"
-                     % (role, ROLE_LABEL.get(role, role), all_n, ok_n, band))
+        phys_delta = all_n - prev_all
+        ok_delta = ok_n - prev_ok
+        parts = []
+        if phys_delta:
+            parts.append("成品 %+d" % phys_delta)
+        if ok_delta:
+            parts.append("可用 %+d" % ok_delta)
+        change = "；".join(parts) or "—"
+        if prev_ok == 0 and ok_n >= 1:
+            change = "新覆盖（可用 +%d）" % ok_n
+        elif prev_ok == 0 and all_n >= 1 and ok_n == 0:
+            change = "新出成品页 %d，暂不可换文案" % all_n
+        lines.append("| `%s` | %s | %d | %d | %d | %d | %s |"
+                     % (role, ROLE_LABEL.get(role, role), prev_all, prev_ok,
+                        all_n, ok_n, change))
     lines.append("")
     lines.append("- 有 ≥1 张可用成品页的角色（%d）：%s"
                  % (len(ge1), "、".join("`%s`" % r for r in ge1) or "无"))
@@ -812,13 +1090,59 @@ def render_report(index: dict) -> str:
                  % (len(zero), "、".join("`%s`" % r for r in zero) or "无"))
     lines.append("")
 
+    # 上一轮 13 个缺口角色逐条核对：本轮是否补上、靠哪个包、补了几页。
+    prev_zero = [r for r in ROLE_KEYS if PREV_ROLE_BASELINE.get(r, (0, 0))[1] == 0]
+    lines.append("## 二、上一轮缺口角色逐条核对")
+    lines.append("")
+    lines.append("状态分三档：**已补上**＝本轮有可换文案成品页；**已有成品页、暂不可换文案**＝"
+                 "页已入索引但被烘焙 / 背景填充等阻断条件拦下；**仍为 0**＝本轮无任何成品页。")
+    lines.append("")
+    lines.append("| 角色键 | 角色名 | 本轮成品页 | 本轮可用 | 状态 | 来源包 | 页数（physical / canonical） |")
+    lines.append("|---|---|---|---|---|---|---|")
+    newly_physical: list[str] = []
+    newly_usable: list[str] = []
+    still_empty: list[str] = []
+    for role in prev_zero:
+        ok_recs = usable_by_role.get(role, [])
+        all_recs = by_role.get(role, [])
+        packs_hit = sorted({r["pack"].split("/", 1)[0] for r in all_recs})
+        phys = len(all_recs)
+        canon = sum(1 for r in all_recs if r["variant"] != "plain")
+        src = "、".join("`%s`" % p for p in packs_hit) or "—"
+        if ok_recs:
+            status = "已补上"
+            newly_usable.append(role)
+            newly_physical.append(role)
+        elif all_recs:
+            status = "已有成品页，暂不可换文案"
+            newly_physical.append(role)
+        else:
+            status = "仍为 0，本轮无包补上"
+            still_empty.append(role)
+        lines.append("| `%s` | %s | %d | %d | %s | %s | %d / %d |"
+                     % (role, ROLE_LABEL.get(role, role), phys, len(ok_recs),
+                        status, src, phys, canon))
+    lines.append("")
+    lines.append("- 本轮新出成品页的角色（%d）：%s"
+                 % (len(newly_physical),
+                    "、".join("`%s`" % r for r in newly_physical) or "无"))
+    lines.append("- 其中已可换文案、完成新覆盖的角色（%d）：%s"
+                 % (len(newly_usable),
+                    "、".join("`%s`" % r for r in newly_usable) or "无"))
+    lines.append("- 仍无成品页的角色（%d）：%s"
+                 % (len(still_empty),
+                    "、".join("`%s`" % r for r in still_empty) or "无"))
+    lines.append("- 按可换文案口径仍为 0 的角色（%d）：%s"
+                 % (len(zero), "、".join("`%s`" % r for r in zero) or "无"))
+    lines.append("")
+
     acad = [r for r in pages if r["pack"].startswith("academic/")]
     acad_usable = [r for r in acad if _usable(r)]
     acad_by_role: dict[str, list[dict]] = {}
     for rec in acad:
         acad_by_role.setdefault(rec["role"], []).append(rec)
     acad_roles = sorted(acad_by_role.keys(), key=lambda r: ROLE_KEYS.index(r))
-    lines.append("## 二、academic（学术蓝）家族角色覆盖")
+    lines.append("## 三、academic（学术蓝）家族角色覆盖")
     lines.append("")
     lines.append("academic/ 子树是最可能直接复用的母版家族（含 6 个导航栏模板、")
     lines.append("1 个纵横导航母版与 1 个实填样例）。下表只统计该家族内部的角色分布。")
@@ -844,7 +1168,7 @@ def render_report(index: dict) -> str:
     lines.append("")
 
     blocked = [r for r in pages if not _usable(r)]
-    lines.append("## 三、仅可整页复用、不可换文案的页面")
+    lines.append("## 四、仅可整页复用、不可换文案的页面")
     lines.append("")
     lines.append("以下页面满足任一阻断条件：大字已烘焙进位图（baked_text=yes），")
     lines.append("或强依赖 `useBgFill` 幻灯片背景填充透出。整页视觉可复用，换文案前需重建文本层。")
@@ -876,7 +1200,7 @@ def render_report(index: dict) -> str:
     ranked = sorted(usable, key=lambda r: (r["capacity_total"], len(r["slots"])),
                     reverse=True)
     top = ranked[:5]
-    lines.append("## 四、优先复用建议（Top 5，按槽位容量与槽位数排序）")
+    lines.append("## 五、优先复用建议（Top 5，按槽位容量与槽位数排序）")
     lines.append("")
     if top:
         lines.append("| 排名 | id | 角色 | 槽位数 | 可替换字数 | 基调 | 理由 |")
@@ -904,12 +1228,89 @@ def _default_root() -> str:
         skill_root, "..", "ext-research", "ppt-effects", "effects"))
 
 
+def _materials_line(m: dict) -> str:
+    if not m or m.get("min") is None and not m.get("note"):
+        return "无图片材料门槛（spec 未声明）"
+    parts = []
+    if m.get("min") is not None or m.get("max") is not None:
+        parts.append("数量 %s–%s" % (m.get("min"), m.get("max")))
+    if m.get("aspect"):
+        parts.append("比例 %s" % "/".join(str(a) for a in m["aspect"]))
+    if m.get("orientation"):
+        parts.append("朝向：%s" % m["orientation"])
+    if m.get("note"):
+        parts.append(m["note"])
+    return "；".join(parts)
+
+
+def render_new_packs(index: dict) -> str:
+    """v1.3.0 新增效果包清单：一包一节，角色 / 材料门槛 / 硬约束 / 边界。"""
+    pages = index["pages"]
+    by_head: dict[str, list[dict]] = {}
+    for rec in pages:
+        head = rec["pack"].split("/", 1)[0]
+        if head in PACK_POLICY:
+            by_head.setdefault(head, []).append(rec)
+
+    lines: list[str] = []
+    lines.append("# v1.3.0 新增效果包清单（018–022）")
+    lines.append("")
+    phys_new = sum(len(v) for v in by_head.values())
+    canon_new = sum(1 for v in by_head.values() for r in v
+                    if r["variant"] != "plain")
+    lines.append("- 本轮新增包：**%d** 个；页数 physical **%d** / canonical **%d**"
+                 % (len(by_head), phys_new, canon_new))
+    lines.append("- 口径：physical 按每个 pptx 文件计；canonical 同一效果只计一版，"
+                 "019 的 plain 免抠图版为重复 variant。")
+    lines.append("- 角色 / 约束以各包 `spec.json` 为准人工核定，记录 `role_source=人工-覆盖`。")
+    lines.append("")
+
+    for head in sorted(by_head):
+        recs = sorted(by_head[head], key=lambda r: (r["deck"], r["page"]))
+        policy = PACK_POLICY[head]
+        decks = sorted({r["deck"] for r in recs})
+        variants = sorted({r["variant"] for r in recs if r["variant"]})
+        role_count: dict[str, int] = {}
+        for r in recs:
+            role_count[r["role"]] = role_count.get(r["role"], 0) + 1
+        canon_n = sum(1 for r in recs if r["variant"] != "plain")
+        materials = recs[0]["materials"]
+
+        lines.append("## %s" % head)
+        lines.append("")
+        lines.append("- 参考件：%s" % "；".join("`%s`" % d for d in decks))
+        lines.append("- 页数：physical **%d** / canonical **%d**；variant：%s"
+                     % (len(recs), canon_n,
+                        "、".join(variants) if variants else "null（单版本）"))
+        role_txt = "；".join("%s %d 页" % (ROLE_LABEL.get(k, k), n)
+                            for k, n in sorted(role_count.items()))
+        lines.append("- 角色分布：%s" % role_txt)
+        mat_by_variant: dict = {}
+        for r in recs:
+            mat_by_variant.setdefault(r["variant"], r["materials"])
+        if len(mat_by_variant) > 1:
+            lines.append("- 材料门槛（按 variant 分列）：")
+            for vkey, vmat in sorted(mat_by_variant.items(), key=lambda kv: str(kv[0])):
+                lines.append("  - %s：%s" % (vkey, _materials_line(vmat)))
+        else:
+            lines.append("- 材料门槛：%s" % _materials_line(materials))
+        lines.append("- 硬约束档位：**%s**" % policy["constraint"])
+        for note in recs[0]["constraint_notes"]:
+            lines.append("  - %s" % note)
+        boundaries = sorted({r["role_boundary"] for r in recs if r["role_boundary"]})
+        for b in boundaries:
+            lines.append("- 边界：%s" % b)
+        lines.append("")
+    return "\n".join(lines)
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="成品版式页资产扫描器")
     ap.add_argument("--root", help="参考件根目录（默认按脚本位置推断）")
     ap.add_argument("--out", help="JSON 索引输出路径")
     ap.add_argument("--md", help="人读 Markdown 索引输出路径")
     ap.add_argument("--report", help="覆盖率报告输出路径")
+    ap.add_argument("--new-packs", help="新增效果包清单输出路径")
     ap.add_argument("--skill-root", help="技能根目录（用于推断默认产物位置）")
     args = ap.parse_args(argv)
 
@@ -919,6 +1320,8 @@ def main(argv: list[str] | None = None) -> int:
     out_md = args.md or os.path.join(skill_root, "references", "layout-assets.md")
     out_report = args.report or os.path.join(skill_root, "reports",
                                              "layout-asset-coverage.md")
+    out_new = args.new_packs or os.path.join(skill_root, "reports",
+                                            "new-packs-v1.3.0.md")
 
     if not os.path.isdir(root):
         print("错误：参考件根目录不存在：%s" % root, file=sys.stderr)
@@ -931,9 +1334,8 @@ def main(argv: list[str] | None = None) -> int:
 
     index = build_index(packs, root)
 
-    os.makedirs(os.path.dirname(out_json), exist_ok=True)
-    os.makedirs(os.path.dirname(out_md), exist_ok=True)
-    os.makedirs(os.path.dirname(out_report), exist_ok=True)
+    for out in (out_json, out_md, out_report, out_new):
+        os.makedirs(os.path.dirname(out), exist_ok=True)
 
     with open(out_json, "w", encoding="utf-8") as f:
         json.dump(index, f, ensure_ascii=False, indent=2)
@@ -941,13 +1343,17 @@ def main(argv: list[str] | None = None) -> int:
         f.write(render_md(index))
     with open(out_report, "w", encoding="utf-8") as f:
         f.write(render_report(index))
+    with open(out_new, "w", encoding="utf-8") as f:
+        f.write(render_new_packs(index))
 
     pages = index["pages"]
     usable = [r for r in pages if _usable(r)]
-    print("扫描完成：%d 包，%d 页；可换文案 %d 页" % (len(packs), len(pages), len(usable)))
+    print("扫描完成：%d 包，%d 页（canonical %d）；可换文案 %d 页"
+          % (len(packs), len(pages), index["counts"]["canonical"], len(usable)))
     print("JSON  : %s" % out_json)
     print("MD    : %s" % out_md)
     print("报告  : %s" % out_report)
+    print("新包  : %s" % out_new)
     return 0
 
 

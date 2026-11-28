@@ -1,0 +1,5501 @@
+{
+  "frames": [
+    {
+      "status": "shrunk",
+      "pt": 13.5,
+      "lines": [
+        "Alpöge 黎曼猜想宣告：原文译注、背景导读与重构稿可信度评估"
+      ],
+      "needed_px": 24.3,
+      "box_h_emu": 461665,
+      "reasons": [
+        "缩字号 24.0 → 13.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 1,
+      "shape_name": "文本框 10",
+      "left_emu": 751840,
+      "top_emu": 2886492,
+      "width_emu": 10688320,
+      "height_emu": 461665,
+      "chars": 32
+    },
+    {
+      "status": "shrunk",
+      "pt": 42.0,
+      "lines": [
+        "一纸宣告与两千页重构"
+      ],
+      "needed_px": 75.6,
+      "box_h_emu": 954107,
+      "reasons": [
+        "缩字号 56.0 → 42.0 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 1,
+      "shape_name": "文本框 10",
+      "left_emu": 1013460,
+      "top_emu": 1883397,
+      "width_emu": 10165080,
+      "height_emu": 954107,
+      "chars": 10
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 260346,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 60,
+        "suggested_chars_min": 30,
+        "suggested_chars_max": 60
+      },
+      "page": 1,
+      "shape_name": "矩形 16",
+      "left_emu": 0,
+      "top_emu": 6597653,
+      "width_emu": 12192000,
+      "height_emu": 260347,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 2095070,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 6,
+        "chars_per_line": 51,
+        "suggested_chars_min": 153,
+        "suggested_chars_max": 306
+      },
+      "page": 1,
+      "shape_name": "矩形 4",
+      "left_emu": 897468,
+      "top_emu": 4090493,
+      "width_emu": 10442674,
+      "height_emu": 2095070,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 2088613,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 6,
+        "chars_per_line": 1,
+        "suggested_chars_min": 3,
+        "suggested_chars_max": 6
+      },
+      "page": 1,
+      "shape_name": "矩形 11",
+      "left_emu": 851858,
+      "top_emu": 4096948,
+      "width_emu": 91220,
+      "height_emu": 2088614,
+      "chars": 0
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "4 页 Remark ｜ 239 MB 源码"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 1,
+      "shape_name": "文本框 5",
+      "left_emu": 1019537,
+      "top_emu": 3901508,
+      "width_emu": 4228465,
+      "height_emu": 369332,
+      "chars": 22
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "作者 Levent Alpöge"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 1,
+      "shape_name": "文本框 6",
+      "left_emu": 1019537,
+      "top_emu": 4541842,
+      "width_emu": 3866515,
+      "height_emu": 369332,
+      "chars": 16
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "两份独立文档合并重排"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 1,
+      "shape_name": "文本框 7",
+      "left_emu": 1019537,
+      "top_emu": 5182176,
+      "width_emu": 3810515,
+      "height_emu": 369332,
+      "chars": 10
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "2178 页重构稿"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 1,
+      "shape_name": "文本框 8",
+      "left_emu": 6036310,
+      "top_emu": 3901508,
+      "width_emu": 2552065,
+      "height_emu": 369332,
+      "chars": 9
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "协作：Claude"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 1,
+      "shape_name": "文本框 9",
+      "left_emu": 6036310,
+      "top_emu": 4541842,
+      "width_emu": 2552065,
+      "height_emu": 368300,
+      "chars": 9
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "2026 年 11 月 24 日"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 1,
+      "shape_name": "文本框 13",
+      "left_emu": 6036310,
+      "top_emu": 5182176,
+      "width_emu": 2552065,
+      "height_emu": 369332,
+      "chars": 16
+    },
+    {
+      "status": "shrunk",
+      "pt": 13.5,
+      "lines": [
+        "结构与附录"
+      ],
+      "needed_px": 24.3,
+      "box_h_emu": 461665,
+      "reasons": [
+        "缩字号 24.0 → 13.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 2,
+      "shape_name": "文本框 6",
+      "left_emu": 462084,
+      "top_emu": 1288460,
+      "width_emu": 1877437,
+      "height_emu": 461665,
+      "chars": 5
+    },
+    {
+      "status": "shrunk",
+      "pt": 13.5,
+      "lines": [
+        "附录与速读"
+      ],
+      "needed_px": 24.3,
+      "box_h_emu": 461665,
+      "reasons": [
+        "缩字号 24.0 → 13.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 2,
+      "shape_name": "文本框 8",
+      "left_emu": 462084,
+      "top_emu": 3791798,
+      "width_emu": 1569660,
+      "height_emu": 461665,
+      "chars": 5
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1977969,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 5,
+        "chars_per_line": 26,
+        "suggested_chars_min": 65,
+        "suggested_chars_max": 130
+      },
+      "page": 2,
+      "shape_name": "矩形: 圆角 11",
+      "left_emu": 6096000,
+      "top_emu": 1218365,
+      "width_emu": 5504687,
+      "height_emu": 1977969,
+      "chars": 0
+    },
+    {
+      "status": "ok",
+      "pt": 18.0,
+      "lines": [
+        "第一部 9 章：4 页宣告说了什么（翻译导读）"
+      ],
+      "needed_px": 32.4,
+      "box_h_emu": 734753,
+      "reasons": [],
+      "suggestions": {},
+      "page": 2,
+      "shape_name": "文本框 25",
+      "left_emu": 922020,
+      "top_emu": 1713672,
+      "width_emu": 4859020,
+      "height_emu": 734753,
+      "chars": 23
+    },
+    {
+      "status": "ok",
+      "pt": 18.0,
+      "lines": [
+        "第二部 11 章：支撑材料有多硬（核对评级）"
+      ],
+      "needed_px": 32.4,
+      "box_h_emu": 734753,
+      "reasons": [],
+      "suggestions": {},
+      "page": 2,
+      "shape_name": "文本框 26",
+      "left_emu": 922020,
+      "top_emu": 2579357,
+      "width_emu": 4859020,
+      "height_emu": 734753,
+      "chars": 22
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 3168650,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 9,
+        "chars_per_line": 26,
+        "suggested_chars_min": 117,
+        "suggested_chars_max": 234
+      },
+      "page": 2,
+      "shape_name": "矩形: 圆角 29",
+      "left_emu": 6096000,
+      "top_emu": 3429000,
+      "width_emu": 5504687,
+      "height_emu": 3168650,
+      "chars": 0
+    },
+    {
+      "status": "ok",
+      "pt": 18.0,
+      "lines": [
+        "附录 A 核查清单；B 未核实项；C 图表索引"
+      ],
+      "needed_px": 32.4,
+      "box_h_emu": 734753,
+      "reasons": [],
+      "suggestions": {},
+      "page": 2,
+      "shape_name": "文本框 33",
+      "left_emu": 922020,
+      "top_emu": 4215363,
+      "width_emu": 4859020,
+      "height_emu": 734753,
+      "chars": 23
+    },
+    {
+      "status": "shrunk",
+      "pt": 14.5,
+      "lines": [
+        "速读：第 1–3 章约 8 页；核稿：第 10、20 章回看 15 章"
+      ],
+      "needed_px": 26.1,
+      "box_h_emu": 734753,
+      "reasons": [
+        "缩字号 18.0 → 14.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 2,
+      "shape_name": "文本框 34",
+      "left_emu": 922020,
+      "top_emu": 5081048,
+      "width_emu": 4859020,
+      "height_emu": 734753,
+      "chars": 35
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "各部分回答什么"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 2,
+      "shape_name": "矩形: 圆顶角 14",
+      "left_emu": 7528558,
+      "top_emu": 1218365,
+      "width_emu": 2440434,
+      "height_emu": 376049,
+      "chars": 7
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "翻译 · 核查 · 依据"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 2,
+      "shape_name": "矩形: 圆顶角 30",
+      "left_emu": 7699246,
+      "top_emu": 3429000,
+      "width_emu": 2440434,
+      "height_emu": 376049,
+      "chars": 12
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 2,
+      "shape_name": "文本框 36",
+      "left_emu": 7272525,
+      "top_emu": 3673219,
+      "width_emu": 1816124,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 2,
+      "shape_name": "文本框 37",
+      "left_emu": 5209025,
+      "top_emu": 3673219,
+      "width_emu": 1827076,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 5,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 5
+      },
+      "page": 2,
+      "shape_name": "文本框 40",
+      "left_emu": 9325073,
+      "top_emu": 3673219,
+      "width_emu": 1331730,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 2,
+      "shape_name": "文本框 41",
+      "left_emu": 3153565,
+      "top_emu": 3673219,
+      "width_emu": 1819036,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 2,
+      "shape_name": "文本框 42",
+      "left_emu": 1090993,
+      "top_emu": 3673219,
+      "width_emu": 1826148,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 4,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 4
+      },
+      "page": 2,
+      "shape_name": "文本框 43",
+      "left_emu": 10893226,
+      "top_emu": 3673219,
+      "width_emu": 1154488,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 13.5,
+      "lines": [
+        "黎曼猜想"
+      ],
+      "needed_px": 24.3,
+      "box_h_emu": 461665,
+      "reasons": [
+        "缩字号 24.0 → 13.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 3,
+      "shape_name": "文本框 1",
+      "left_emu": 462084,
+      "top_emu": 1153703,
+      "width_emu": 1889748,
+      "height_emu": 461665,
+      "chars": 4
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 5154930,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 15,
+        "chars_per_line": 26,
+        "suggested_chars_min": 195,
+        "suggested_chars_max": 390
+      },
+      "page": 3,
+      "shape_name": "矩形: 圆角 5",
+      "left_emu": 6096000,
+      "top_emu": 1373270,
+      "width_emu": 5508625,
+      "height_emu": 5154930,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 461665,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 9,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 9
+      },
+      "page": 3,
+      "shape_name": "双括号 6",
+      "left_emu": 587375,
+      "top_emu": 2308212,
+      "width_emu": 2029908,
+      "height_emu": 461665,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 45720,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 1,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 1
+      },
+      "page": 3,
+      "shape_name": "矩形 9",
+      "left_emu": 2743190,
+      "top_emu": 3406140,
+      "width_emu": 321955,
+      "height_emu": 45720,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 45720,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 1,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 1
+      },
+      "page": 3,
+      "shape_name": "矩形 10",
+      "left_emu": 2743190,
+      "top_emu": 3406140,
+      "width_emu": 321955,
+      "height_emu": 45720,
+      "chars": 0
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "等价于素数计数误差被 √x 锁住（冯·科赫 1901",
+        "）。"
+      ],
+      "needed_px": 36.0,
+      "box_h_emu": 571500,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 60 px"
+      ],
+      "suggestions": {},
+      "page": 3,
+      "shape_name": "矩形: 圆角 15",
+      "left_emu": 1377944,
+      "top_emu": 5395753,
+      "width_emu": 2953166,
+      "height_emu": 515756,
+      "chars": 28
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 2045566,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 5,
+        "chars_per_line": 21,
+        "suggested_chars_min": 52,
+        "suggested_chars_max": 105
+      },
+      "page": 3,
+      "shape_name": "矩形: 圆角 16",
+      "left_emu": 587375,
+      "top_emu": 3060032,
+      "width_emu": 4534305,
+      "height_emu": 2045566,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 3292147,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 9,
+        "chars_per_line": 1,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 9
+      },
+      "page": 3,
+      "shape_name": "右大括号 18",
+      "left_emu": 5552643,
+      "top_emu": 2505803,
+      "width_emu": 112394,
+      "height_emu": 3292147,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 11.0,
+      "lines": [
+        "定义"
+      ],
+      "needed_px": 19.8,
+      "box_h_emu": 422552,
+      "reasons": [
+        "缩字号 18.0 → 11.0 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 3,
+      "shape_name": "文本框 17",
+      "left_emu": 649226,
+      "top_emu": 2312528,
+      "width_emu": 1906208,
+      "height_emu": 422552,
+      "chars": 2
+    },
+    {
+      "status": "ok",
+      "pt": 16.0,
+      "lines": [
+        "黎曼 ζ 函数的所有“非平凡零点”，实部都恰",
+        "好等于 1/2。"
+      ],
+      "needed_px": 57.6,
+      "box_h_emu": 1346651,
+      "reasons": [],
+      "suggestions": {},
+      "page": 3,
+      "shape_name": "文本框 19",
+      "left_emu": 741680,
+      "top_emu": 3409490,
+      "width_emu": 4225694,
+      "height_emu": 1346651,
+      "chars": 30
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 461665,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 9,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 9
+      },
+      "page": 3,
+      "shape_name": "双括号 21",
+      "left_emu": 3095004,
+      "top_emu": 2308212,
+      "width_emu": 2029908,
+      "height_emu": 461665,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 11.0,
+      "lines": [
+        "等价表述"
+      ],
+      "needed_px": 19.8,
+      "box_h_emu": 422552,
+      "reasons": [
+        "缩字号 18.0 → 11.0 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 3,
+      "shape_name": "文本框 20",
+      "left_emu": 3091772,
+      "top_emu": 2312528,
+      "width_emu": 2029908,
+      "height_emu": 422552,
+      "chars": 4
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 3,
+      "shape_name": "文本框 51",
+      "left_emu": 7272525,
+      "top_emu": 2582532,
+      "width_emu": 1816124,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 3,
+      "shape_name": "文本框 52",
+      "left_emu": 5209025,
+      "top_emu": 2582532,
+      "width_emu": 1827076,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 5,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 5
+      },
+      "page": 3,
+      "shape_name": "文本框 53",
+      "left_emu": 9325073,
+      "top_emu": 2582532,
+      "width_emu": 1331730,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 3,
+      "shape_name": "文本框 54",
+      "left_emu": 3153565,
+      "top_emu": 2582532,
+      "width_emu": 1819036,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 3,
+      "shape_name": "文本框 55",
+      "left_emu": 1090993,
+      "top_emu": 2582532,
+      "width_emu": 1826148,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 4,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 4
+      },
+      "page": 3,
+      "shape_name": "文本框 56",
+      "left_emu": 10893226,
+      "top_emu": 2582532,
+      "width_emu": 1154488,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 24.0,
+      "lines": [
+        "167 年探索路线"
+      ],
+      "needed_px": 43.2,
+      "box_h_emu": 640080,
+      "reasons": [
+        "缩字号 28.0 → 24.0 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 4,
+      "shape_name": "p4-title",
+      "left_emu": 640080,
+      "top_emu": 320040,
+      "width_emu": 10881360,
+      "height_emu": 640080,
+      "chars": 9
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "五条路线详见第 3 章；本次宣告属路线 D 函数域类比。数域 RH 至今无公认证明，本次宣告待同行复核。"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 4,
+      "shape_name": "p4-sub",
+      "left_emu": 658368,
+      "top_emu": 1051560,
+      "width_emu": 10881360,
+      "height_emu": 365760,
+      "chars": 52
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 36576,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 53,
+        "suggested_chars_min": 26,
+        "suggested_chars_max": 53
+      },
+      "page": 4,
+      "shape_name": "p4-axis",
+      "left_emu": 731520,
+      "top_emu": 3611880,
+      "width_emu": 10698480,
+      "height_emu": 36576,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 201168,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 1,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 1
+      },
+      "page": 4,
+      "shape_name": "p4-node1",
+      "left_emu": 1152144,
+      "top_emu": 3529584,
+      "width_emu": 201168,
+      "height_emu": 201168,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1188720,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 3,
+        "chars_per_line": 1,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 3
+      },
+      "page": 4,
+      "shape_name": "p4-conn1",
+      "left_emu": 1225296,
+      "top_emu": 2331720,
+      "width_emu": 18288,
+      "height_emu": 1188720,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1417320,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 3,
+        "chars_per_line": 6,
+        "suggested_chars_min": 9,
+        "suggested_chars_max": 18
+      },
+      "page": 4,
+      "shape_name": "p4-card1",
+      "left_emu": 521208,
+      "top_emu": 1417320,
+      "width_emu": 1481328,
+      "height_emu": 1417320,
+      "chars": 0
+    },
+    {
+      "status": "ok",
+      "pt": 11.0,
+      "lines": [
+        "1737",
+        "欧拉",
+        "乘积公式，ζ 与素",
+        "数绑定"
+      ],
+      "needed_px": 79.2,
+      "box_h_emu": 1280160,
+      "reasons": [],
+      "suggestions": {},
+      "page": 4,
+      "shape_name": "p4-txt1",
+      "left_emu": 576072,
+      "top_emu": 1490472,
+      "width_emu": 1371600,
+      "height_emu": 1280160,
+      "chars": 20
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 201168,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 1,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 1
+      },
+      "page": 4,
+      "shape_name": "p4-node2",
+      "left_emu": 2670048,
+      "top_emu": 3529584,
+      "width_emu": 201168,
+      "height_emu": 201168,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1188720,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 3,
+        "chars_per_line": 1,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 3
+      },
+      "page": 4,
+      "shape_name": "p4-conn2",
+      "left_emu": 2743200,
+      "top_emu": 3648456,
+      "width_emu": 18288,
+      "height_emu": 1188720,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1417320,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 3,
+        "chars_per_line": 6,
+        "suggested_chars_min": 9,
+        "suggested_chars_max": 18
+      },
+      "page": 4,
+      "shape_name": "p4-card2",
+      "left_emu": 2039111,
+      "top_emu": 3977639,
+      "width_emu": 1481328,
+      "height_emu": 1417320,
+      "chars": 0
+    },
+    {
+      "status": "ok",
+      "pt": 11.0,
+      "lines": [
+        "1859",
+        "黎曼",
+        "8 页论文，写下猜",
+        "想"
+      ],
+      "needed_px": 79.2,
+      "box_h_emu": 1280160,
+      "reasons": [],
+      "suggestions": {},
+      "page": 4,
+      "shape_name": "p4-txt2",
+      "left_emu": 2093976,
+      "top_emu": 4050791,
+      "width_emu": 1371600,
+      "height_emu": 1280160,
+      "chars": 18
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 201168,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 1,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 1
+      },
+      "page": 4,
+      "shape_name": "p4-node3",
+      "left_emu": 4187952,
+      "top_emu": 3529584,
+      "width_emu": 201168,
+      "height_emu": 201168,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1188720,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 3,
+        "chars_per_line": 1,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 3
+      },
+      "page": 4,
+      "shape_name": "p4-conn3",
+      "left_emu": 4261104,
+      "top_emu": 2331720,
+      "width_emu": 18288,
+      "height_emu": 1188720,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1417320,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 3,
+        "chars_per_line": 6,
+        "suggested_chars_min": 9,
+        "suggested_chars_max": 18
+      },
+      "page": 4,
+      "shape_name": "p4-card3",
+      "left_emu": 3557015,
+      "top_emu": 1417320,
+      "width_emu": 1481328,
+      "height_emu": 1417320,
+      "chars": 0
+    },
+    {
+      "status": "ok",
+      "pt": 11.0,
+      "lines": [
+        "1896",
+        "阿达马／德·拉·",
+        "瓦莱-普桑",
+        "各自独立证明素数",
+        "定理"
+      ],
+      "needed_px": 99.0,
+      "box_h_emu": 1280160,
+      "reasons": [],
+      "suggestions": {},
+      "page": 4,
+      "shape_name": "p4-txt3",
+      "left_emu": 3611880,
+      "top_emu": 1490472,
+      "width_emu": 1371600,
+      "height_emu": 1280160,
+      "chars": 29
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 201168,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 1,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 1
+      },
+      "page": 4,
+      "shape_name": "p4-node4",
+      "left_emu": 5705856,
+      "top_emu": 3529584,
+      "width_emu": 201168,
+      "height_emu": 201168,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1188720,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 3,
+        "chars_per_line": 1,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 3
+      },
+      "page": 4,
+      "shape_name": "p4-conn4",
+      "left_emu": 5779008,
+      "top_emu": 3648456,
+      "width_emu": 18288,
+      "height_emu": 1188720,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1417320,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 3,
+        "chars_per_line": 6,
+        "suggested_chars_min": 9,
+        "suggested_chars_max": 18
+      },
+      "page": 4,
+      "shape_name": "p4-card4",
+      "left_emu": 5074920,
+      "top_emu": 3977639,
+      "width_emu": 1481328,
+      "height_emu": 1417320,
+      "chars": 0
+    },
+    {
+      "status": "ok",
+      "pt": 11.0,
+      "lines": [
+        "1914",
+        "哈代",
+        "临界线上有无穷多",
+        "零点"
+      ],
+      "needed_px": 79.2,
+      "box_h_emu": 1280160,
+      "reasons": [],
+      "suggestions": {},
+      "page": 4,
+      "shape_name": "p4-txt4",
+      "left_emu": 5129784,
+      "top_emu": 4050791,
+      "width_emu": 1371600,
+      "height_emu": 1280160,
+      "chars": 18
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 201168,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 1,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 1
+      },
+      "page": 4,
+      "shape_name": "p4-node5",
+      "left_emu": 7223760,
+      "top_emu": 3529584,
+      "width_emu": 201168,
+      "height_emu": 201168,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1188720,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 3,
+        "chars_per_line": 1,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 3
+      },
+      "page": 4,
+      "shape_name": "p4-conn5",
+      "left_emu": 7296912,
+      "top_emu": 2331720,
+      "width_emu": 18288,
+      "height_emu": 1188720,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1417320,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 3,
+        "chars_per_line": 6,
+        "suggested_chars_min": 9,
+        "suggested_chars_max": 18
+      },
+      "page": 4,
+      "shape_name": "p4-card5",
+      "left_emu": 6592824,
+      "top_emu": 1417320,
+      "width_emu": 1481328,
+      "height_emu": 1417320,
+      "chars": 0
+    },
+    {
+      "status": "ok",
+      "pt": 11.0,
+      "lines": [
+        "1948",
+        "韦伊",
+        "函数域上 RH 成立"
+      ],
+      "needed_px": 59.4,
+      "box_h_emu": 1280160,
+      "reasons": [],
+      "suggestions": {},
+      "page": 4,
+      "shape_name": "p4-txt5",
+      "left_emu": 6647688,
+      "top_emu": 1490472,
+      "width_emu": 1371600,
+      "height_emu": 1280160,
+      "chars": 18
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 201168,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 1,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 1
+      },
+      "page": 4,
+      "shape_name": "p4-node6",
+      "left_emu": 8741663,
+      "top_emu": 3529584,
+      "width_emu": 201168,
+      "height_emu": 201168,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1188720,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 3,
+        "chars_per_line": 1,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 3
+      },
+      "page": 4,
+      "shape_name": "p4-conn6",
+      "left_emu": 8814815,
+      "top_emu": 3648456,
+      "width_emu": 18288,
+      "height_emu": 1188720,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1417320,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 3,
+        "chars_per_line": 6,
+        "suggested_chars_min": 9,
+        "suggested_chars_max": 18
+      },
+      "page": 4,
+      "shape_name": "p4-card6",
+      "left_emu": 8110727,
+      "top_emu": 3977639,
+      "width_emu": 1481328,
+      "height_emu": 1417320,
+      "chars": 0
+    },
+    {
+      "status": "ok",
+      "pt": 11.0,
+      "lines": [
+        "1972–73\n蒙哥马",
+        "利",
+        "零点对关联吻合随",
+        "机矩阵"
+      ],
+      "needed_px": 79.2,
+      "box_h_emu": 1280160,
+      "reasons": [],
+      "suggestions": {},
+      "page": 4,
+      "shape_name": "p4-txt6",
+      "left_emu": 8165591,
+      "top_emu": 4050791,
+      "width_emu": 1371600,
+      "height_emu": 1280160,
+      "chars": 24
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 201168,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 1,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 1
+      },
+      "page": 4,
+      "shape_name": "p4-node7",
+      "left_emu": 10259567,
+      "top_emu": 3529584,
+      "width_emu": 201168,
+      "height_emu": 201168,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1188720,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 3,
+        "chars_per_line": 1,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 3
+      },
+      "page": 4,
+      "shape_name": "p4-conn7",
+      "left_emu": 10332719,
+      "top_emu": 2331720,
+      "width_emu": 18288,
+      "height_emu": 1188720,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1417320,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 3,
+        "chars_per_line": 6,
+        "suggested_chars_min": 9,
+        "suggested_chars_max": 18
+      },
+      "page": 4,
+      "shape_name": "p4-card7",
+      "left_emu": 9628632,
+      "top_emu": 1417320,
+      "width_emu": 1481328,
+      "height_emu": 1417320,
+      "chars": 0
+    },
+    {
+      "status": "ok",
+      "pt": 11.0,
+      "lines": [
+        "2026",
+        "Alpöge＋Claude",
+        "宣称证明 RH 与",
+        "GRH，待复核"
+      ],
+      "needed_px": 79.2,
+      "box_h_emu": 1280160,
+      "reasons": [],
+      "suggestions": {},
+      "page": 4,
+      "shape_name": "p4-txt7",
+      "left_emu": 9683495,
+      "top_emu": 1490472,
+      "width_emu": 1371600,
+      "height_emu": 1280160,
+      "chars": 36
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 182880,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 1,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 1
+      },
+      "page": 4,
+      "shape_name": "p4-dot1",
+      "left_emu": 1097280,
+      "top_emu": 3529584,
+      "width_emu": 182880,
+      "height_emu": 182880,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 182880,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 1,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 1
+      },
+      "page": 4,
+      "shape_name": "p4-dot2",
+      "left_emu": 10515600,
+      "top_emu": 3529584,
+      "width_emu": 182880,
+      "height_emu": 182880,
+      "chars": 0
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "可解析定位 0/4454；下一步在编译与公理检查。"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 4,
+      "shape_name": "p4-note",
+      "left_emu": 658368,
+      "top_emu": 5989320,
+      "width_emu": 10881360,
+      "height_emu": 365760,
+      "chars": 25
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1983102,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 5,
+        "chars_per_line": 19,
+        "suggested_chars_min": 48,
+        "suggested_chars_max": 95
+      },
+      "page": 5,
+      "shape_name": "矩形: 圆角 10",
+      "left_emu": 586232,
+      "top_emu": 1826261,
+      "width_emu": 4048647,
+      "height_emu": 1983102,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 13.5,
+      "lines": [
+        "4 页宣告"
+      ],
+      "needed_px": 24.3,
+      "box_h_emu": 461665,
+      "reasons": [
+        "缩字号 24.0 → 13.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 5,
+      "shape_name": "文本框 15",
+      "left_emu": 462084,
+      "top_emu": 1153703,
+      "width_emu": 1877437,
+      "height_emu": 461665,
+      "chars": 5
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "地位与宣告"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 5,
+      "shape_name": "矩形: 圆顶角 17",
+      "left_emu": 860233,
+      "top_emu": 1816102,
+      "width_emu": 3500644,
+      "height_emu": 376049,
+      "chars": 5
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 2297432,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 6,
+        "chars_per_line": 10,
+        "suggested_chars_min": 30,
+        "suggested_chars_max": 60
+      },
+      "page": 5,
+      "shape_name": "流程图: 接点 1",
+      "left_emu": 4947284,
+      "top_emu": 2819400,
+      "width_emu": 2297432,
+      "height_emu": 2297432,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 20.5,
+      "lines": [
+        "宣告"
+      ],
+      "needed_px": 36.9,
+      "box_h_emu": 584775,
+      "reasons": [
+        "缩字号 32.0 → 20.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 5,
+      "shape_name": "文本框 18",
+      "left_emu": 5182930,
+      "top_emu": 3675729,
+      "width_emu": 1826141,
+      "height_emu": 584775,
+      "chars": 2
+    },
+    {
+      "status": "ok",
+      "pt": 16.0,
+      "lines": [
+        "自称已证 RH、推广 GRH、预期 ERH；论",
+        "证在无附加假设下完成形式化"
+      ],
+      "needed_px": 57.6,
+      "box_h_emu": 1346651,
+      "reasons": [],
+      "suggestions": {},
+      "page": 5,
+      "shape_name": "文本框 24",
+      "left_emu": 680733,
+      "top_emu": 2259932,
+      "width_emu": 3860788,
+      "height_emu": 1346651,
+      "chars": 36
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1983102,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 5,
+        "chars_per_line": 19,
+        "suggested_chars_min": 48,
+        "suggested_chars_max": 95
+      },
+      "page": 5,
+      "shape_name": "矩形: 圆角 26",
+      "left_emu": 586232,
+      "top_emu": 4438018,
+      "width_emu": 4048647,
+      "height_emu": 1983102,
+      "chars": 0
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "时机与范围"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 5,
+      "shape_name": "矩形: 圆顶角 28",
+      "left_emu": 860233,
+      "top_emu": 4427859,
+      "width_emu": 3500644,
+      "height_emu": 376049,
+      "chars": 5
+    },
+    {
+      "status": "ok",
+      "pt": 16.0,
+      "lines": [
+        "周日深夜请示 Dario 后公布；只公开",
+        "Lean 代码，不发长文档"
+      ],
+      "needed_px": 57.6,
+      "box_h_emu": 1346651,
+      "reasons": [],
+      "suggestions": {},
+      "page": 5,
+      "shape_name": "文本框 29",
+      "left_emu": 680733,
+      "top_emu": 4871689,
+      "width_emu": 3860788,
+      "height_emu": 1346651,
+      "chars": 34
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1983102,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 5,
+        "chars_per_line": 19,
+        "suggested_chars_min": 48,
+        "suggested_chars_max": 95
+      },
+      "page": 5,
+      "shape_name": "矩形: 圆角 30",
+      "left_emu": 7555978,
+      "top_emu": 1826261,
+      "width_emu": 4048647,
+      "height_emu": 1983102,
+      "chars": 0
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "协作与线索"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 5,
+      "shape_name": "矩形: 圆顶角 31",
+      "left_emu": 7829979,
+      "top_emu": 1816102,
+      "width_emu": 3500644,
+      "height_emu": 376049,
+      "chars": 5
+    },
+    {
+      "status": "ok",
+      "pt": 16.0,
+      "lines": [
+        "与 Claude 合作；theta 提升链长 √X，",
+        "自称 Stepanov 路线后裔"
+      ],
+      "needed_px": 57.6,
+      "box_h_emu": 1026563,
+      "reasons": [],
+      "suggestions": {},
+      "page": 5,
+      "shape_name": "文本框 38",
+      "left_emu": 7650479,
+      "top_emu": 2259932,
+      "width_emu": 3860788,
+      "height_emu": 1026563,
+      "chars": 42
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1983102,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 5,
+        "chars_per_line": 19,
+        "suggested_chars_min": 48,
+        "suggested_chars_max": 95
+      },
+      "page": 5,
+      "shape_name": "矩形: 圆角 39",
+      "left_emu": 7555978,
+      "top_emu": 4438018,
+      "width_emu": 4048647,
+      "height_emu": 1983102,
+      "chars": 0
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "工作时间线"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 5,
+      "shape_name": "矩形: 圆顶角 40",
+      "left_emu": 7829979,
+      "top_emu": 4427859,
+      "width_emu": 3500644,
+      "height_emu": 376049,
+      "chars": 5
+    },
+    {
+      "status": "ok",
+      "pt": 16.0,
+      "lines": [
+        "20 步四阶段，末步 11/16/26 给出 GR",
+        "H；自然语言证明稿未公开"
+      ],
+      "needed_px": 57.6,
+      "box_h_emu": 1026563,
+      "reasons": [],
+      "suggestions": {},
+      "page": 5,
+      "shape_name": "文本框 41",
+      "left_emu": 7650479,
+      "top_emu": 4871689,
+      "width_emu": 3860788,
+      "height_emu": 1026563,
+      "chars": 37
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 690664,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 2,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 2
+      },
+      "page": 5,
+      "shape_name": "流程图: 接点 47",
+      "left_emu": 4758511,
+      "top_emu": 2347437,
+      "width_emu": 690664,
+      "height_emu": 690664,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 690664,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 2,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 2
+      },
+      "page": 5,
+      "shape_name": "流程图: 接点 59",
+      "left_emu": 6742827,
+      "top_emu": 2347437,
+      "width_emu": 690664,
+      "height_emu": 690664,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 690664,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 2,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 2
+      },
+      "page": 5,
+      "shape_name": "流程图: 接点 62",
+      "left_emu": 4758511,
+      "top_emu": 5417413,
+      "width_emu": 690664,
+      "height_emu": 690664,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 690664,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 2,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 2
+      },
+      "page": 5,
+      "shape_name": "流程图: 接点 63",
+      "left_emu": 6742827,
+      "top_emu": 5417413,
+      "width_emu": 690664,
+      "height_emu": 690664,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 5,
+      "shape_name": "文本框 37",
+      "left_emu": 7272525,
+      "top_emu": 2582532,
+      "width_emu": 1816124,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 5,
+      "shape_name": "文本框 42",
+      "left_emu": 5209025,
+      "top_emu": 2582532,
+      "width_emu": 1827076,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 5,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 5
+      },
+      "page": 5,
+      "shape_name": "文本框 43",
+      "left_emu": 9325073,
+      "top_emu": 2582532,
+      "width_emu": 1331730,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 5,
+      "shape_name": "文本框 44",
+      "left_emu": 3153565,
+      "top_emu": 2582532,
+      "width_emu": 1819036,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 5,
+      "shape_name": "文本框 45",
+      "left_emu": 1090993,
+      "top_emu": 2582532,
+      "width_emu": 1826148,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 4,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 4
+      },
+      "page": 5,
+      "shape_name": "文本框 46",
+      "left_emu": 10893226,
+      "top_emu": 2582532,
+      "width_emu": 1154488,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 577402,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 54,
+        "suggested_chars_min": 27,
+        "suggested_chars_max": 54
+      },
+      "page": 6,
+      "shape_name": "矩形: 圆角 41",
+      "left_emu": 591312,
+      "top_emu": 6024679,
+      "width_emu": 11009376,
+      "height_emu": 577402,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 473954,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 7,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 7
+      },
+      "page": 6,
+      "shape_name": "矩形: 圆角 45",
+      "left_emu": 647700,
+      "top_emu": 6076403,
+      "width_emu": 1691822,
+      "height_emu": 473954,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 476900,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 45,
+        "suggested_chars_min": 22,
+        "suggested_chars_max": 45
+      },
+      "page": 6,
+      "shape_name": "矩形: 圆角 42",
+      "left_emu": 2491738,
+      "top_emu": 1215535,
+      "width_emu": 9108949,
+      "height_emu": 476900,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 3795576,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 11,
+        "chars_per_line": 16,
+        "suggested_chars_min": 88,
+        "suggested_chars_max": 176
+      },
+      "page": 6,
+      "shape_name": "矩形: 圆角 12",
+      "left_emu": 8112553,
+      "top_emu": 1977009,
+      "width_emu": 3488135,
+      "height_emu": 3795576,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 13.5,
+      "lines": [
+        "材料硬度谱"
+      ],
+      "needed_px": 24.3,
+      "box_h_emu": 461665,
+      "reasons": [
+        "缩字号 24.0 → 13.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 6,
+      "shape_name": "文本框 4",
+      "left_emu": 462084,
+      "top_emu": 1223153,
+      "width_emu": 1877437,
+      "height_emu": 461665,
+      "chars": 5
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 3795576,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 11,
+        "chars_per_line": 16,
+        "suggested_chars_min": 88,
+        "suggested_chars_max": 176
+      },
+      "page": 6,
+      "shape_name": "矩形: 圆角 7",
+      "left_emu": 593487,
+      "top_emu": 1977009,
+      "width_emu": 3488135,
+      "height_emu": 3795576,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 3795576,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 11,
+        "chars_per_line": 16,
+        "suggested_chars_min": 88,
+        "suggested_chars_max": 176
+      },
+      "page": 6,
+      "shape_name": "矩形: 圆角 11",
+      "left_emu": 4351933,
+      "top_emu": 1977009,
+      "width_emu": 3488135,
+      "height_emu": 3795576,
+      "chars": 0
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "软 → 硬：只有源码层能回答“成不成立”"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 6,
+      "shape_name": "文本框 13",
+      "left_emu": 2526463,
+      "top_emu": 1260791,
+      "width_emu": 7816598,
+      "height_emu": 386388,
+      "chars": 20
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "2178 页重构稿"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 6,
+      "shape_name": "矩形: 圆顶角 14",
+      "left_emu": 1227712,
+      "top_emu": 1970913,
+      "width_emu": 2205174,
+      "height_emu": 376049,
+      "chars": 9
+    },
+    {
+      "status": "shrunk",
+      "pt": 11.5,
+      "lines": [
+        "中文逐章复述；只能核对文件是否存在",
+        "（15.7 MB／3.58M 字符）"
+      ],
+      "needed_px": 41.4,
+      "box_h_emu": 629723,
+      "reasons": [
+        "缩字号 14.0 → 11.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 6,
+      "shape_name": "文本框 15",
+      "left_emu": 766778,
+      "top_emu": 5076499,
+      "width_emu": 3127042,
+      "height_emu": 629724,
+      "chars": 35
+    },
+    {
+      "status": "shrunk",
+      "pt": 11.5,
+      "lines": [
+        "作者自述路线摘要；只能被源码验证（约 4 页",
+        "／2 个 URL）"
+      ],
+      "needed_px": 41.4,
+      "box_h_emu": 629723,
+      "reasons": [
+        "缩字号 14.0 → 11.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 6,
+      "shape_name": "文本框 26",
+      "left_emu": 4532479,
+      "top_emu": 5076499,
+      "width_emu": 3127042,
+      "height_emu": 629724,
+      "chars": 31
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "Lean 源码"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 6,
+      "shape_name": "矩形: 圆顶角 35",
+      "left_emu": 8754033,
+      "top_emu": 1970913,
+      "width_emu": 2205174,
+      "height_emu": 376049,
+      "chars": 7
+    },
+    {
+      "status": "ok",
+      "pt": 14.0,
+      "lines": [
+        "对象本身；唯一可编译裁决层",
+        "（239 MB／17.4M 行／175k 文件）"
+      ],
+      "needed_px": 50.4,
+      "box_h_emu": 909801,
+      "reasons": [],
+      "suggestions": {},
+      "page": 6,
+      "shape_name": "文本框 36",
+      "left_emu": 8293099,
+      "top_emu": 4796422,
+      "width_emu": 3127042,
+      "height_emu": 909801,
+      "chars": 37
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "4 页 Remark"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 6,
+      "shape_name": "矩形: 圆顶角 25",
+      "left_emu": 4993413,
+      "top_emu": 1970913,
+      "width_emu": 2205174,
+      "height_emu": 376049,
+      "chars": 10
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "平均 1 字符约对应 4.85 行源码"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 6,
+      "shape_name": "文本框 43",
+      "left_emu": 2410115,
+      "top_emu": 6120186,
+      "width_emu": 4244727,
+      "height_emu": 386388,
+      "chars": 19
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 422552,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 6,
+        "suggested_chars_min": 3,
+        "suggested_chars_max": 6
+      },
+      "page": 6,
+      "shape_name": "文本框 49",
+      "left_emu": 702175,
+      "top_emu": 6102104,
+      "width_emu": 1582872,
+      "height_emu": 422552,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 6,
+      "shape_name": "文本框 63",
+      "left_emu": 7272525,
+      "top_emu": 263961,
+      "width_emu": 1816124,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 6,
+      "shape_name": "文本框 64",
+      "left_emu": 5209025,
+      "top_emu": 263961,
+      "width_emu": 1827076,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 5,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 5
+      },
+      "page": 6,
+      "shape_name": "文本框 65",
+      "left_emu": 9325073,
+      "top_emu": 263961,
+      "width_emu": 1331730,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 6,
+      "shape_name": "文本框 66",
+      "left_emu": 3153565,
+      "top_emu": 263961,
+      "width_emu": 1819036,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 6,
+      "shape_name": "文本框 68",
+      "left_emu": 1090993,
+      "top_emu": 263961,
+      "width_emu": 1826148,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 4,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 4
+      },
+      "page": 6,
+      "shape_name": "文本框 69",
+      "left_emu": 10893226,
+      "top_emu": 263961,
+      "width_emu": 1154488,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 24.0,
+      "lines": [
+        "源码本体规模"
+      ],
+      "needed_px": 43.2,
+      "box_h_emu": 640080,
+      "reasons": [
+        "缩字号 28.0 → 24.0 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-title",
+      "left_emu": 640080,
+      "top_emu": 320040,
+      "width_emu": 10881360,
+      "height_emu": 640080,
+      "chars": 6
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "体量异常庞大，显式留洞为零，但未见编译记录"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-sub",
+      "left_emu": 658368,
+      "top_emu": 1051560,
+      "width_emu": 10881360,
+      "height_emu": 365760,
+      "chars": 21
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1143000,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 2,
+        "chars_per_line": 16,
+        "suggested_chars_min": 16,
+        "suggested_chars_max": 32
+      },
+      "page": 7,
+      "shape_name": "p7-chip1",
+      "left_emu": 640080,
+      "top_emu": 1600200,
+      "width_emu": 3520440,
+      "height_emu": 1143000,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 18.5,
+      "lines": [
+        "175,187"
+      ],
+      "needed_px": 33.3,
+      "box_h_emu": 548640,
+      "reasons": [
+        "缩字号 22.0 → 18.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-chip-t1",
+      "left_emu": 868680,
+      "top_emu": 1755648,
+      "width_emu": 3063240,
+      "height_emu": 548640,
+      "chars": 7
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "个 .lean 文件"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-chip-l1",
+      "left_emu": 868680,
+      "top_emu": 2286000,
+      "width_emu": 3063240,
+      "height_emu": 320040,
+      "chars": 10
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1143000,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 2,
+        "chars_per_line": 16,
+        "suggested_chars_min": 16,
+        "suggested_chars_max": 32
+      },
+      "page": 7,
+      "shape_name": "p7-chip2",
+      "left_emu": 4370832,
+      "top_emu": 1600200,
+      "width_emu": 3520440,
+      "height_emu": 1143000,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 18.5,
+      "lines": [
+        "17,374,215"
+      ],
+      "needed_px": 33.3,
+      "box_h_emu": 548640,
+      "reasons": [
+        "缩字号 22.0 → 18.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-chip-t2",
+      "left_emu": 4599432,
+      "top_emu": 1755648,
+      "width_emu": 3063240,
+      "height_emu": 548640,
+      "chars": 10
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "行源码"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-chip-l2",
+      "left_emu": 4599432,
+      "top_emu": 2286000,
+      "width_emu": 3063240,
+      "height_emu": 320040,
+      "chars": 3
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1143000,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 2,
+        "chars_per_line": 16,
+        "suggested_chars_min": 16,
+        "suggested_chars_max": 32
+      },
+      "page": 7,
+      "shape_name": "p7-chip3",
+      "left_emu": 8101583,
+      "top_emu": 1600200,
+      "width_emu": 3520440,
+      "height_emu": 1143000,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 18.5,
+      "lines": [
+        "1.4 GB"
+      ],
+      "needed_px": 33.3,
+      "box_h_emu": 548640,
+      "reasons": [
+        "缩字号 22.0 → 18.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-chip-t3",
+      "left_emu": 8330183,
+      "top_emu": 1755648,
+      "width_emu": 3063240,
+      "height_emu": 548640,
+      "chars": 6
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "解包体积"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-chip-l3",
+      "left_emu": 8330183,
+      "top_emu": 2286000,
+      "width_emu": 3063240,
+      "height_emu": 320040,
+      "chars": 4
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "Development"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-bar-l1",
+      "left_emu": 640080,
+      "top_emu": 3209544,
+      "width_emu": 3017520,
+      "height_emu": 320040,
+      "chars": 11
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 256032,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 28,
+        "suggested_chars_min": 14,
+        "suggested_chars_max": 28
+      },
+      "page": 7,
+      "shape_name": "p7-bar1",
+      "left_emu": 3840480,
+      "top_emu": 3227832,
+      "width_emu": 5852160,
+      "height_emu": 256032,
+      "chars": 0
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "141,928"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-bar-n1",
+      "left_emu": 9829800,
+      "top_emu": 3209544,
+      "width_emu": 2011680,
+      "height_emu": 320040,
+      "chars": 7
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "Formalism"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-bar-l2",
+      "left_emu": 640080,
+      "top_emu": 3685032,
+      "width_emu": 3017520,
+      "height_emu": 320040,
+      "chars": 9
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 256032,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 2,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 2
+      },
+      "page": 7,
+      "shape_name": "p7-bar2",
+      "left_emu": 3840480,
+      "top_emu": 3703320,
+      "width_emu": 752672,
+      "height_emu": 256032,
+      "chars": 0
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "18,254"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-bar-n2",
+      "left_emu": 4730312,
+      "top_emu": 3685032,
+      "width_emu": 2011680,
+      "height_emu": 320040,
+      "chars": 6
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "GroundTheory"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-bar-l3",
+      "left_emu": 640080,
+      "top_emu": 4160520,
+      "width_emu": 3017520,
+      "height_emu": 320040,
+      "chars": 12
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 256032,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 1,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 1
+      },
+      "page": 7,
+      "shape_name": "p7-bar3",
+      "left_emu": 3840480,
+      "top_emu": 4178808,
+      "width_emu": 350771,
+      "height_emu": 256032,
+      "chars": 0
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "8,507"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-bar-n3",
+      "left_emu": 4328411,
+      "top_emu": 4160520,
+      "width_emu": 2011680,
+      "height_emu": 320040,
+      "chars": 5
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "ReciprocityTheory"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-bar-l4",
+      "left_emu": 640080,
+      "top_emu": 4636007,
+      "width_emu": 3017520,
+      "height_emu": 320040,
+      "chars": 17
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 256032,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 1,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 1
+      },
+      "page": 7,
+      "shape_name": "p7-bar4",
+      "left_emu": 3840480,
+      "top_emu": 4654296,
+      "width_emu": 158542,
+      "height_emu": 256032,
+      "chars": 0
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "3,845"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-bar-n4",
+      "left_emu": 4136182,
+      "top_emu": 4636007,
+      "width_emu": 2011680,
+      "height_emu": 320040,
+      "chars": 5
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "GroundTheoryFields"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-bar-l5",
+      "left_emu": 640080,
+      "top_emu": 5111496,
+      "width_emu": 3017520,
+      "height_emu": 320040,
+      "chars": 18
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 256032,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 1,
+        "suggested_chars_min": 1,
+        "suggested_chars_max": 1
+      },
+      "page": 7,
+      "shape_name": "p7-bar5",
+      "left_emu": 3840480,
+      "top_emu": 5129784,
+      "width_emu": 117043,
+      "height_emu": 256032,
+      "chars": 0
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "0"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-bar-n5",
+      "left_emu": 4094683,
+      "top_emu": 5111496,
+      "width_emu": 2011680,
+      "height_emu": 320040,
+      "chars": 1
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "12 个库；sorry／axiom／constant 均为 0；5,595 条 *_holds 定理"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-note1",
+      "left_emu": 658368,
+      "top_emu": 5669280,
+      "width_emu": 10881360,
+      "height_emu": 320040,
+      "chars": 50
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "对照 mathlib 约 150 万–200 万行；本工程 1,737 万行"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 7,
+      "shape_name": "p7-note2",
+      "left_emu": 658368,
+      "top_emu": 6080760,
+      "width_emu": 10881360,
+      "height_emu": 320040,
+      "chars": 38
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1967616,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 5,
+        "chars_per_line": 54,
+        "suggested_chars_min": 135,
+        "suggested_chars_max": 270
+      },
+      "page": 8,
+      "shape_name": "矩形: 圆角 57",
+      "left_emu": 587375,
+      "top_emu": 1957471,
+      "width_emu": 11017251,
+      "height_emu": 1967616,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 13.5,
+      "lines": [
+        "定位漏斗"
+      ],
+      "needed_px": 24.3,
+      "box_h_emu": 461665,
+      "reasons": [
+        "缩字号 24.0 → 13.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 8,
+      "shape_name": "文本框 5",
+      "left_emu": 462084,
+      "top_emu": 1252715,
+      "width_emu": 2185214,
+      "height_emu": 461665,
+      "chars": 4
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 804291,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 11,
+        "suggested_chars_min": 6,
+        "suggested_chars_max": 11
+      },
+      "page": 8,
+      "shape_name": "矩形: 圆角 32",
+      "left_emu": 6386940,
+      "top_emu": 4324750,
+      "width_emu": 2421394,
+      "height_emu": 804292,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 2370240,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 6,
+        "chars_per_line": 26,
+        "suggested_chars_min": 78,
+        "suggested_chars_max": 156
+      },
+      "page": 8,
+      "shape_name": "矩形: 圆角 33",
+      "left_emu": 587376,
+      "top_emu": 4150816,
+      "width_emu": 5508624,
+      "height_emu": 2370240,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 804291,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 11,
+        "suggested_chars_min": 6,
+        "suggested_chars_max": 11
+      },
+      "page": 8,
+      "shape_name": "矩形: 圆角 34",
+      "left_emu": 9183230,
+      "top_emu": 4324750,
+      "width_emu": 2421394,
+      "height_emu": 804292,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 698462,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 21,
+        "suggested_chars_min": 10,
+        "suggested_chars_max": 21
+      },
+      "page": 8,
+      "shape_name": "矩形: 圆角 35",
+      "left_emu": 6797168,
+      "top_emu": 5677599,
+      "width_emu": 4411852,
+      "height_emu": 698462,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 10.0,
+      "lines": [
+        "0 次可解析；34/34 文件名存在"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 401777,
+      "reasons": [
+        "缩字号 18.0 → 10.0 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 8,
+      "shape_name": "文本框 36",
+      "left_emu": 6926709,
+      "top_emu": 5825653,
+      "width_emu": 4152772,
+      "height_emu": 401777,
+      "chars": 18
+    },
+    {
+      "status": "shrunk",
+      "pt": 14.5,
+      "lines": [
+        "4,454 次定位；41 次 .lean",
+        "（0.9%）"
+      ],
+      "needed_px": 52.2,
+      "box_h_emu": 734753,
+      "reasons": [
+        "缩字号 18.0 → 14.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 8,
+      "shape_name": "文本框 37",
+      "left_emu": 6412365,
+      "top_emu": 4359520,
+      "width_emu": 2370545,
+      "height_emu": 734753,
+      "chars": 26
+    },
+    {
+      "status": "shrunk",
+      "pt": 16.5,
+      "lines": [
+        "10 次带行号（24.4%）"
+      ],
+      "needed_px": 29.7,
+      "box_h_emu": 734753,
+      "reasons": [
+        "缩字号 18.0 → 16.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 8,
+      "shape_name": "文本框 38",
+      "left_emu": 9208655,
+      "top_emu": 4359520,
+      "width_emu": 2370545,
+      "height_emu": 734753,
+      "chars": 14
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 8,
+      "shape_name": "文本框 74",
+      "left_emu": 7272525,
+      "top_emu": 4826717,
+      "width_emu": 1816124,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 8,
+      "shape_name": "文本框 75",
+      "left_emu": 5209025,
+      "top_emu": 4826717,
+      "width_emu": 1827076,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 8,
+      "shape_name": "文本框 77",
+      "left_emu": 3153565,
+      "top_emu": 4826717,
+      "width_emu": 1819036,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 8,
+      "shape_name": "文本框 78",
+      "left_emu": 1090993,
+      "top_emu": 4826717,
+      "width_emu": 1826148,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 4,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 4
+      },
+      "page": 8,
+      "shape_name": "文本框 80",
+      "left_emu": 10893226,
+      "top_emu": 4826717,
+      "width_emu": 1154488,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 5,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 5
+      },
+      "page": 8,
+      "shape_name": "文本框 85",
+      "left_emu": 9325073,
+      "top_emu": 4826717,
+      "width_emu": 1331730,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 4771388,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 14,
+        "chars_per_line": 14,
+        "suggested_chars_min": 98,
+        "suggested_chars_max": 196
+      },
+      "page": 9,
+      "shape_name": "矩形: 圆角 10",
+      "left_emu": 586232,
+      "top_emu": 1826262,
+      "width_emu": 3035691,
+      "height_emu": 4771388,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 4771388,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 14,
+        "chars_per_line": 23,
+        "suggested_chars_min": 161,
+        "suggested_chars_max": 322
+      },
+      "page": 9,
+      "shape_name": "矩形: 圆角 13",
+      "left_emu": 3787576,
+      "top_emu": 1826262,
+      "width_emu": 4900171,
+      "height_emu": 4771388,
+      "chars": 0
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "RowSrc.lean"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 9,
+      "shape_name": "矩形: 圆顶角 17",
+      "left_emu": 988057,
+      "top_emu": 1816102,
+      "width_emu": 2410882,
+      "height_emu": 376049,
+      "chars": 11
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "CritLine.lean"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 9,
+      "shape_name": "矩形: 圆顶角 27",
+      "left_emu": 5032220,
+      "top_emu": 1816102,
+      "width_emu": 2410882,
+      "height_emu": 376049,
+      "chars": 13
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 5106268,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 15,
+        "chars_per_line": 10,
+        "suggested_chars_min": 75,
+        "suggested_chars_max": 150
+      },
+      "page": 9,
+      "shape_name": "矩形: 圆角 40",
+      "left_emu": 9297256,
+      "top_emu": 1488048,
+      "width_emu": 2307370,
+      "height_emu": 5106268,
+      "chars": 0
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "循环性检查"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 9,
+      "shape_name": "矩形: 圆顶角 42",
+      "left_emu": 9685894,
+      "top_emu": 1482333,
+      "width_emu": 1530094,
+      "height_emu": 376049,
+      "chars": 5
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 461665,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 10,
+        "suggested_chars_min": 5,
+        "suggested_chars_max": 10
+      },
+      "page": 9,
+      "shape_name": "文本框 21",
+      "left_emu": 462084,
+      "top_emu": 1153703,
+      "width_emu": 2284600,
+      "height_emu": 461665,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 400110,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 14,
+        "suggested_chars_min": 7,
+        "suggested_chars_max": 14
+      },
+      "page": 9,
+      "shape_name": "文本框 24",
+      "left_emu": 2727770,
+      "top_emu": 1184480,
+      "width_emu": 3138167,
+      "height_emu": 400110,
+      "chars": 0
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "方法"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 9,
+      "shape_name": "文本框 25",
+      "left_emu": 720049,
+      "top_emu": 2386391,
+      "width_emu": 2764832,
+      "height_emu": 386388,
+      "chars": 2
+    },
+    {
+      "status": "shrunk",
+      "pt": 13.5,
+      "lines": [
+        "import 闭包 BFS，过滤 Mathlib",
+        "外部模块"
+      ],
+      "needed_px": 48.6,
+      "box_h_emu": 706475,
+      "reasons": [
+        "缩字号 16.0 → 13.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 9,
+      "shape_name": "文本框 26",
+      "left_emu": 720048,
+      "top_emu": 2701316,
+      "width_emu": 2764832,
+      "height_emu": 706475,
+      "chars": 29
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "闭包"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 9,
+      "shape_name": "文本框 28",
+      "left_emu": 720049,
+      "top_emu": 3734651,
+      "width_emu": 2764832,
+      "height_emu": 386388,
+      "chars": 2
+    },
+    {
+      "status": "shrunk",
+      "pt": 13.5,
+      "lines": [
+        "66,171 模块（37.8%）／14,301",
+        "模块"
+      ],
+      "needed_px": 48.6,
+      "box_h_emu": 706475,
+      "reasons": [
+        "缩字号 16.0 → 13.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 9,
+      "shape_name": "文本框 29",
+      "left_emu": 720048,
+      "top_emu": 4049576,
+      "width_emu": 2764832,
+      "height_emu": 706475,
+      "chars": 26
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "结论"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 9,
+      "shape_name": "文本框 30",
+      "left_emu": 720049,
+      "top_emu": 5166150,
+      "width_emu": 2764832,
+      "height_emu": 386388,
+      "chars": 2
+    },
+    {
+      "status": "shrunk",
+      "pt": 13.5,
+      "lines": [
+        "文件级无自环；项级待编译后核",
+        "验"
+      ],
+      "needed_px": 48.6,
+      "box_h_emu": 706475,
+      "reasons": [
+        "缩字号 16.0 → 13.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 9,
+      "shape_name": "文本框 31",
+      "left_emu": 720048,
+      "top_emu": 5481075,
+      "width_emu": 2764832,
+      "height_emu": 706475,
+      "chars": 15
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 990926,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 2,
+        "chars_per_line": 9,
+        "suggested_chars_min": 9,
+        "suggested_chars_max": 18
+      },
+      "page": 9,
+      "shape_name": "矩形: 圆角 50",
+      "left_emu": 9410700,
+      "top_emu": 1917156,
+      "width_emu": 2075997,
+      "height_emu": 990926,
+      "chars": 0
+    },
+    {
+      "status": "ok",
+      "pt": 16.0,
+      "lines": [
+        "文件级无循环；证明",
+        "项级循环本次未能检",
+        "查"
+      ],
+      "needed_px": 86.4,
+      "box_h_emu": 1433649,
+      "reasons": [],
+      "suggestions": {},
+      "page": 9,
+      "shape_name": "矩形: 圆角 51",
+      "left_emu": 9410700,
+      "top_emu": 3364812,
+      "width_emu": 2075997,
+      "height_emu": 1433649,
+      "chars": 19
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1239381,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 3,
+        "chars_per_line": 9,
+        "suggested_chars_min": 14,
+        "suggested_chars_max": 27
+      },
+      "page": 9,
+      "shape_name": "矩形: 圆角 52",
+      "left_emu": 9410700,
+      "top_emu": 5255192,
+      "width_emu": 2075997,
+      "height_emu": 1239381,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 9,
+      "shape_name": "文本框 69",
+      "left_emu": 7272525,
+      "top_emu": 1340734,
+      "width_emu": 1816124,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 9,
+      "shape_name": "文本框 70",
+      "left_emu": 5209025,
+      "top_emu": 1340734,
+      "width_emu": 1827076,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 5,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 5
+      },
+      "page": 9,
+      "shape_name": "文本框 71",
+      "left_emu": 9325073,
+      "top_emu": 1340734,
+      "width_emu": 1331730,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 9,
+      "shape_name": "文本框 72",
+      "left_emu": 3153565,
+      "top_emu": 1340734,
+      "width_emu": 1819036,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 9,
+      "shape_name": "文本框 73",
+      "left_emu": 1090993,
+      "top_emu": 1340734,
+      "width_emu": 1826148,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 4,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 4
+      },
+      "page": 9,
+      "shape_name": "文本框 74",
+      "left_emu": 10893226,
+      "top_emu": 1340734,
+      "width_emu": 1154488,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1496483,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 4,
+        "chars_per_line": 54,
+        "suggested_chars_min": 108,
+        "suggested_chars_max": 216
+      },
+      "page": 10,
+      "shape_name": "矩形: 圆角 10",
+      "left_emu": 586232,
+      "top_emu": 1820600,
+      "width_emu": 11018393,
+      "height_emu": 1496483,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 10.0,
+      "lines": [
+        "源码体量异常"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400110,
+      "reasons": [
+        "缩字号 20.0 → 10.0 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 10,
+      "shape_name": "文本框 37",
+      "left_emu": 922020,
+      "top_emu": 2037850,
+      "width_emu": 1723549,
+      "height_emu": 400110,
+      "chars": 6
+    },
+    {
+      "status": "ok",
+      "pt": 18.0,
+      "lines": [
+        "14 分卷，1.4 GB 解包，零显式留洞"
+      ],
+      "needed_px": 32.4,
+      "box_h_emu": 734753,
+      "reasons": [],
+      "suggestions": {},
+      "page": 10,
+      "shape_name": "文本框 42",
+      "left_emu": 922020,
+      "top_emu": 2385477,
+      "width_emu": 8517383,
+      "height_emu": 734753,
+      "chars": 21
+    },
+    {
+      "status": "shrunk",
+      "pt": 12.0,
+      "lines": [
+        "存在性 A"
+      ],
+      "needed_px": 21.6,
+      "box_h_emu": 434674,
+      "reasons": [
+        "缩字号 18.0 → 12.0 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 10,
+      "shape_name": "矩形: 圆角 45",
+      "left_emu": 9774048,
+      "top_emu": 2054131,
+      "width_emu": 1495932,
+      "height_emu": 434674,
+      "chars": 5
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 367407,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 6,
+        "suggested_chars_min": 3,
+        "suggested_chars_max": 6
+      },
+      "page": 10,
+      "shape_name": "文本框 46",
+      "left_emu": 9774050,
+      "top_emu": 2087764,
+      "width_emu": 1495930,
+      "height_emu": 367408,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 12.0,
+      "lines": [
+        "完整性 A−"
+      ],
+      "needed_px": 21.6,
+      "box_h_emu": 434674,
+      "reasons": [
+        "缩字号 18.0 → 12.0 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 10,
+      "shape_name": "矩形: 圆角 48",
+      "left_emu": 9774048,
+      "top_emu": 2648878,
+      "width_emu": 1495932,
+      "height_emu": 434674,
+      "chars": 6
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 367407,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 6,
+        "suggested_chars_min": 3,
+        "suggested_chars_max": 6
+      },
+      "page": 10,
+      "shape_name": "文本框 49",
+      "left_emu": 9774050,
+      "top_emu": 2682511,
+      "width_emu": 1495930,
+      "height_emu": 367408,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1496483,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 4,
+        "chars_per_line": 54,
+        "suggested_chars_min": 108,
+        "suggested_chars_max": 216
+      },
+      "page": 10,
+      "shape_name": "矩形: 圆角 51",
+      "left_emu": 586232,
+      "top_emu": 3458054,
+      "width_emu": 11018393,
+      "height_emu": 1496483,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 10.0,
+      "lines": [
+        "重构稿是索引"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400110,
+      "reasons": [
+        "缩字号 20.0 → 10.0 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 10,
+      "shape_name": "文本框 52",
+      "left_emu": 922020,
+      "top_emu": 3675304,
+      "width_emu": 1723549,
+      "height_emu": 400110,
+      "chars": 6
+    },
+    {
+      "status": "ok",
+      "pt": 18.0,
+      "lines": [
+        "4,454 次定位仅 0 次可解析"
+      ],
+      "needed_px": 32.4,
+      "box_h_emu": 734753,
+      "reasons": [],
+      "suggestions": {},
+      "page": 10,
+      "shape_name": "文本框 53",
+      "left_emu": 922020,
+      "top_emu": 4022931,
+      "width_emu": 8517383,
+      "height_emu": 734753,
+      "chars": 17
+    },
+    {
+      "status": "shrunk",
+      "pt": 12.0,
+      "lines": [
+        "追溯性 C+"
+      ],
+      "needed_px": 21.6,
+      "box_h_emu": 434674,
+      "reasons": [
+        "缩字号 18.0 → 12.0 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 10,
+      "shape_name": "矩形: 圆角 55",
+      "left_emu": 9774048,
+      "top_emu": 3691585,
+      "width_emu": 1495932,
+      "height_emu": 434674,
+      "chars": 6
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 367407,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 6,
+        "suggested_chars_min": 3,
+        "suggested_chars_max": 6
+      },
+      "page": 10,
+      "shape_name": "文本框 56",
+      "left_emu": 9774050,
+      "top_emu": 3725218,
+      "width_emu": 1495930,
+      "height_emu": 367408,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 12.0,
+      "lines": [
+        "自洽 B−"
+      ],
+      "needed_px": 21.6,
+      "box_h_emu": 434674,
+      "reasons": [
+        "缩字号 18.0 → 12.0 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 10,
+      "shape_name": "矩形: 圆角 57",
+      "left_emu": 9774048,
+      "top_emu": 4286332,
+      "width_emu": 1495932,
+      "height_emu": 434674,
+      "chars": 5
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 367407,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 6,
+        "suggested_chars_min": 3,
+        "suggested_chars_max": 6
+      },
+      "page": 10,
+      "shape_name": "文本框 58",
+      "left_emu": 9774050,
+      "top_emu": 4319965,
+      "width_emu": 1495930,
+      "height_emu": 367408,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 1496483,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 4,
+        "chars_per_line": 54,
+        "suggested_chars_min": 108,
+        "suggested_chars_max": 216
+      },
+      "page": 10,
+      "shape_name": "矩形: 圆角 61",
+      "left_emu": 586232,
+      "top_emu": 5095507,
+      "width_emu": 11018393,
+      "height_emu": 1496483,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 10.0,
+      "lines": [
+        "定位与边界"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400110,
+      "reasons": [
+        "缩字号 20.0 → 10.0 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 10,
+      "shape_name": "文本框 67",
+      "left_emu": 922020,
+      "top_emu": 5312757,
+      "width_emu": 1723549,
+      "height_emu": 400110,
+      "chars": 5
+    },
+    {
+      "status": "ok",
+      "pt": 18.0,
+      "lines": [
+        "高于普通 AI 生成物的源码导读，不可当证据；数学有效性 未定"
+      ],
+      "needed_px": 32.4,
+      "box_h_emu": 734753,
+      "reasons": [],
+      "suggestions": {},
+      "page": 10,
+      "shape_name": "文本框 68",
+      "left_emu": 922020,
+      "top_emu": 5660384,
+      "width_emu": 8517383,
+      "height_emu": 734753,
+      "chars": 31
+    },
+    {
+      "status": "shrunk",
+      "pt": 12.0,
+      "lines": [
+        "不能推 RH"
+      ],
+      "needed_px": 21.6,
+      "box_h_emu": 434674,
+      "reasons": [
+        "缩字号 18.0 → 12.0 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 10,
+      "shape_name": "矩形: 圆角 70",
+      "left_emu": 9774048,
+      "top_emu": 5329038,
+      "width_emu": 1495932,
+      "height_emu": 434674,
+      "chars": 6
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 367407,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 6,
+        "suggested_chars_min": 3,
+        "suggested_chars_max": 6
+      },
+      "page": 10,
+      "shape_name": "文本框 71",
+      "left_emu": 9774050,
+      "top_emu": 5362671,
+      "width_emu": 1495930,
+      "height_emu": 367408,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 12.0,
+      "lines": [
+        "可找代码"
+      ],
+      "needed_px": 21.6,
+      "box_h_emu": 434674,
+      "reasons": [
+        "缩字号 18.0 → 12.0 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 10,
+      "shape_name": "矩形: 圆角 72",
+      "left_emu": 9774048,
+      "top_emu": 5923785,
+      "width_emu": 1495932,
+      "height_emu": 434674,
+      "chars": 4
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 367407,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 6,
+        "suggested_chars_min": 3,
+        "suggested_chars_max": 6
+      },
+      "page": 10,
+      "shape_name": "文本框 73",
+      "left_emu": 9774050,
+      "top_emu": 5957418,
+      "width_emu": 1495930,
+      "height_emu": 367408,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 13.5,
+      "lines": [
+        "结论先行"
+      ],
+      "needed_px": 24.3,
+      "box_h_emu": 461665,
+      "reasons": [
+        "缩字号 24.0 → 13.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 10,
+      "shape_name": "文本框 111",
+      "left_emu": 462084,
+      "top_emu": 1252715,
+      "width_emu": 2185214,
+      "height_emu": 461665,
+      "chars": 4
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 10,
+      "shape_name": "文本框 115",
+      "left_emu": 7272525,
+      "top_emu": 4826717,
+      "width_emu": 1816124,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 10,
+      "shape_name": "文本框 116",
+      "left_emu": 5209025,
+      "top_emu": 4826717,
+      "width_emu": 1827076,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 10,
+      "shape_name": "文本框 117",
+      "left_emu": 3153565,
+      "top_emu": 4826717,
+      "width_emu": 1819036,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 10,
+      "shape_name": "文本框 118",
+      "left_emu": 1090993,
+      "top_emu": 4826717,
+      "width_emu": 1826148,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 4,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 4
+      },
+      "page": 10,
+      "shape_name": "文本框 119",
+      "left_emu": 10893226,
+      "top_emu": 4826717,
+      "width_emu": 1154488,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 5,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 5
+      },
+      "page": 10,
+      "shape_name": "文本框 124",
+      "left_emu": 9325073,
+      "top_emu": 4826717,
+      "width_emu": 1331730,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 5106268,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 15,
+        "chars_per_line": 10,
+        "suggested_chars_min": 75,
+        "suggested_chars_max": 150
+      },
+      "page": 11,
+      "shape_name": "矩形: 圆角 50",
+      "left_emu": 9297256,
+      "top_emu": 1488048,
+      "width_emu": 2307370,
+      "height_emu": 5106268,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 13.5,
+      "lines": [
+        "怎么验、怎么用"
+      ],
+      "needed_px": 24.3,
+      "box_h_emu": 461665,
+      "reasons": [
+        "缩字号 24.0 → 13.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 11,
+      "shape_name": "文本框 15",
+      "left_emu": 462084,
+      "top_emu": 1153703,
+      "width_emu": 2492990,
+      "height_emu": 461665,
+      "chars": 7
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 2314997,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 6,
+        "chars_per_line": 15,
+        "suggested_chars_min": 45,
+        "suggested_chars_max": 90
+      },
+      "page": 11,
+      "shape_name": "矩形: 圆角 24",
+      "left_emu": 586232,
+      "top_emu": 1789642,
+      "width_emu": 3366439,
+      "height_emu": 2314997,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 16.5,
+      "lines": [
+        "for i in $(seq -w 1 14); do curl",
+        "-O …part$i; done；拼接解包"
+      ],
+      "needed_px": 59.4,
+      "box_h_emu": 1028295,
+      "reasons": [
+        "缩字号 18.0 → 16.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 11,
+      "shape_name": "文本框 26",
+      "left_emu": 723908,
+      "top_emu": 2204068,
+      "width_emu": 3091086,
+      "height_emu": 1028295,
+      "chars": 54
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 4797054,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 14,
+        "chars_per_line": 19,
+        "suggested_chars_min": 133,
+        "suggested_chars_max": 266
+      },
+      "page": 11,
+      "shape_name": "矩形: 圆角 28",
+      "left_emu": 4548457,
+      "top_emu": 1797262,
+      "width_emu": 4139291,
+      "height_emu": 4797054,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 14.5,
+      "lines": [
+        "Check.lean；import",
+        "Main；两条 #print",
+        "axioms"
+      ],
+      "needed_px": 78.3,
+      "box_h_emu": 990926,
+      "reasons": [
+        "缩字号 16.0 → 14.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 11,
+      "shape_name": "矩形: 圆角 46",
+      "left_emu": 9410700,
+      "top_emu": 2117366,
+      "width_emu": 2075997,
+      "height_emu": 990926,
+      "chars": 39
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "命令三"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 11,
+      "shape_name": "矩形: 圆顶角 51",
+      "left_emu": 9685894,
+      "top_emu": 1482333,
+      "width_emu": 1530094,
+      "height_emu": 376049,
+      "chars": 3
+    },
+    {
+      "status": "ok",
+      "pt": 16.0,
+      "lines": [
+        "仅输出标准三公理为",
+        "通过"
+      ],
+      "needed_px": 57.6,
+      "box_h_emu": 835606,
+      "reasons": [],
+      "suggestions": {},
+      "page": 11,
+      "shape_name": "矩形: 圆角 55",
+      "left_emu": 9410700,
+      "top_emu": 3806243,
+      "width_emu": 2075997,
+      "height_emu": 835606,
+      "chars": 11
+    },
+    {
+      "status": "ok",
+      "pt": 16.0,
+      "lines": [
+        "出现非常规公理名即",
+        "不通过"
+      ],
+      "needed_px": 57.6,
+      "box_h_emu": 961723,
+      "reasons": [],
+      "suggestions": {},
+      "page": 11,
+      "shape_name": "矩形: 圆角 56",
+      "left_emu": 9410700,
+      "top_emu": 5339800,
+      "width_emu": 2075997,
+      "height_emu": 961723,
+      "chars": 12
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "三条路径"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 11,
+      "shape_name": "矩形: 圆顶角 45",
+      "left_emu": 5853055,
+      "top_emu": 1789642,
+      "width_emu": 1530094,
+      "height_emu": 376049,
+      "chars": 4
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 400110,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 14,
+        "suggested_chars_min": 7,
+        "suggested_chars_max": 14
+      },
+      "page": 11,
+      "shape_name": "文本框 73",
+      "left_emu": 2727770,
+      "top_emu": 1184480,
+      "width_emu": 3166251,
+      "height_emu": 400110,
+      "chars": 0
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "命令一"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 11,
+      "shape_name": "矩形: 圆顶角 31",
+      "left_emu": 1638222,
+      "top_emu": 1784562,
+      "width_emu": 1262458,
+      "height_emu": 376049,
+      "chars": 3
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 2314997,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 6,
+        "chars_per_line": 15,
+        "suggested_chars_min": 45,
+        "suggested_chars_max": 90
+      },
+      "page": 11,
+      "shape_name": "矩形: 圆角 32",
+      "left_emu": 586232,
+      "top_emu": 4286939,
+      "width_emu": 3366439,
+      "height_emu": 2314997,
+      "chars": 0
+    },
+    {
+      "status": "ok",
+      "pt": 18.0,
+      "lines": [
+        "lake exe cache get；lake",
+        "build"
+      ],
+      "needed_px": 64.8,
+      "box_h_emu": 1028295,
+      "reasons": [],
+      "suggestions": {},
+      "page": 11,
+      "shape_name": "文本框 33",
+      "left_emu": 723908,
+      "top_emu": 4701365,
+      "width_emu": 3091086,
+      "height_emu": 1028295,
+      "chars": 29
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "命令二"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 11,
+      "shape_name": "矩形: 圆顶角 35",
+      "left_emu": 1638222,
+      "top_emu": 4281859,
+      "width_emu": 1262458,
+      "height_emu": 376049,
+      "chars": 3
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 11,
+      "shape_name": "文本框 74",
+      "left_emu": 7272525,
+      "top_emu": 1340734,
+      "width_emu": 1816124,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 11,
+      "shape_name": "文本框 75",
+      "left_emu": 5209025,
+      "top_emu": 1340734,
+      "width_emu": 1827076,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 5,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 5
+      },
+      "page": 11,
+      "shape_name": "文本框 76",
+      "left_emu": 9325073,
+      "top_emu": 1340734,
+      "width_emu": 1331730,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 11,
+      "shape_name": "文本框 77",
+      "left_emu": 3153565,
+      "top_emu": 1340734,
+      "width_emu": 1819036,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 8,
+        "suggested_chars_min": 4,
+        "suggested_chars_max": 8
+      },
+      "page": 11,
+      "shape_name": "文本框 78",
+      "left_emu": 1090993,
+      "top_emu": 1340734,
+      "width_emu": 1826148,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 369332,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 1,
+        "chars_per_line": 4,
+        "suggested_chars_min": 2,
+        "suggested_chars_max": 4
+      },
+      "page": 11,
+      "shape_name": "文本框 79",
+      "left_emu": 10893226,
+      "top_emu": 1340734,
+      "width_emu": 1154488,
+      "height_emu": 369332,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 2788920,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 8,
+        "chars_per_line": 49,
+        "suggested_chars_min": 196,
+        "suggested_chars_max": 392
+      },
+      "page": 12,
+      "shape_name": "p12-panel",
+      "left_emu": 1097280,
+      "top_emu": 1554480,
+      "width_emu": 9994392,
+      "height_emu": 2788920,
+      "chars": 0
+    },
+    {
+      "status": "empty_frame",
+      "pt": 18.0,
+      "lines": [],
+      "needed_px": 0.0,
+      "box_h_emu": 914400,
+      "reasons": [
+        "文本框为空"
+      ],
+      "suggestions": {
+        "suggested_pt": 18.0,
+        "capacity_lines": 2,
+        "chars_per_line": 3,
+        "suggested_chars_min": 3,
+        "suggested_chars_max": 6
+      },
+      "page": 12,
+      "shape_name": "p12-badge",
+      "left_emu": 5641848,
+      "top_emu": 960120,
+      "width_emu": 914400,
+      "height_emu": 914400,
+      "chars": 0
+    },
+    {
+      "status": "shrunk",
+      "pt": 18.5,
+      "lines": [
+        "一句收束"
+      ],
+      "needed_px": 33.3,
+      "box_h_emu": 548640,
+      "reasons": [
+        "缩字号 26.0 → 18.5 pt 后容纳"
+      ],
+      "suggestions": {},
+      "page": 12,
+      "shape_name": "p12-title",
+      "left_emu": 1280160,
+      "top_emu": 1874519,
+      "width_emu": 9628632,
+      "height_emu": 548640,
+      "chars": 4
+    },
+    {
+      "status": "ok",
+      "pt": 15.0,
+      "lines": [
+        "它可信到“可以据它去找代码”，不可信到“可以据它相信定理”。"
+      ],
+      "needed_px": 27.0,
+      "box_h_emu": 731520,
+      "reasons": [],
+      "suggestions": {},
+      "page": 12,
+      "shape_name": "p12-quote",
+      "left_emu": 1371600,
+      "top_emu": 2606040,
+      "width_emu": 9445752,
+      "height_emu": 731520,
+      "chars": 30
+    },
+    {
+      "status": "ok",
+      "pt": 13.0,
+      "lines": [
+        "宣告本身是真实的公开材料，但那 4 页是路线摘要，不是证明；源码没有显式空洞，却没有编译记录；2178 页重构稿是索引，不",
+        "是证据。"
+      ],
+      "needed_px": 46.8,
+      "box_h_emu": 1005840,
+      "reasons": [],
+      "suggestions": {},
+      "page": 12,
+      "shape_name": "p12-support",
+      "left_emu": 1371600,
+      "top_emu": 4526280,
+      "width_emu": 9445752,
+      "height_emu": 1005840,
+      "chars": 65
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "可解析定位 0/4454；下一步在编译与公理检查。"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 12,
+      "shape_name": "p12-close",
+      "left_emu": 1463040,
+      "top_emu": 5669280,
+      "width_emu": 9262872,
+      "height_emu": 365760,
+      "chars": 25
+    },
+    {
+      "status": "grown",
+      "pt": 10.0,
+      "lines": [
+        "2026 年 11 月 24 日"
+      ],
+      "needed_px": 18.0,
+      "box_h_emu": 400050,
+      "reasons": [
+        "下限 10.0 pt 仍溢出，加高容器至 42 px"
+      ],
+      "suggestions": {},
+      "page": 12,
+      "shape_name": "p12-date",
+      "left_emu": 9692640,
+      "top_emu": 6263640,
+      "width_emu": 2194560,
+      "height_emu": 320040,
+      "chars": 16
+    }
+  ]
+}

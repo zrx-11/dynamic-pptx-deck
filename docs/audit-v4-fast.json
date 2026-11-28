@@ -1,0 +1,629 @@
+{
+  "deck": {
+    "file": "一纸宣告与两千页重构-12页-成品页版-v4.pptx",
+    "tier": "fidelity_first",
+    "exit": 0,
+    "verdict": "pass"
+  },
+  "checks": {
+    "structure": {
+      "exit": 0,
+      "issues": [],
+      "effects": 69,
+      "ctn": 285
+    },
+    "pairing": {
+      "exit": 0,
+      "fail": 0,
+      "orphan": 12,
+      "morph_pairs": [
+        {
+          "name": "文本框 5",
+          "type": "sp/rect",
+          "pages": [
+            1,
+            8
+          ]
+        },
+        {
+          "name": "文本框 6",
+          "type": "sp/rect",
+          "pages": [
+            1,
+            2
+          ]
+        },
+        {
+          "name": "文本框 8",
+          "type": "sp/rect",
+          "pages": [
+            1,
+            2
+          ]
+        },
+        {
+          "name": "文本框 13",
+          "type": "sp/rect",
+          "pages": [
+            1,
+            6
+          ]
+        },
+        {
+          "name": "矩形: 圆角 11",
+          "type": "sp/roundRect",
+          "pages": [
+            2,
+            6
+          ]
+        },
+        {
+          "name": "文本框 25",
+          "type": "sp/rect",
+          "pages": [
+            2,
+            9
+          ]
+        },
+        {
+          "name": "文本框 26",
+          "type": "sp/rect",
+          "pages": [
+            2,
+            6,
+            9,
+            11
+          ]
+        },
+        {
+          "name": "文本框 33",
+          "type": "sp/rect",
+          "pages": [
+            2,
+            11
+          ]
+        },
+        {
+          "name": "矩形: 圆顶角 14",
+          "type": "sp/round2SameRect",
+          "pages": [
+            2,
+            6
+          ]
+        },
+        {
+          "name": "文本框 36",
+          "type": "sp/rect",
+          "pages": [
+            2,
+            6,
+            8
+          ]
+        },
+        {
+          "name": "文本框 37",
+          "type": "sp/rect",
+          "pages": [
+            2,
+            5,
+            8,
+            10
+          ]
+        },
+        {
+          "name": "文本框 41",
+          "type": "sp/rect",
+          "pages": [
+            2,
+            5
+          ]
+        },
+        {
+          "name": "文本框 42",
+          "type": "sp/rect",
+          "pages": [
+            2,
+            5,
+            10
+          ]
+        },
+        {
+          "name": "文本框 43",
+          "type": "sp/rect",
+          "pages": [
+            2,
+            5,
+            6
+          ]
+        },
+        {
+          "name": "图片占位",
+          "type": "sp/roundRect",
+          "pages": [
+            2,
+            3,
+            6,
+            8,
+            9,
+            11
+          ]
+        },
+        {
+          "name": "文本框 52",
+          "type": "sp/rect",
+          "pages": [
+            3,
+            10
+          ]
+        },
+        {
+          "name": "文本框 53",
+          "type": "sp/rect",
+          "pages": [
+            3,
+            10
+          ]
+        },
+        {
+          "name": "矩形: 圆角 10",
+          "type": "sp/roundRect",
+          "pages": [
+            5,
+            9,
+            10
+          ]
+        },
+        {
+          "name": "文本框 15",
+          "type": "sp/rect",
+          "pages": [
+            5,
+            6,
+            11
+          ]
+        },
+        {
+          "name": "矩形: 圆顶角 17",
+          "type": "sp/round2SameRect",
+          "pages": [
+            5,
+            9
+          ]
+        },
+        {
+          "name": "组合 4",
+          "type": "grpSp/",
+          "pages": [
+            5,
+            9
+          ]
+        },
+        {
+          "name": "文本框 24",
+          "type": "sp/rect",
+          "pages": [
+            5,
+            9
+          ]
+        },
+        {
+          "name": "文本框 29",
+          "type": "sp/rect",
+          "pages": [
+            5,
+            9
+          ]
+        },
+        {
+          "name": "矩形: 圆顶角 31",
+          "type": "sp/round2SameRect",
+          "pages": [
+            5,
+            11
+          ]
+        },
+        {
+          "name": "文本框 38",
+          "type": "sp/rect",
+          "pages": [
+            5,
+            8
+          ]
+        },
+        {
+          "name": "矩形: 圆角 45",
+          "type": "sp/roundRect",
+          "pages": [
+            6,
+            10
+          ]
+        },
+        {
+          "name": "矩形: 圆顶角 35",
+          "type": "sp/round2SameRect",
+          "pages": [
+            6,
+            11
+          ]
+        },
+        {
+          "name": "组合 3",
+          "type": "grpSp/",
+          "pages": [
+            6,
+            9
+          ]
+        },
+        {
+          "name": "文本框 68",
+          "type": "sp/rect",
+          "pages": [
+            6,
+            10
+          ]
+        },
+        {
+          "name": "文本框 69",
+          "type": "sp/rect",
+          "pages": [
+            6,
+            9
+          ]
+        },
+        {
+          "name": "矩形: 圆角 57",
+          "type": "sp/roundRect",
+          "pages": [
+            8,
+            10
+          ]
+        },
+        {
+          "name": "矩形: 圆角 32",
+          "type": "sp/roundRect",
+          "pages": [
+            8,
+            11
+          ]
+        },
+        {
+          "name": "文本框 74",
+          "type": "sp/rect",
+          "pages": [
+            8,
+            9,
+            11
+          ]
+        },
+        {
+          "name": "文本框 75",
+          "type": "sp/rect",
+          "pages": [
+            8,
+            11
+          ]
+        },
+        {
+          "name": "文本框 77",
+          "type": "sp/rect",
+          "pages": [
+            8,
+            11
+          ]
+        },
+        {
+          "name": "文本框 78",
+          "type": "sp/rect",
+          "pages": [
+            8,
+            11
+          ]
+        },
+        {
+          "name": "矩形: 圆角 50",
+          "type": "sp/roundRect",
+          "pages": [
+            9,
+            11
+          ]
+        },
+        {
+          "name": "矩形: 圆角 51",
+          "type": "sp/roundRect",
+          "pages": [
+            9,
+            10
+          ]
+        },
+        {
+          "name": "任意多边形: 形状 68",
+          "type": "sp/",
+          "pages": [
+            9,
+            11
+          ]
+        },
+        {
+          "name": "文本框 73",
+          "type": "sp/rect",
+          "pages": [
+            9,
+            11
+          ]
+        },
+        {
+          "name": "矩形: 圆角 55",
+          "type": "sp/roundRect",
+          "pages": [
+            10,
+            11
+          ]
+        }
+      ],
+      "conflict": 0
+    },
+    "editability": {
+      "exit": 0,
+      "score": 89,
+      "blocking_pages": [],
+      "by_code": {
+        "TEXT_BITMAP": 5,
+        "TABLE_SHAPE": 1
+      }
+    },
+    "schema": {
+      "ran": false,
+      "exit": 0,
+      "issues": [
+        "fast 模式：跳过全包 schema 深扫"
+      ]
+    },
+    "motion": {
+      "exit": 0,
+      "pages_below_quota": []
+    },
+    "morph_missing": [],
+    "image_placeholder": [],
+    "letters_count": []
+  },
+  "pages": [
+    {
+      "index": 1,
+      "page_type": "unknown",
+      "effects": 5,
+      "ctn": 21,
+      "kinds": {
+        "entr": 4,
+        "emph": 1,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 4,
+      "loops": 1,
+      "quota": {
+        "ok": true,
+        "missing": []
+      },
+      "findings": []
+    },
+    {
+      "index": 2,
+      "page_type": "unknown",
+      "effects": 5,
+      "ctn": 21,
+      "kinds": {
+        "entr": 4,
+        "emph": 1,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 5,
+      "loops": 1,
+      "quota": {
+        "ok": true,
+        "missing": []
+      },
+      "findings": []
+    },
+    {
+      "index": 3,
+      "page_type": "unknown",
+      "effects": 5,
+      "ctn": 21,
+      "kinds": {
+        "entr": 4,
+        "emph": 1,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 5,
+      "loops": 1,
+      "quota": {
+        "ok": true,
+        "missing": []
+      },
+      "findings": []
+    },
+    {
+      "index": 4,
+      "page_type": "unknown",
+      "effects": 10,
+      "ctn": 42,
+      "kinds": {
+        "entr": 8,
+        "emph": 0,
+        "exit": 0,
+        "path": 2
+      },
+      "perceptible": 10,
+      "loops": 2,
+      "quota": {
+        "ok": true,
+        "missing": []
+      },
+      "findings": []
+    },
+    {
+      "index": 5,
+      "page_type": "unknown",
+      "effects": 5,
+      "ctn": 21,
+      "kinds": {
+        "entr": 4,
+        "emph": 1,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 5,
+      "loops": 1,
+      "quota": {
+        "ok": true,
+        "missing": []
+      },
+      "findings": []
+    },
+    {
+      "index": 6,
+      "page_type": "unknown",
+      "effects": 5,
+      "ctn": 21,
+      "kinds": {
+        "entr": 4,
+        "emph": 1,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 5,
+      "loops": 1,
+      "quota": {
+        "ok": true,
+        "missing": []
+      },
+      "findings": []
+    },
+    {
+      "index": 7,
+      "page_type": "unknown",
+      "effects": 9,
+      "ctn": 33,
+      "kinds": {
+        "entr": 8,
+        "emph": 1,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 9,
+      "loops": 1,
+      "quota": {
+        "ok": true,
+        "missing": []
+      },
+      "findings": []
+    },
+    {
+      "index": 8,
+      "page_type": "unknown",
+      "effects": 5,
+      "ctn": 21,
+      "kinds": {
+        "entr": 4,
+        "emph": 1,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 5,
+      "loops": 1,
+      "quota": {
+        "ok": true,
+        "missing": []
+      },
+      "findings": []
+    },
+    {
+      "index": 9,
+      "page_type": "unknown",
+      "effects": 5,
+      "ctn": 21,
+      "kinds": {
+        "entr": 4,
+        "emph": 1,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 5,
+      "loops": 1,
+      "quota": {
+        "ok": true,
+        "missing": []
+      },
+      "findings": []
+    },
+    {
+      "index": 10,
+      "page_type": "unknown",
+      "effects": 5,
+      "ctn": 21,
+      "kinds": {
+        "entr": 4,
+        "emph": 1,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 5,
+      "loops": 1,
+      "quota": {
+        "ok": true,
+        "missing": []
+      },
+      "findings": []
+    },
+    {
+      "index": 11,
+      "page_type": "unknown",
+      "effects": 5,
+      "ctn": 21,
+      "kinds": {
+        "entr": 4,
+        "emph": 1,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 5,
+      "loops": 1,
+      "quota": {
+        "ok": true,
+        "missing": []
+      },
+      "findings": []
+    },
+    {
+      "index": 12,
+      "page_type": "unknown",
+      "effects": 5,
+      "ctn": 21,
+      "kinds": {
+        "entr": 4,
+        "emph": 1,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 5,
+      "loops": 1,
+      "quota": {
+        "ok": true,
+        "missing": []
+      },
+      "findings": []
+    }
+  ],
+  "summary": {
+    "pages": 12,
+    "motion_fail_pages": [],
+    "extra_fail_pages": [],
+    "by_code": {
+      "TEXT_BITMAP": 5,
+      "TABLE_SHAPE": 1,
+      "SCHEMA_ISSUE": 1
+    }
+  }
+}

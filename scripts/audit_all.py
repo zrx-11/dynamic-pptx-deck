@@ -21,6 +21,11 @@ CLI：
                  完整性），只做结构关键项与动效配额。
     --json OUT   合并报告写机器可读 JSON。
     --md OUT     人读逐页配额表写 Markdown。
+    --require-morph-pages  逗号分隔页号：这些页必须挂 2015/09 morph
+                           （manifest 声明 transition=morph 的页同样计入）。
+
+后处理三条检查（fast / 全量均跑）：morph-missing（缺平滑切换）、
+image-placeholder（图片占位未填）、letters-count（单字母数与页声明不符）。
 
 退出码：
     0  全部检查通过；
@@ -53,6 +58,7 @@ A_NS = pc.A_NS
 R_NS = pc.R_NS
 REL_NS = pc.REL_NS
 P = "{%s}" % P_NS
+A = "{%s}" % A_NS
 CT_NS = "http://schemas.openxmlformats.org/package/2006/content-types"
 
 # 配额口径（写死）：可感知运动对象 ≥3、持续循环 ≥1、效果总数 ≤12、cTn ≤60。
@@ -390,10 +396,153 @@ def _collect_motion_pages(slides: list[tuple[str, bytes]],
 
 
 # ----------------------------------------------------------------------
+# 成品后处理三条检查（移植自 postfix_deck.py，python-pptx/EMU 路线重写）
+#   morph-missing      指定页缺 2015/09 命名空间的 p159:morph
+#   image-placeholder  文本命中图片占位词且形状 / 所在组合内无 a:blip
+#   letters-count      单字母对象数与页声明 letters_count 不符（出画则跳过）
+# ----------------------------------------------------------------------
+P159_NS = pc.P159_NS
+PLACEHOLDER_WORDS = ("添加图片", "插入图片", "图片占位", "点击添加图片")
+
+
+def _manifest_page_field(manifest: dict | None, index: int, field: str,
+                         default=None):
+    if not manifest:
+        return default
+    for entry in manifest.get("pages", []) or []:
+        if isinstance(entry, dict):
+            try:
+                if int(entry.get("index", -1)) == index:
+                    return entry.get(field, default)
+            except (TypeError, ValueError):
+                continue
+    return default
+
+
+def _localname(tag: str) -> str:
+    return tag.split("}")[1] if "}" in tag else tag
+
+
+def _group_state(xfrm):
+    off = xfrm.find(A + "off")
+    ext = xfrm.find(A + "ext")
+    if off is None or ext is None:
+        return None
+    chOff = xfrm.find(A + "chOff")
+    chExt = xfrm.find(A + "chExt")
+    return (int(off.get("y") or 0), int(ext.get("cy") or 1),
+            int(chOff.get("y") or 0) if chOff is not None else 0,
+            int(chExt.get("cy") or 1) if chExt is not None else 1)
+
+
+def _abs_top(el, grp_state) -> int | None:
+    xfrm = el.find(".//" + A + "xfrm")
+    if xfrm is None:
+        return None
+    off = xfrm.find(A + "off")
+    if off is None:
+        return None
+    y = int(off.get("y") or 0)
+    if grp_state is None:
+        return y
+    off_y, ext_cy, ch_off_y, ch_ext_cy = grp_state
+    if ch_ext_cy:
+        return int(off_y + (y - ch_off_y) * ext_cy / ch_ext_cy)
+    return off_y + y
+
+
+def _walk_shapes(root, grp_state=None, group_blip: bool = False):
+    """递归产出 (元素, 绝对 top EMU, 所在组合是否含 blip)，含组合内部。"""
+    out: list[tuple[ET.Element, int | None, bool]] = []
+    for child in list(root):
+        tag = _localname(child.tag)
+        if tag in ("cSld", "spTree", "grpSp"):
+            xfrm = child.find(A + "xfrm")
+            state = _group_state(xfrm) if xfrm is not None else grp_state
+            gblip = group_blip or child.find(".//" + A + "blip") is not None
+            out.extend(_walk_shapes(child, state, gblip))
+        elif tag in ("sp", "pic", "graphicFrame"):
+            out.append((child, _abs_top(child, grp_state), group_blip))
+    return out
+
+
+def _shape_text(el: ET.Element) -> str:
+    return "".join(t.text or "" for t in el.iter(A + "t"))
+
+
+def _check_image_placeholder(root: ET.Element) -> list[str]:
+    hits: list[str] = []
+    for el, _top, group_blip in _walk_shapes(root):
+        if _localname(el.tag) != "sp":
+            continue
+        text = _shape_text(el).strip()
+        if not text or not any(w in text for w in PLACEHOLDER_WORDS):
+            continue
+        if el.find(".//" + A + "blip") is None and not group_blip:
+            hits.append(text[:20])
+    return hits
+
+
+def _single_letters(root: ET.Element) -> list[tuple[str, int | None]]:
+    letters: list[tuple[str, int | None]] = []
+    for el, top, _ in _walk_shapes(root):
+        if _localname(el.tag) != "sp":
+            continue
+        text = _shape_text(el).strip()
+        if len(text) == 1 and text.isascii() and text.isalpha():
+            letters.append((text, top))
+    return letters
+
+
+def _run_postfix(slides: list[tuple[str, bytes]], manifest: dict | None,
+                 require_morph_pages: list[int] | None) -> dict:
+    morph_missing: list[int] = []
+    image_placeholder: list[int] = []
+    letters_bad: list[dict] = []
+    letters_skipped: list[int] = []
+    required = set(require_morph_pages or [])
+
+    for idx, (_part, xml) in enumerate(slides, start=1):
+        root = ET.fromstring(xml)
+
+        # ① morph-missing：manifest 声明 transition=morph 或显式指定的页，
+        #    必须挂 2015/09 命名空间的 p159:morph；fade / 旧命名空间算缺失。
+        declared = _manifest_page_field(manifest, idx, "transition")
+        if declared == "morph" or idx in required:
+            if root.find(".//{%s}morph" % P159_NS) is None:
+                morph_missing.append(idx)
+
+        # ② image-placeholder：占位词文本且形状 / 组合内无 blip。
+        if _check_image_placeholder(root):
+            image_placeholder.append(idx)
+
+        # ③ letters-count：无声明记 skipped；全部出画（top<0）视为布局，跳过。
+        expected = _manifest_page_field(manifest, idx, "letters_count")
+        letters = _single_letters(root)
+        if expected is None:
+            letters_skipped.append(idx)
+            continue
+        # 所有单字母对象都移出画布（top<0）视为布局本身，跳过；部分出画不豁免。
+        if letters and all(top is not None and top < 0
+                           for _ch, top in letters):
+            letters_skipped.append(idx)
+            continue
+        if len(letters) != int(expected):
+            letters_bad.append({"page": idx, "expected": int(expected),
+                                "actual": len(letters)})
+
+    exit_code = 0 if not (morph_missing or image_placeholder or letters_bad) else 1
+    return {"exit": exit_code, "morph_missing": morph_missing,
+            "image_placeholder": image_placeholder,
+            "letters_count": letters_bad, "letters_skipped": letters_skipped}
+
+
+# ----------------------------------------------------------------------
 # 合并报告
 # ----------------------------------------------------------------------
 def run_audit(deck, manifest=None, tier: str = "fidelity_first",
-              fast: bool = False) -> tuple[dict, int]:
+              fast: bool = False,
+              require_morph_pages: list[int] | None = None) -> tuple[dict, int]:
     """执行全部检查。``deck`` 可为路径字符串或二进制流；``manifest`` 可为
     路径 / 字典 / None。返回 (报告, 退出码)。"""
     deck_name = os.path.basename(deck) if isinstance(deck, str) else "<memory>"
@@ -453,6 +602,12 @@ def run_audit(deck, manifest=None, tier: str = "fidelity_first",
                                                      manifest_data)
     motion_exit = 0 if not motion_fail_pages else 1
 
+    # 成品后处理三条检查：fast / 全量两条路径都跑。
+    postfix = _run_postfix(slides, manifest_data, require_morph_pages)
+    extra_fail_pages = sorted(set(
+        postfix["morph_missing"] + postfix["image_placeholder"]
+        + [b["page"] for b in postfix["letters_count"]]))
+
     # 汇总 by_code：可编辑性码 + 动效发现码 + schema / 结构问题计数。
     by_code: dict[str, int] = dict(editability["by_code"])
     for page in pages:
@@ -463,6 +618,12 @@ def run_audit(deck, manifest=None, tier: str = "fidelity_first",
         by_code["SCHEMA_ISSUE"] = by_code.get("SCHEMA_ISSUE", 0) + 1
     for issue in structure["issues"]:
         by_code["STRUCTURE_ISSUE"] = by_code.get("STRUCTURE_ISSUE", 0) + 1
+    for _p in postfix["morph_missing"]:
+        by_code["MORPH_MISSING"] = by_code.get("MORPH_MISSING", 0) + 1
+    for _p in postfix["image_placeholder"]:
+        by_code["IMAGE_PLACEHOLDER"] = by_code.get("IMAGE_PLACEHOLDER", 0) + 1
+    for bad in postfix["letters_count"]:
+        by_code["LETTERS_COUNT"] = by_code.get("LETTERS_COUNT", 0) + 1
 
     checks = {
         "structure": {"exit": structure["exit"], "issues": structure["issues"],
@@ -477,10 +638,14 @@ def run_audit(deck, manifest=None, tier: str = "fidelity_first",
                         "by_code": editability["by_code"]},
         "schema": schema,
         "motion": {"exit": motion_exit, "pages_below_quota": motion_fail_pages},
+        "morph_missing": postfix["morph_missing"],
+        "image_placeholder": postfix["image_placeholder"],
+        "letters_count": postfix["letters_count"],
     }
 
     exits = [checks[k]["exit"] for k in
              ("structure", "pairing", "editability", "schema", "motion")]
+    exits.append(postfix["exit"])
     overall = 0 if all(e == 0 for e in exits) else 1
 
     report = {
@@ -490,6 +655,7 @@ def run_audit(deck, manifest=None, tier: str = "fidelity_first",
         "pages": pages,
         "summary": {"pages": len(pages),
                     "motion_fail_pages": motion_fail_pages,
+                    "extra_fail_pages": extra_fail_pages,
                     "by_code": by_code},
     }
     return report, overall
@@ -524,6 +690,16 @@ def _render_md(report: dict) -> str:
     lines.append("| 动效配额 | %d | 不达标页 %s |"
                  % (c["motion"]["exit"],
                     ", ".join(str(x) for x in c["motion"]["pages_below_quota"])
+                    or "无"))
+    lines.append("| Morph 缺失 | %d | 缺平滑页 %s |"
+                 % (1 if c["morph_missing"] else 0,
+                    ", ".join(str(x) for x in c["morph_missing"]) or "无"))
+    lines.append("| 图片占位 | %d | 未填占位页 %s |"
+                 % (1 if c["image_placeholder"] else 0,
+                    ", ".join(str(x) for x in c["image_placeholder"]) or "无"))
+    lines.append("| 字母数 | %d | 不符页 %s |"
+                 % (1 if c["letters_count"] else 0,
+                    ", ".join(str(b["page"]) for b in c["letters_count"])
                     or "无"))
     lines.append("")
     lines.append("## 逐页配额")
@@ -565,6 +741,9 @@ def _print_console(report: dict) -> None:
              len(c["schema"]["issues"])))
     print("  动效 exit=%d  不达标页=%s"
           % (c["motion"]["exit"], c["motion"]["pages_below_quota"] or "无"))
+    print("  Morph 缺失=%s  图片占位=%s  字母数不符=%s"
+          % (c["morph_missing"] or "无", c["image_placeholder"] or "无",
+             [b["page"] for b in c["letters_count"]] or "无"))
     for p in report["pages"]:
         k = p["kinds"]
         flag = "OK" if p["quota"]["ok"] else "缺"
@@ -586,6 +765,18 @@ def _fixture_shape(sid: str, name: str, text: str) -> str:
         '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr>'
         '<p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:t>%s</a:t></a:r></a:p>'
         '</p:txBody></p:sp>' % (sid, name, text)
+    )
+
+
+def _fixture_shape_at(sid: str, name: str, text: str, x: int, y: int,
+                      w: int = 2000000, h: int = 1000000) -> str:
+    return (
+        '<p:sp><p:nvSpPr><p:cNvPr id="%s" name="%s"/><p:cNvSpPr/></p:nvSpPr>'
+        '<p:spPr><a:xfrm><a:off x="%d" y="%d"/>'
+        '<a:ext cx="%d" cy="%d"/></a:xfrm>'
+        '<a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr>'
+        '<p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:t>%s</a:t></a:r></a:p>'
+        '</p:txBody></p:sp>' % (sid, name, x, y, w, h, text)
     )
 
 
@@ -665,6 +856,10 @@ MORPH_TRANSITION = (
     % (pc.MC_NS if hasattr(pc, "MC_NS") else
        "http://schemas.openxmlformats.org/markup-compatibility/2006",
        pc.P159_NS)
+)
+
+FADE_TRANSITION = (
+    '<p:transition xmlns:p="%s" spd="med"><p:fade/></p:transition>' % P_NS
 )
 
 
@@ -753,8 +948,71 @@ def _selftest() -> int:
     assert "可感知运动对象" in missing_b, \
         "反例 missing 应包含「可感知运动对象」，实际：%s" % missing_b
 
-    print("selftest OK：达标样例退出 0；反例退出 1，不达标页 [1]，"
-          "缺失项含「持续循环」与「可感知运动对象」")
+    # (c) 反例：manifest 声明 transition=morph，但页内只挂 fade → morph-missing。
+    manifest_c = {"pages": [{"index": 1, "transition": "morph"}], "assets": []}
+    slide_c = _fixture_slide(_fixture_shape("2", "hero", "H"),
+                             _fixture_timing([]), FADE_TRANSITION)
+    buf_c = _fixture_package(slide_c)
+    report_c, code_c = run_audit(buf_c, manifest=manifest_c, fast=False)
+    assert code_c == 1, "morph 缺失反例应退出 1，实际 %d" % code_c
+    assert report_c["checks"]["morph_missing"] == [1], \
+        "morph-missing 应精确命中第 1 页，实际 %s" % \
+        report_c["checks"]["morph_missing"]
+    assert 1 in report_c["summary"]["extra_fail_pages"]
+
+    # (d) 反例：文本命中占位词且形状 / 组合内无 blip → image-placeholder。
+    shape_d = _fixture_shape("2", "ph", "点击添加图片")
+    slide_d = _fixture_slide(shape_d, _fixture_timing([]))
+    buf_d = _fixture_package(slide_d)
+    report_d, code_d = run_audit(buf_d, manifest=manifest, fast=False)
+    assert code_d == 1, "图片占位反例应退出 1，实际 %d" % code_d
+    assert report_d["checks"]["image_placeholder"] == [1], \
+        "image-placeholder 应精确命中第 1 页，实际 %s" % \
+        report_d["checks"]["image_placeholder"]
+
+    # (e) 反例：声明 letters_count=3，实际 2 个单字母 → letters-count。
+    shapes_e = (_fixture_shape("2", "a", "A")
+                + _fixture_shape("3", "b", "B"))
+    manifest_e = {"pages": [{"index": 1, "letters_count": 3}], "assets": []}
+    slide_e = _fixture_slide(shapes_e, _fixture_timing([]))
+    buf_e = _fixture_package(slide_e)
+    report_e, code_e = run_audit(buf_e, manifest=manifest_e, fast=False)
+    assert code_e == 1, "字母数不符反例应退出 1，实际 %d" % code_e
+    assert report_e["checks"]["letters_count"] == [
+        {"page": 1, "expected": 3, "actual": 2}], \
+        "letters-count 应命中第 1 页（3 应 2），实际 %s" % \
+        report_e["checks"]["letters_count"]
+
+    # (e2) 无 letters_count 声明 → skipped，不算 FAIL。
+    report_e2, _ = run_audit(buf_e, manifest=manifest, fast=False)
+    assert report_e2["checks"]["letters_count"] == [], \
+        "无声明页不应判字母数不符，实际 %s" % \
+        report_e2["checks"]["letters_count"]
+
+    # (e3) 单字母全部出画（top<0）→ 视为布局，跳过不判 FAIL。
+    shape_z = _fixture_shape_at("2", "z", "Z", 1000000, -1000000)
+    slide_z = _fixture_slide(shape_z, _fixture_timing([]))
+    buf_z = _fixture_package(slide_z)
+    report_z, _ = run_audit(buf_z, manifest=manifest_e, fast=False)
+    assert report_z["checks"]["letters_count"] == [], \
+        "出画字母应跳过，实际 %s" % report_z["checks"]["letters_count"]
+
+    # (e4) 部分出画不豁免：一个字母出画、一个在画布内，仍按实际数量核对。
+    mixed = (_fixture_shape_at("2", "z", "Z", 1000000, -1000000)
+             + _fixture_shape("3", "a", "A"))
+    slide_m = _fixture_slide(mixed, _fixture_timing([]))
+    buf_m = _fixture_package(slide_m)
+    manifest_m = {"pages": [{"index": 1, "letters_count": 3}], "assets": []}
+    report_m, code_m = run_audit(buf_m, manifest=manifest_m, fast=False)
+    assert code_m == 1, "部分出画不应整体跳过，应退出 1，实际 %d" % code_m
+    assert report_m["checks"]["letters_count"] == [
+        {"page": 1, "expected": 3, "actual": 2}], \
+        "部分出画仍应核对字母数，实际 %s" % \
+        report_m["checks"]["letters_count"]
+
+    print("selftest OK：达标样例退出 0；配额反例退出 1 命中 [1]；"
+          "morph 缺失 / 图片占位 / 字母数不符三条反例均退出 1 且命中第 1 页；"
+          "无声明与全部出画字母记 skipped 不判 FAIL，部分出画仍核对。")
     return 0
 
 
@@ -770,6 +1028,9 @@ def main(argv: list[str] | None = None) -> int:
                     help="交付档位（默认 fidelity_first）")
     ap.add_argument("--fast", action="store_true",
                     help="跳过全包 schema 深扫，只做结构关键项与配额")
+    ap.add_argument("--require-morph-pages", default="",
+                    help="逗号分隔的页号：这些页必须挂平滑切换（manifest 声明 "
+                         "transition=morph 的页同样计入）")
     ap.add_argument("--json", dest="json_out", help="机器可读报告输出路径")
     ap.add_argument("--md", dest="md_out", help="人读 Markdown 表输出路径")
     ap.add_argument("--selftest", action="store_true", help="运行内联自检")
@@ -791,9 +1052,11 @@ def main(argv: list[str] | None = None) -> int:
         if os.path.exists(cand):
             manifest_path = cand
 
+    require_morph = [int(v) for v in args.require_morph_pages.split(",") if v.strip()]
     try:
         report, code = run_audit(args.deck, manifest=manifest_path,
-                                 tier=args.tier, fast=args.fast)
+                                 tier=args.tier, fast=args.fast,
+                                 require_morph_pages=require_morph)
     except (OSError, zipfile.BadZipFile, ET.ParseError) as e:
         print("输入不可读: %s" % e)
         return 2

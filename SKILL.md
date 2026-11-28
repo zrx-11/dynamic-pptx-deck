@@ -27,7 +27,10 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 2. **查成品页资产索引**（版式来源先查资产，不先画版式）：读 `references/layout-assets.md`
    与人读分组、`references/layout-assets.json` 机读记录，按页角色选候选页；选定后记录
    `source_id`（索引 `id`）、`deck` 相对路径、页码、基调、槽位容量、烘焙文字与背景填充
-   标记。索引覆盖 7 个可换文案角色，其余为缺口角色；无匹配页时转兜底分支（第 12 步）。
+   标记。索引 491 页（同一效果只计一版为 478 页），覆盖 8 个可换文案角色，其余为缺口
+   角色；选页前先核 `materials` 与 `role_boundary`——`019` 按 `cutout` / `plain` 两版
+   标注不可默认其一，`021` 配色与出画槽位锁定不可改，`020` / `022` 仅限封面与章节过渡
+   且需足量 16:9 照片。无匹配页时转兜底分支（第 12 步）。
 3. **过选页闸**：候选页排除摄影背景、锁定大图、烘焙文字与短槽容量不足项；细则见
    `references/template-pipeline.md` 第 2.1 节。
 4. **导入前适配检查**：`inspect` 读结构快照，`check_slide` 对照目标画像出四维度适配
@@ -36,11 +39,15 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 5. **整页导入**：用 `scripts/slide_importer.py` 的 `import`（或带 Profile 的 `adapt`）
    把源页整页复制进目标包，复用其 timing / transition；导入参数与接口见
    `references/import-guide.md` 第 4、11 节。
-6. **只替换 `a:t` 与色值**：允许替换文案 / 数字、按重着色映射改角色色、按媒体映射换图；
-   **禁止重排坐标、禁止改几何层级、禁止重建文本框**（重建会丢失动画绑定）。过容量闸：
-   逐槽用真实字体实测宽高（实测而非估算），超标先换短文案再换页，不缩字号、不拉伸文本框；
-   细则见 `references/import-guide.md` 第 6、7 节与 `references/template-pipeline.md` 第 4 节。
-7. **内容框闸**：逐框判定填满（墨块覆盖率 ≥25%、无空框），未用槽位补文案或删形状；细则见
+6. **只替换 `a:t` 与色值**：允许替换文案 / 数字、按重着色映射改角色色、按媒体映射换图
+   （整册换图用 `scripts/refill_images.py`，覆盖组合内外四类图片承载，只换图不改几何、
+   动画、切换与 shape name）；**禁止重排坐标、禁止改几何层级、禁止重建文本框**（重建会
+   丢失动画绑定）。过容量闸：用 `scripts/textfit.py` 逐槽以真实字体实测宽高，按「缩字号
+   至下限 → 加高容器 → 报需减字」顺序适配，不扩宽、不越下限；细则见
+   `references/layout-tools.md` 第 2 节、`references/import-guide.md` 第 6、7 节与
+   `references/template-pipeline.md` 第 4 节。
+7. **内容框闸**：逐框判定填满（墨块覆盖率 ≥25%、无空框），未用槽位补文案或删形状；
+   `textfit` 返回 `empty_frame` 的框必须按它给的字数区间补足；细则见
    `references/template-pipeline.md` 第 5 节。
 8. **挂页内动画补配额**：按下方「页内动效配额」核对并补足；编排三段与容器—文字配对
    矩阵见 `references/animation-orchestration.md`。
@@ -54,7 +61,8 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
    `audit_all.py` 复核。移植类与高版本效果须在目标放映软件 F5 复核。
 12. **兜底分支（仅索引无匹配页时）**：用 `scripts/dynamic_deck.py` 原生构建，版式骨架与
    效果族候选查 `references/asset-index.md` / `asset-index.json`，配色基线与页型骨架见
-   `references/layout-recipes.md`。
+   `references/layout-recipes.md`；多块并列内容的行列排布用 `scripts/grid_flow.py` 求
+   均衡矩形（输出 EMU），不手工试列数。
 13. **结构化源交付**：成稿同级落 `deck-manifest.json`，逐页登记 `index`、`page_type`、
     `content`、`assets`、`notes`；facts 清单与素材引用（生成器、参数、sha256）随稿交付；
     页级重生成复核见 `references/regeneration-guide.md`。
@@ -84,6 +92,9 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 | 你要做什么 | 读哪份 reference 的哪一节 |
 |---|---|
 | 选成品页（检索候选、看容量与可换文案性） | `layout-assets.md`「怎么用这份索引」及角色分组；机读 `layout-assets.json` |
+| 排版适配（断行禁则、缩字号 / 加高 / 减字三段、空框判定） | `layout-tools.md` 第 2 节 |
+| 多块并列排布（均衡行列、同行等高、余量分配） | `layout-tools.md` 第 3 节 |
+| 整册换图（组合内外四类承载、循环取用） | `layout-tools.md` 第 4 节 |
 | 整页导入（适配检查、导入参数、文字替换） | `import-guide.md` 第 1、3、7、11 节 |
 | 挂动画（编排三段、配对矩阵、反例形态） | `animation-orchestration.md` 第 1、2、3 节 |
 | 查页型路由与效果预算 | `effect-routing.md` 第 2 节 |
@@ -114,9 +125,21 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
   模块级 `inspect` 读结构快照。CLI 子命令 `inspect` / `check` / `adapt` / `import` /
   `replace` / `reorder` / `selftest`；完整签名与快照键见 `import-guide.md` 第 11 节。
 - **合并校验 `scripts/audit_all.py`**：一次调用合并结构、配对、可编辑性、schema 深扫、
-  动效配额；CLI `python3 scripts/audit_all.py <deck.pptx> [--manifest P]
-  [--tier 档位] [--fast] [--json OUT] [--md OUT]`，`--selftest` 跑内联自检；口径见
-  `audit-all.md`。
+  动效配额与三条后处理检查（`morph-missing` / `image-placeholder` / `letters-count`）；
+  CLI `python3 scripts/audit_all.py <deck.pptx> [--manifest P]
+  [--tier 档位] [--fast] [--require-morph-pages 3,5,7] [--json OUT] [--md OUT]`，
+  `--selftest` 跑内联自检；口径见 `audit-all.md` 与 `layout-tools.md` 第 5 节。
+- **排版适配 `scripts/textfit.py`**：以 PIL + 真实字体量测文本框，按「缩字号至下限 →
+  加高容器 → 报需减字」收敛，空框 / 欠满框判 `empty_frame` 并给字数区间与建议字号；
+  CLI `python3 scripts/textfit.py <deck.pptx> [--page N] [--min-pt 10] [--json OUT]
+  [--apply OUT]`，`--selftest` 跑内联自检。
+- **网格排布 `scripts/grid_flow.py`**：按 `max_cols` 上限与项数回推均衡行列（6→3×2、
+  7→4+3、4→4×1），同行等高、余量轮补，输出 EMU 矩形；CLI
+  `python3 scripts/grid_flow.py --n 7 --area x,y,w,h --max-cols 4 --json`，`--selftest`。
+- **整册换图 `scripts/refill_images.py`**：覆盖背景 / 根级 `p:pic` / 组合内 `p:pic` /
+  `a:blipFill` 四类承载，只重写图片 blob，不动 xfrm、动画、切换与 shape name；图片不足
+  循环取用并在报告标注；CLI `python3 scripts/refill_images.py <deck.pptx> --images a.jpg,b.jpg
+  --out OUT [--page-range 5-14] [--report-json OUT]`，`--selftest`。
 - **配对检查 `scripts/pairing_check.py`**：仅标准库，核对同批绑定、延迟差 150–450ms、
   文字只挂 fade、退出顺序与 Morph 互斥；CLI
   `python3 scripts/pairing_check.py <deck.pptx> [--min-gap 150] [--max-gap 450]
@@ -147,6 +170,8 @@ description: "把任意已有内容（文档、报告、笔记、大纲、旧 pp
 
 - `references/template-pipeline.md`：成品页复用流水线完整工序（选页判据、导入参数、
   容量纪律、配额挂载、校验、导出与许可声明模板）。
+- `references/layout-tools.md`：排版适配（断行禁则、三段收敛、空框判定）、均衡网格排布、
+  整册换图三类工具的 CLI 与返回结构，外加上游工具的结构对齐核对与不采纳说明。
 - `references/audit-all.md`：合并校验入口 CLI、报告字段、配额判定、`--fast` 取舍、
   退出码与既有脚本关系。
 - `references/import-guide.md`：跨包整页导入口径——三路线判定、适配检查、处理范围、

@@ -1,0 +1,436 @@
+{
+  "deck": {
+    "file": "一纸宣告与两千页重构-12页.pptx",
+    "tier": "fidelity_first",
+    "exit": 1,
+    "verdict": "fail"
+  },
+  "checks": {
+    "structure": {
+      "exit": 0,
+      "issues": [],
+      "effects": 97,
+      "ctn": 431
+    },
+    "pairing": {
+      "exit": 0,
+      "fail": 0,
+      "orphan": 0,
+      "morph_pairs": [
+        {
+          "name": "mp-node",
+          "type": "sp/ellipse",
+          "pages": [
+            4,
+            5
+          ]
+        },
+        {
+          "name": "mp-bar",
+          "type": "sp/rect",
+          "pages": [
+            6,
+            7
+          ]
+        },
+        {
+          "name": "mp-funnel",
+          "type": "sp/rect",
+          "pages": [
+            8,
+            9
+          ]
+        }
+      ],
+      "conflict": 0
+    },
+    "editability": {
+      "exit": 0,
+      "score": 96,
+      "blocking_pages": [],
+      "by_code": {
+        "TEXT_BITMAP": 2
+      }
+    },
+    "schema": {
+      "ran": false,
+      "exit": 0,
+      "issues": [
+        "fast 模式：跳过全包 schema 深扫"
+      ]
+    },
+    "motion": {
+      "exit": 1,
+      "pages_below_quota": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    "morph_missing": [],
+    "image_placeholder": [],
+    "letters_count": []
+  },
+  "pages": [
+    {
+      "index": 1,
+      "page_type": "cover",
+      "effects": 6,
+      "ctn": 24,
+      "kinds": {
+        "entr": 6,
+        "emph": 0,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 0,
+      "loops": 0,
+      "quota": {
+        "ok": false,
+        "missing": [
+          "可感知运动对象仅 0 个（需 ≥3）",
+          "缺持续循环（需 ≥1 个无限重复动效）"
+        ]
+      },
+      "findings": [
+        {
+          "code": "QUOTA_MISSING",
+          "message": "可感知运动对象仅 0 个（需 ≥3）"
+        },
+        {
+          "code": "QUOTA_MISSING",
+          "message": "缺持续循环（需 ≥1 个无限重复动效）"
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "page_type": "agenda",
+      "effects": 10,
+      "ctn": 47,
+      "kinds": {
+        "entr": 10,
+        "emph": 0,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 5,
+      "loops": 0,
+      "quota": {
+        "ok": false,
+        "missing": [
+          "缺持续循环（需 ≥1 个无限重复动效）"
+        ]
+      },
+      "findings": [
+        {
+          "code": "QUOTA_MISSING",
+          "message": "缺持续循环（需 ≥1 个无限重复动效）"
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "page_type": "two_column_compare",
+      "effects": 9,
+      "ctn": 35,
+      "kinds": {
+        "entr": 9,
+        "emph": 0,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 4,
+      "loops": 0,
+      "quota": {
+        "ok": false,
+        "missing": [
+          "缺持续循环（需 ≥1 个无限重复动效）"
+        ]
+      },
+      "findings": [
+        {
+          "code": "QUOTA_MISSING",
+          "message": "缺持续循环（需 ≥1 个无限重复动效）"
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "page_type": "timeline",
+      "effects": 9,
+      "ctn": 35,
+      "kinds": {
+        "entr": 9,
+        "emph": 0,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 1,
+      "loops": 0,
+      "quota": {
+        "ok": false,
+        "missing": [
+          "可感知运动对象仅 1 个（需 ≥3）",
+          "缺持续循环（需 ≥1 个无限重复动效）"
+        ]
+      },
+      "findings": [
+        {
+          "code": "QUOTA_MISSING",
+          "message": "可感知运动对象仅 1 个（需 ≥3）"
+        },
+        {
+          "code": "QUOTA_MISSING",
+          "message": "缺持续循环（需 ≥1 个无限重复动效）"
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "page_type": "card_grid",
+      "effects": 8,
+      "ctn": 38,
+      "kinds": {
+        "entr": 8,
+        "emph": 0,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 4,
+      "loops": 0,
+      "quota": {
+        "ok": false,
+        "missing": [
+          "缺持续循环（需 ≥1 个无限重复动效）"
+        ]
+      },
+      "findings": [
+        {
+          "code": "QUOTA_MISSING",
+          "message": "缺持续循环（需 ≥1 个无限重复动效）"
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "page_type": "compare_table",
+      "effects": 4,
+      "ctn": 20,
+      "kinds": {
+        "entr": 4,
+        "emph": 0,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 2,
+      "loops": 0,
+      "quota": {
+        "ok": false,
+        "missing": [
+          "可感知运动对象仅 2 个（需 ≥3）",
+          "缺持续循环（需 ≥1 个无限重复动效）"
+        ]
+      },
+      "findings": [
+        {
+          "code": "QUOTA_MISSING",
+          "message": "可感知运动对象仅 2 个（需 ≥3）"
+        },
+        {
+          "code": "QUOTA_MISSING",
+          "message": "缺持续循环（需 ≥1 个无限重复动效）"
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "page_type": "metric_band",
+      "effects": 10,
+      "ctn": 42,
+      "kinds": {
+        "entr": 10,
+        "emph": 0,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 0,
+      "loops": 0,
+      "quota": {
+        "ok": false,
+        "missing": [
+          "可感知运动对象仅 0 个（需 ≥3）",
+          "缺持续循环（需 ≥1 个无限重复动效）"
+        ]
+      },
+      "findings": [
+        {
+          "code": "QUOTA_MISSING",
+          "message": "可感知运动对象仅 0 个（需 ≥3）"
+        },
+        {
+          "code": "QUOTA_MISSING",
+          "message": "缺持续循环（需 ≥1 个无限重复动效）"
+        }
+      ]
+    },
+    {
+      "index": 8,
+      "page_type": "trend_chart",
+      "effects": 9,
+      "ctn": 42,
+      "kinds": {
+        "entr": 8,
+        "emph": 0,
+        "exit": 0,
+        "path": 1
+      },
+      "perceptible": 5,
+      "loops": 1,
+      "quota": {
+        "ok": true,
+        "missing": []
+      },
+      "findings": []
+    },
+    {
+      "index": 9,
+      "page_type": "risk_alert",
+      "effects": 10,
+      "ctn": 47,
+      "kinds": {
+        "entr": 10,
+        "emph": 0,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 5,
+      "loops": 0,
+      "quota": {
+        "ok": false,
+        "missing": [
+          "缺持续循环（需 ≥1 个无限重复动效）"
+        ]
+      },
+      "findings": [
+        {
+          "code": "QUOTA_MISSING",
+          "message": "缺持续循环（需 ≥1 个无限重复动效）"
+        }
+      ]
+    },
+    {
+      "index": 10,
+      "page_type": "conclusion_list",
+      "effects": 8,
+      "ctn": 34,
+      "kinds": {
+        "entr": 8,
+        "emph": 0,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 4,
+      "loops": 0,
+      "quota": {
+        "ok": false,
+        "missing": [
+          "缺持续循环（需 ≥1 个无限重复动效）"
+        ]
+      },
+      "findings": [
+        {
+          "code": "QUOTA_MISSING",
+          "message": "缺持续循环（需 ≥1 个无限重复动效）"
+        }
+      ]
+    },
+    {
+      "index": 11,
+      "page_type": "process",
+      "effects": 9,
+      "ctn": 42,
+      "kinds": {
+        "entr": 9,
+        "emph": 0,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 3,
+      "loops": 0,
+      "quota": {
+        "ok": false,
+        "missing": [
+          "缺持续循环（需 ≥1 个无限重复动效）"
+        ]
+      },
+      "findings": [
+        {
+          "code": "QUOTA_MISSING",
+          "message": "缺持续循环（需 ≥1 个无限重复动效）"
+        }
+      ]
+    },
+    {
+      "index": 12,
+      "page_type": "quote",
+      "effects": 5,
+      "ctn": 25,
+      "kinds": {
+        "entr": 5,
+        "emph": 0,
+        "exit": 0,
+        "path": 0
+      },
+      "perceptible": 0,
+      "loops": 0,
+      "quota": {
+        "ok": false,
+        "missing": [
+          "可感知运动对象仅 0 个（需 ≥3）",
+          "缺持续循环（需 ≥1 个无限重复动效）"
+        ]
+      },
+      "findings": [
+        {
+          "code": "QUOTA_MISSING",
+          "message": "可感知运动对象仅 0 个（需 ≥3）"
+        },
+        {
+          "code": "QUOTA_MISSING",
+          "message": "缺持续循环（需 ≥1 个无限重复动效）"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "pages": 12,
+    "motion_fail_pages": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      9,
+      10,
+      11,
+      12
+    ],
+    "extra_fail_pages": [],
+    "by_code": {
+      "TEXT_BITMAP": 2,
+      "QUOTA_MISSING": 16,
+      "SCHEMA_ISSUE": 1
+    }
+  }
+}
